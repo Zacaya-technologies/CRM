@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Task Board &amp; Team Workload — OmniAgency Enterprise CRM</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark">OA</div>
+      <div class="brand-text"><b>OmniAgency</b><span>ENTERPRISE CRM</span></div>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-label">EXECUTIVE DECK</div>
+      <a class="nav-item" href="index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>Dashboard</a>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-label">CLIENT OPERATIONS</div>
+      <a class="nav-item" href="leads.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Leads<span class="nav-badge new">New</span></a>
+      <a class="nav-item" href="sales-pipeline.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 14l4-4 4 4 5-6"/></svg>Sales Pipeline</a>
+      <a class="nav-item" href="follow-ups.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>Follow-ups</a>
+      <a class="nav-item" href="clients.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18"/></svg>Clients</a>
+      <a class="nav-item" href="services.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.5 9.5 12 4 3.5 9.5 12 15l8.5-5.5Z"/><path d="M6 12.5V17c0 1.5 3 3 6 3s6-1.5 6-3v-4.5"/></svg>Services</a>
+      <a class="nav-item" href="onboarding.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>Onboarding<span class="nav-badge">15</span></a>
+      <a class="nav-item" href="client-approvals.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Client Approvals</a>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-label">EXECUTION &amp; DELIVERY</div>
+      <a class="nav-item" href="campaigns.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l18-5v12L3 14v-3Z"/><path d="M11.6 16.8 13 21l-3-1-3 1 1.4-4.2"/></svg>Campaigns</a>
+      <a class="nav-item" href="content-calendar.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 3v3M16 3v3"/></svg>Content Calendar</a>
+      <a class="nav-item" href="projects.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/></svg>Projects</a>
+      <a class="nav-item active" href="tasks.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Tasks</a>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-label">FINANCE &amp; ANALYTICS</div>
+      <div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/></svg>Proposals</div>
+      <div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 10h20"/></svg>Invoices</div>
+      <div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v10M15 9.5c0-1.4-1.3-2.5-3-2.5s-3 1.1-3 2.5 1.3 2 3 2.5 3 1.1 3 2.5-1.3 2.5-3 2.5-3-1.1-3-2.5"/></svg>Payments</div>
+      <div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><rect x="7" y="12" width="3" height="6"/><rect x="12.5" y="8" width="3" height="10"/><rect x="18" y="5" width="3" height="13"/></svg>Reports</div>
+    </div>
+
+    <div class="role-box">
+      <div class="role-box-head"><span>SWITCH ROLE</span><span class="live-pill">Live</span></div>
+      <div class="role-select"><span class="dot"></span>Super Admin
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+      </div>
+    </div>
+  </aside>
+  <div class="main">
+  <div class="topbar">
+      <div class="crumbs">Workspace <span>&rsaquo;</span> <b>Tasks</b><span class="role-tag">Super Admin</span></div>
+      <div class="search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+        Command palette<kbd>Ctrl K</kbd>
+      </div>
+      <div class="topbar-right">
+        <button class="btn btn-primary"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg>Add Lead</button>
+        <button class="btn btn-outline"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-4 4"/></svg>View Pipeline</button>
+        <button class="icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg><span class="dot-alert"></span></button>
+        <div class="who">
+          <div class="avatar">VM</div>
+          <div class="who-text"><b>Vikram Malhotra</b><span>admin@apexdigital.agency</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="content">
+      <div class="page-head">
+        <div>
+          <div class="eyebrow">EXECUTION &amp; DELIVERY <span class="sep">•</span> Team Workload</div>
+          <h1>Tasks</h1>
+          <p class="page-sub">Day-to-day delivery work across every project. Drag cards between columns to update status.</p>
+        </div>
+        <div class="page-actions">
+          <a class="btn btn-outline" href="projects.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/></svg>All Projects</a>
+          <button class="btn btn-primary"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg>New Task</button>
+        </div>
+      </div>
+
+      <div class="stat-grid">
+        <div class="stat-card">
+          <div class="stat-top"><span class="stat-label">OPEN TASKS</span><div class="stat-ico" style="background:var(--primary-light);color:var(--primary)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div></div>
+          <div class="stat-value-row"><span class="stat-value" id="stat-open">0</span></div>
+          <div class="stat-foot">To do, in progress and in review</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-top"><span class="stat-label">OVERDUE</span><div class="stat-ico" style="background:var(--danger-bg);color:var(--danger)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg></div></div>
+          <div class="stat-value-row"><span class="stat-value" style="color:var(--danger)" id="stat-overdue">0</span></div>
+          <div class="stat-foot" style="color:var(--danger);font-weight:600;">Past due and not done</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-top"><span class="stat-label">DUE THIS WEEK</span><div class="stat-ico" style="background:var(--warning-bg);color:var(--warning)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 3v3M16 3v3"/></svg></div></div>
+          <div class="stat-value-row"><span class="stat-value" id="stat-week">0</span></div>
+          <div class="stat-foot">Open tasks due in the next 7 days</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-top"><span class="stat-label">COMPLETION</span><div class="stat-ico" style="background:var(--success-bg);color:var(--success)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 14l4-4 4 4 5-6"/></svg></div></div>
+          <div class="stat-value-row"><span class="stat-value" id="stat-done">0%</span></div>
+          <div class="stat-bar"><i id="stat-done-bar" style="width:0%"></i></div>
+        </div>
+      </div>
+
+      <div class="section-title">
+        <div><h2>Task Board</h2><p>Filter by assignee to see individual workload.</p></div>
+        <div class="filter-pills" id="owner-pills"></div>
+      </div>
+
+      <div class="kanban" id="task-board"></div>
+
+    </div>
+  </div>
+</div>
+<script>
+document.querySelectorAll('.nav-item').forEach(item=>{
+  item.addEventListener('click',()=>{
+    document.querySelectorAll('.nav-item').forEach(i=>i.classList.remove('active'));
+    item.classList.add('active');
+  });
+});
+
+const columns=[
+  {key:'todo',name:'To Do'},
+  {key:'progress',name:'In Progress'},
+  {key:'review',name:'In Review'},
+  {key:'done',name:'Done'},
+];
+const priority={
+  high:{label:'High',bg:'var(--danger-bg)',color:'var(--danger)'},
+  med:{label:'Medium',bg:'var(--warning-bg)',color:'var(--warning)'},
+  low:{label:'Low',bg:'var(--info-bg)',color:'var(--info)'},
+};
+const tasks=[
+  {id:1,title:'Write product catalog import script',project:'Shopify Plus Migration',col:'todo',pri:'high',due:'2026-11-02',owner:'SD'},
+  {id:2,title:'Draft November newsletter copy',project:'Zenith Media — Content',col:'todo',pri:'med',due:'2026-10-31',owner:'AK'},
+  {id:3,title:'Set up deal pipeline stages',project:'HubSpot CRM Rollout',col:'todo',pri:'high',due:'2026-10-27',owner:'VM'},
+  {id:4,title:'Keyword map for net-metering FAQ',project:'Solaris Energy — SEO',col:'todo',pri:'low',due:'2026-11-09',owner:'PL'},
+  {id:5,title:'Migrate API reference to new portal',project:'Developer Portal Relaunch',col:'progress',pri:'high',due:'2026-10-26',owner:'RR'},
+  {id:6,title:'Design case study page template',project:'Portfolio Site Rebuild',col:'progress',pri:'med',due:'2026-11-03',owner:'AK'},
+  {id:7,title:'Build savings calculator component',project:'Lead-Gen Landing Suite',col:'progress',pri:'med',due:'2026-11-04',owner:'MJ'},
+  {id:8,title:'Edit rooftop timelapse video',project:'Solaris Energy — Content',col:'progress',pri:'low',due:'2026-10-30',owner:'NS'},
+  {id:9,title:'Logo suite final export',project:'Brand Refresh & Guidelines',col:'review',pri:'high',due:'2026-10-29',owner:'AK'},
+  {id:10,title:'Studio tour reel cut v2',project:'PixelForge — Social',col:'review',pri:'med',due:'2026-10-29',owner:'NS'},
+  {id:11,title:'Import 1,200 legacy contacts',project:'HubSpot CRM Rollout',col:'review',pri:'med',due:'2026-11-01',owner:'MJ'},
+  {id:12,title:'Diwali sale campaign wrap report',project:'UrbanStyle — Paid Media',col:'done',pri:'med',due:'2026-10-25',owner:'VM'},
+  {id:13,title:'Typography + color tokens',project:'Brand Refresh & Guidelines',col:'done',pri:'low',due:'2026-10-22',owner:'AK'},
+  {id:14,title:'Auth flow for developer portal',project:'Developer Portal Relaunch',col:'done',pri:'high',due:'2026-10-20',owner:'SD'},
+];
+const owners=['All',...new Set(tasks.map(t=>t.owner))];
+let activeOwner='All';
+
+const pad=n=>String(n).padStart(2,'0');
+const today=new Date(); today.setHours(0,0,0,0);
+const MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const toDate=s=>{const [y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d);};
+const isOverdue=t=>t.col!=='done' && toDate(t.due)<today;
+function dueLabel(t){
+  const d=toDate(t.due), diff=Math.round((d-today)/86400000);
+  if(t.col==='done') return `Done · ${MONTHS[d.getMonth()]} ${pad(d.getDate())}`;
+  if(diff<0) return `Overdue by ${-diff}d`;
+  if(diff===0) return 'Due today';
+  if(diff===1) return 'Due tomorrow';
+  return `Due ${MONTHS[d.getMonth()]} ${pad(d.getDate())}`;
+}
+
+function renderStats(){
+  const open=tasks.filter(t=>t.col!=='done');
+  const week=open.filter(t=>{const diff=(toDate(t.due)-today)/86400000;return diff>=0&&diff<=7;});
+  const pct=Math.round(tasks.filter(t=>t.col==='done').length/tasks.length*100);
+  document.getElementById('stat-open').textContent = open.length;
+  document.getElementById('stat-overdue').textContent = tasks.filter(isOverdue).length;
+  document.getElementById('stat-week').textContent = week.length;
+  document.getElementById('stat-done').textContent = pct+'%';
+  document.getElementById('stat-done-bar').style.width = pct+'%';
+}
+
+function renderOwners(){
+  document.getElementById('owner-pills').innerHTML = owners.map(o=>`<div class="filter-pill ${o===activeOwner?'active':''}" data-owner="${o}">${o}</div>`).join('');
+  document.querySelectorAll('#owner-pills .filter-pill').forEach(p=>p.addEventListener('click',()=>{activeOwner=p.dataset.owner;renderOwners();renderBoard();}));
+}
+
+function renderBoard(){
+  const board=document.getElementById('task-board');
+  board.innerHTML='';
+  columns.forEach(c=>{
+    const list=tasks.filter(t=>t.col===c.key && (activeOwner==='All'||t.owner===activeOwner));
+    const col=document.createElement('div');
+    col.className='kanban-col';
+    col.dataset.col=c.key;
+    col.innerHTML = `
+      <div class="kanban-col-head"><b>${c.name}</b><span>${list.length}</span></div>
+      ${list.map(t=>`
+        <div class="deal-card" draggable="true" data-id="${t.id}" style="${c.key==='done'?'opacity:.75;':''}">
+          <span class="deal-tag" style="background:${priority[t.pri].bg};color:${priority[t.pri].color}">${priority[t.pri].label}</span>
+          <b style="${c.key==='done'?'text-decoration:line-through;color:var(--text-muted);':''}">${t.title}</b>
+          <div class="deal-co">${t.project}</div>
+          <div class="deal-foot">
+            <span class="task-due ${isOverdue(t)?'overdue':''}">${dueLabel(t)}</span>
+            <div class="mini-avatar">${t.owner}</div>
+          </div>
+        </div>`).join('')}
+    `;
+    col.addEventListener('dragover',e=>{e.preventDefault();col.classList.add('drag-over');});
+    col.addEventListener('dragleave',e=>{if(!col.contains(e.relatedTarget)) col.classList.remove('drag-over');});
+    col.addEventListener('drop',e=>{
+      e.preventDefault();
+      const task=tasks.find(t=>t.id===Number(e.dataTransfer.getData('text/plain')));
+      if(task){task.col=c.key;renderBoard();renderStats();}
+    });
+    board.appendChild(col);
+  });
+  board.querySelectorAll('.deal-card').forEach(card=>{
+    card.addEventListener('dragstart',e=>{e.dataTransfer.setData('text/plain',card.dataset.id);card.classList.add('dragging');});
+    card.addEventListener('dragend',()=>card.classList.remove('dragging'));
+  });
+}
+
+renderStats();
+renderOwners();
+renderBoard();
+
+</script>
+</body>
+</html>

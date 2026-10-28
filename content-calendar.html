@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Content Calendar &amp; Publishing Queue — OmniAgency Enterprise CRM</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark">OA</div>
+      <div class="brand-text"><b>OmniAgency</b><span>ENTERPRISE CRM</span></div>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-label">EXECUTIVE DECK</div>
+      <a class="nav-item" href="index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>Dashboard</a>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-label">CLIENT OPERATIONS</div>
+      <a class="nav-item" href="leads.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Leads<span class="nav-badge new">New</span></a>
+      <a class="nav-item" href="sales-pipeline.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 14l4-4 4 4 5-6"/></svg>Sales Pipeline</a>
+      <a class="nav-item" href="follow-ups.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>Follow-ups</a>
+      <a class="nav-item" href="clients.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18"/></svg>Clients</a>
+      <a class="nav-item" href="services.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.5 9.5 12 4 3.5 9.5 12 15l8.5-5.5Z"/><path d="M6 12.5V17c0 1.5 3 3 6 3s6-1.5 6-3v-4.5"/></svg>Services</a>
+      <a class="nav-item" href="onboarding.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>Onboarding<span class="nav-badge">15</span></a>
+      <a class="nav-item" href="client-approvals.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Client Approvals</a>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-label">EXECUTION &amp; DELIVERY</div>
+      <a class="nav-item" href="campaigns.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l18-5v12L3 14v-3Z"/><path d="M11.6 16.8 13 21l-3-1-3 1 1.4-4.2"/></svg>Campaigns</a>
+      <a class="nav-item active" href="content-calendar.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 3v3M16 3v3"/></svg>Content Calendar</a>
+      <a class="nav-item" href="projects.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/></svg>Projects</a>
+      <a class="nav-item" href="tasks.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Tasks</a>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-label">FINANCE &amp; ANALYTICS</div>
+      <div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/></svg>Proposals</div>
+      <div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 10h20"/></svg>Invoices</div>
+      <div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v10M15 9.5c0-1.4-1.3-2.5-3-2.5s-3 1.1-3 2.5 1.3 2 3 2.5 3 1.1 3 2.5-1.3 2.5-3 2.5-3-1.1-3-2.5"/></svg>Payments</div>
+      <div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><rect x="7" y="12" width="3" height="6"/><rect x="12.5" y="8" width="3" height="10"/><rect x="18" y="5" width="3" height="13"/></svg>Reports</div>
+    </div>
+
+    <div class="role-box">
+      <div class="role-box-head"><span>SWITCH ROLE</span><span class="live-pill">Live</span></div>
+      <div class="role-select"><span class="dot"></span>Super Admin
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+      </div>
+    </div>
+  </aside>
+  <div class="main">
+  <div class="topbar">
+      <div class="crumbs">Workspace <span>&rsaquo;</span> <b>Content Calendar</b><span class="role-tag">Super Admin</span></div>
+      <div class="search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+        Command palette<kbd>Ctrl K</kbd>
+      </div>
+      <div class="topbar-right">
+        <button class="btn btn-primary"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg>Add Lead</button>
+        <button class="btn btn-outline"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-4 4"/></svg>View Pipeline</button>
+        <button class="icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg><span class="dot-alert"></span></button>
+        <div class="who">
+          <div class="avatar">VM</div>
+          <div class="who-text"><b>Vikram Malhotra</b><span>admin@apexdigital.agency</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="content">
+      <div class="page-head">
+        <div>
+          <div class="eyebrow">EXECUTION &amp; DELIVERY <span class="sep">•</span> Editorial Planning</div>
+          <h1>Content Calendar</h1>
+          <p class="page-sub">Scheduled posts, reels, blogs and newsletters for every client, from draft to published.</p>
+        </div>
+        <div class="page-actions">
+          <a class="btn btn-outline" href="client-approvals.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Approval Queue</a>
+          <button class="btn btn-primary"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg>Schedule Post</button>
+        </div>
+      </div>
+
+      <div class="stat-grid">
+        <div class="stat-card">
+          <div class="stat-top"><span class="stat-label">SCHEDULED THIS MONTH</span><div class="stat-ico" style="background:var(--primary-light);color:var(--primary)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 3v3M16 3v3"/></svg></div></div>
+          <div class="stat-value-row"><span class="stat-value" id="stat-month">0</span></div>
+          <div class="stat-foot" id="stat-month-foot"></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-top"><span class="stat-label">AWAITING APPROVAL</span><div class="stat-ico" style="background:var(--warning-bg);color:var(--warning)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></div></div>
+          <div class="stat-value-row"><span class="stat-value" id="stat-review">0</span></div>
+          <div class="stat-foot" style="color:var(--warning);font-weight:600;">Client sign-off pending</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-top"><span class="stat-label">PUBLISHED</span><div class="stat-ico" style="background:var(--success-bg);color:var(--success)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div></div>
+          <div class="stat-value-row"><span class="stat-value" id="stat-published">0</span></div>
+          <div class="stat-foot">Live across all client channels</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-top"><span class="stat-label">ON-TIME DELIVERY</span><div class="stat-ico" style="background:var(--info-bg);color:var(--info)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 14l4-4 4 4 5-6"/></svg></div></div>
+          <div class="stat-value-row"><span class="stat-value">94%</span><span class="stat-delta up">+3pt</span></div>
+          <div class="stat-bar"><i style="width:94%"></i></div>
+        </div>
+      </div>
+
+      <div class="cal-card">
+        <div class="cal-head">
+          <div class="cal-nav">
+            <button id="cal-prev" aria-label="Previous month"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="m15 18-6-6 6-6"/></svg></button>
+            <button id="cal-today">Today</button>
+            <button id="cal-next" aria-label="Next month"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="m9 18 6-6-6-6"/></svg></button>
+            <h3 id="cal-title" style="margin-left:8px;"></h3>
+          </div>
+          <div class="cal-legend" id="cal-legend"></div>
+        </div>
+        <div class="cal-grid" id="cal-grid"></div>
+      </div>
+
+      <div class="table-card">
+        <div class="table-toolbar">
+          <div><h3>Publishing Queue</h3><p>Next 10 scheduled items from today</p></div>
+        </div>
+        <table class="data-table">
+          <thead><tr><th>Content</th><th>Format</th><th>Channel</th><th>Publish Date</th><th>Status</th><th>Owner</th></tr></thead>
+          <tbody id="queue-body"></tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
+</div>
+<script>
+document.querySelectorAll('.nav-item').forEach(item=>{
+  item.addEventListener('click',()=>{
+    document.querySelectorAll('.nav-item').forEach(i=>i.classList.remove('active'));
+    item.classList.add('active');
+  });
+});
+
+const channels={
+  instagram:{name:'Instagram',color:'#C13584',bg:'#FBE7F2'},
+  linkedin:{name:'LinkedIn',color:'#0A66C2',bg:'#E3EEF9'},
+  blog:{name:'Blog',color:'var(--success)',bg:'var(--success-bg)'},
+  email:{name:'Newsletter',color:'var(--warning)',bg:'var(--warning-bg)'},
+  youtube:{name:'YouTube',color:'var(--danger)',bg:'var(--danger-bg)'},
+};
+const statusBadge={published:['badge-green','Published'],scheduled:['badge-blue','Scheduled'],review:['badge-amber','In Review'],draft:['badge-grey','Draft']};
+const posts=[
+  {d:'2026-10-02',title:'Festive lookbook carousel',client:'UrbanStyle Direct',ch:'instagram',fmt:'Carousel',status:'published',owner:'AK'},
+  {d:'2026-10-05',title:'Q3 platform reliability report',client:'Kinetix Cloud',ch:'blog',fmt:'Long-form',status:'published',owner:'RR'},
+  {d:'2026-10-07',title:'Solar ROI explainer',client:'Solaris Energy',ch:'linkedin',fmt:'Document post',status:'published',owner:'PL'},
+  {d:'2026-10-09',title:'Behind the brand reel',client:'PixelForge Studio',ch:'instagram',fmt:'Reel',status:'published',owner:'AK'},
+  {d:'2026-10-12',title:'October product digest',client:'Zenith Media',ch:'email',fmt:'Newsletter',status:'published',owner:'AK'},
+  {d:'2026-10-14',title:'CTO fireside clip',client:'Kinetix Cloud',ch:'youtube',fmt:'Video',status:'published',owner:'RR'},
+  {d:'2026-10-16',title:'Diwali sale teaser',client:'UrbanStyle Direct',ch:'instagram',fmt:'Story set',status:'published',owner:'VM'},
+  {d:'2026-10-19',title:'Customer win: Metro Logistics',client:'ApexDigital',ch:'linkedin',fmt:'Case study',status:'published',owner:'VM'},
+  {d:'2026-10-21',title:'Diwali sale launch',client:'UrbanStyle Direct',ch:'instagram',fmt:'Reel',status:'published',owner:'VM'},
+  {d:'2026-10-21',title:'Clean energy policy brief',client:'Solaris Energy',ch:'blog',fmt:'Long-form',status:'published',owner:'PL'},
+  {d:'2026-10-23',title:'Hiring: senior designers',client:'PixelForge Studio',ch:'linkedin',fmt:'Single image',status:'published',owner:'AK'},
+  {d:'2026-10-26',title:'Agency partner spotlight',client:'Zenith Media',ch:'linkedin',fmt:'Carousel',status:'published',owner:'AK'},
+  {d:'2026-10-28',title:'Kubernetes cost tips thread',client:'Kinetix Cloud',ch:'linkedin',fmt:'Text post',status:'scheduled',owner:'RR'},
+  {d:'2026-10-28',title:'Last-chance Diwali offer',client:'UrbanStyle Direct',ch:'email',fmt:'Newsletter',status:'scheduled',owner:'VM'},
+  {d:'2026-10-29',title:'Studio tour reel',client:'PixelForge Studio',ch:'instagram',fmt:'Reel',status:'review',owner:'AK'},
+  {d:'2026-10-30',title:'Rooftop install timelapse',client:'Solaris Energy',ch:'youtube',fmt:'Video',status:'review',owner:'PL'},
+  {d:'2026-10-31',title:'Halloween flash drop',client:'UrbanStyle Direct',ch:'instagram',fmt:'Carousel',status:'scheduled',owner:'VM'},
+  {d:'2026-11-02',title:'November feature roundup',client:'Zenith Media',ch:'email',fmt:'Newsletter',status:'draft',owner:'AK'},
+  {d:'2026-11-04',title:'SaaS pricing teardown',client:'ApexDigital',ch:'blog',fmt:'Long-form',status:'review',owner:'VM'},
+  {d:'2026-11-06',title:'Winter collection preview',client:'UrbanStyle Direct',ch:'instagram',fmt:'Reel',status:'draft',owner:'VM'},
+  {d:'2026-11-10',title:'DevOps summit recap',client:'Kinetix Cloud',ch:'linkedin',fmt:'Carousel',status:'draft',owner:'RR'},
+  {d:'2026-11-13',title:'Net-metering FAQ',client:'Solaris Energy',ch:'blog',fmt:'Long-form',status:'draft',owner:'PL'},
+  {d:'2026-11-18',title:'Client testimonial cut',client:'PixelForge Studio',ch:'youtube',fmt:'Video',status:'draft',owner:'AK'},
+  {d:'2026-11-27',title:'Black Friday countdown',client:'UrbanStyle Direct',ch:'instagram',fmt:'Story set',status:'draft',owner:'VM'},
+];
+
+const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
+const pad=n=>String(n).padStart(2,'0');
+const iso=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+const today=new Date();
+const todayIso=iso(today);
+let view=new Date(today.getFullYear(),today.getMonth(),1);
+
+document.getElementById('cal-legend').innerHTML = Object.values(channels).map(c=>`<span><i style="background:${c.color}"></i>${c.name}</span>`).join('');
+
+function renderCalendar(){
+  const y=view.getFullYear(), m=view.getMonth();
+  document.getElementById('cal-title').textContent = `${MONTHS[m]} ${y}`;
+  // Weeks start on Monday
+  const start=new Date(y,m,1-((new Date(y,m,1).getDay()+6)%7));
+  const cells=[];
+  for(let i=0;i<42;i++){
+    const d=new Date(start.getFullYear(),start.getMonth(),start.getDate()+i);
+    if(i===35 && d.getMonth()!==m) break;
+    const key=iso(d);
+    const dayPosts=posts.filter(p=>p.d===key);
+    cells.push(`
+      <div class="cal-day ${d.getMonth()!==m?'muted':''} ${key===todayIso?'today':''}">
+        <span class="cal-num">${d.getDate()}</span>
+        ${dayPosts.map(p=>`<span class="cal-post" style="background:${channels[p.ch].bg};color:${channels[p.ch].color}" title="${p.client} — ${p.title} (${statusBadge[p.status][1]})">${p.title}</span>`).join('')}
+      </div>`);
+  }
+  document.getElementById('cal-grid').innerHTML = ['MON','TUE','WED','THU','FRI','SAT','SUN'].map(d=>`<div class="cal-dow">${d}</div>`).join('') + cells.join('');
+
+  const monthKey=`${y}-${pad(m+1)}`;
+  const inMonth=posts.filter(p=>p.d.startsWith(monthKey));
+  document.getElementById('stat-month').textContent = inMonth.length;
+  document.getElementById('stat-month-foot').textContent = `${new Set(inMonth.map(p=>p.client)).size} clients in ${MONTHS[m]}`;
+  document.getElementById('stat-review').textContent = inMonth.filter(p=>p.status==='review').length;
+  document.getElementById('stat-published').textContent = inMonth.filter(p=>p.status==='published').length;
+}
+
+document.getElementById('cal-prev').addEventListener('click',()=>{view=new Date(view.getFullYear(),view.getMonth()-1,1);renderCalendar();});
+document.getElementById('cal-next').addEventListener('click',()=>{view=new Date(view.getFullYear(),view.getMonth()+1,1);renderCalendar();});
+document.getElementById('cal-today').addEventListener('click',()=>{view=new Date(today.getFullYear(),today.getMonth(),1);renderCalendar();});
+
+const queue=posts.filter(p=>p.d>=todayIso && p.status!=='published').slice(0,10);
+document.getElementById('queue-body').innerHTML = queue.length ? queue.map(p=>{
+  const ch=channels[p.ch];
+  const [yy,mm,dd]=p.d.split('-').map(Number);
+  return `
+  <tr>
+    <td><div class="row-lead"><div class="row-avatar" style="background:${ch.bg};color:${ch.color}">${p.client.split(' ').map(n=>n[0]).join('').slice(0,2)}</div><div><b>${p.title}</b><span>${p.client}</span></div></div></td>
+    <td>${p.fmt}</td>
+    <td><span class="badge-pill" style="background:${ch.bg};color:${ch.color}">${ch.name}</span></td>
+    <td>${MONTHS[mm-1].slice(0,3)} ${pad(dd)}${p.d===todayIso?' <span class="chip" style="background:var(--primary-light);color:var(--primary)">Today</span>':''}</td>
+    <td><span class="badge-pill ${statusBadge[p.status][0]}">${statusBadge[p.status][1]}</span></td>
+    <td><div class="mini-avatar">${p.owner}</div></td>
+  </tr>`;}).join('') : `<tr><td colspan="6" style="text-align:center;color:var(--text-faint);padding:28px;">Nothing scheduled ahead.</td></tr>`;
+
+renderCalendar();
+
+</script>
+</body>
+</html>

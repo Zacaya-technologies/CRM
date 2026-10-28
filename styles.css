@@ -544,3 +544,41 @@
     .kanban,.client-grid,.service-grid,.approval-grid{grid-template-columns:1fr;}
     .data-table{display:block;overflow-x:auto;}
   }
+
+  /* Content calendar */
+  .cal-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;margin-bottom:22px;}
+  .cal-head{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:10px;}
+  .cal-head h3{font-size:15px;font-weight:700;margin:0;}
+  .cal-nav{display:flex;align-items:center;gap:6px;}
+  .cal-nav button{height:30px;min-width:30px;padding:0 10px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text-muted);font-size:11.5px;font-weight:700;display:flex;align-items:center;justify-content:center;}
+  .cal-nav button:hover{background:var(--bg);}
+  .cal-nav svg{width:14px;height:14px;}
+  .cal-legend{display:flex;gap:14px;flex-wrap:wrap;font-size:11.5px;color:var(--text-muted);font-weight:600;}
+  .cal-legend i{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;}
+  .cal-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));}
+  .cal-dow{font-size:10.5px;font-weight:700;color:var(--text-faint);letter-spacing:.5px;padding:9px 10px;border-bottom:1px solid var(--border);background:var(--bg);}
+  .cal-day{min-height:108px;padding:8px;border-right:1px solid var(--border);border-bottom:1px solid var(--border);min-width:0;}
+  .cal-day:nth-child(7n){border-right:none;}
+  .cal-day.muted{background:#FAFAFD;}
+  .cal-day.muted .cal-num{color:var(--text-faint);}
+  .cal-num{font-size:12px;font-weight:700;margin-bottom:6px;display:inline-flex;width:22px;height:22px;align-items:center;justify-content:center;border-radius:50%;}
+  .cal-day.today .cal-num{background:var(--primary);color:#fff;}
+  .cal-post{display:block;font-size:10.6px;font-weight:600;padding:3px 6px;border-radius:5px;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+
+  /* Projects */
+  .avatar-stack{display:flex;padding-left:6px;}
+  .avatar-stack .mini-avatar{margin-left:-6px;border:2px solid var(--surface);width:24px;height:24px;}
+  .project-tasks{font-size:11px;font-weight:600;color:var(--text-muted);}
+
+  /* Task board */
+  .kanban-col.drag-over{border-color:var(--primary);background:var(--primary-light);}
+  .deal-card.dragging{opacity:.45;}
+  .task-meta{display:flex;align-items:center;gap:8px;}
+  .task-due{font-size:10.5px;font-weight:700;color:var(--text-faint);}
+  .task-due.overdue{color:var(--danger);}
+
+  @media (max-width:760px){
+    .cal-day{min-height:64px;padding:5px;}
+    .cal-dow{padding:8px 4px;text-align:center;}
+    .cal-post{font-size:0;height:5px;padding:0;margin-bottom:3px;}
+  }
