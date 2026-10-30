@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Campaign Operations & Multi-Channel Intelligence — OmniAgency Enterprise CRM</title>
 <link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="assets/app.css">
+<script src="assets/app.js"></script>
 </head>
 <body>
 <div class="app">
@@ -61,7 +63,7 @@
         Command palette<kbd>Ctrl K</kbd>
       </div>
       <div class="topbar-right">
-        <button class="btn btn-primary"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg>Add Lead</button>
+        <button class="btn btn-primary" data-create="campaigns"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg>Add Lead</button>
         <button class="btn btn-outline"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-4 4"/></svg>View Pipeline</button>
         <button class="icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg><span class="dot-alert"></span></button>
         <div class="who">
@@ -80,63 +82,54 @@
       <div class="view active" id="view-campaign">
         <div class="page-head">
           <div>
-            <div class="eyebrow">PAID PERFORMANCE LAB <span class="sep">•</span> <span class="live">Live Syncing (1m ago)</span></div>
+            <div class="eyebrow">PAID PERFORMANCE LAB <span class="sep">•</span> <span class="live" id="lab-sync">Live data</span></div>
             <h1>Campaign Operations &amp; Multi-Channel Intelligence</h1>
           </div>
           <div class="page-actions">
-            <div class="btn btn-outline" style="gap:9px;"><span style="width:8px;height:8px;border-radius:50%;background:var(--primary);display:inline-block;"></span>NovaTech SaaS Enterprise <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div>
+            <select id="client-filter" class="btn btn-outline" style="gap:9px;font-weight:600;"><option value="">All clients</option></select>
             <button class="btn btn-primary"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z"/></svg>Launch Campaign</button>
           </div>
         </div>
 
-        <div class="view-switch" style="padding:0;border:none;margin-bottom:22px;background:transparent;">
-          <div class="view-tab active" style="padding:8px 14px;background:var(--surface);border:1px solid var(--border);border-radius:8px;border-bottom:1px solid var(--border);">All (18)</div>
-          <div class="view-tab" style="padding:8px 14px;">Active (12)</div>
-          <div class="view-tab" style="padding:8px 14px;">Review (4)</div>
-          <div class="view-tab" style="padding:8px 14px;">Archived</div>
+        <div class="view-switch" style="padding:0;border:none;margin-bottom:22px;background:transparent;" id="lab-tabs">
         </div>
 
         <div class="stat-grid">
           <div class="stat-card">
             <div class="stat-top"><span class="stat-label">TOTAL ACTIVE AD SPEND</span><div class="stat-ico" style="background:var(--primary-light);color:var(--primary)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2"/></svg></div></div>
-            <div class="stat-value-row"><span class="stat-value">₹14,50,000</span><span class="stat-delta up">↗ 92% pace</span></div>
-            <div class="stat-bar"><i style="width:83%"></i></div>
-            <div class="stat-foot" style="margin-top:6px;">Cap: ₹17.5L • 8 days remaining in Q2</div>
+            <div class="stat-value-row"><span class="stat-value" id="stat-spend">—</span><span class="stat-delta up" id="stat-pace"></span></div>
+            <div class="stat-bar"><i id="stat-spend-bar" style="width:0%"></i></div>
+            <div class="stat-foot" style="margin-top:6px;" id="stat-spend-foot">&nbsp;</div>
           </div>
           <div class="stat-card">
             <div class="stat-top"><span class="stat-label">BLENDED ROAS</span><div class="stat-ico" style="background:var(--success-bg);color:var(--success)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 14l4-4 4 4 5-6"/></svg></div></div>
-            <div class="stat-value-row"><span class="stat-value">4.42x</span><span class="stat-delta up">↗ +0.68x</span></div>
-            <div class="stat-foot">Target floor: 3.50x • Attributed MRR ₹64.1L</div>
+            <div class="stat-value-row"><span class="stat-value" id="stat-roas">—</span></div>
+            <div class="stat-foot" id="stat-roas-foot">&nbsp;</div>
           </div>
           <div class="stat-card">
-            <div class="stat-top"><span class="stat-label">QUALIFIED INBOUND LEADS</span><div class="stat-ico" style="background:var(--info-bg);color:var(--info)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div></div>
-            <div class="stat-value-row"><span class="stat-value">1,840</span><span class="stat-delta up">↑ +22.4%</span></div>
-            <div class="stat-bar"><i style="width:74%;background:var(--info)"></i></div>
-            <div class="stat-foot" style="margin-top:6px;">426 direct demos booked this cycle</div>
+            <div class="stat-top"><span class="stat-label">CONVERSIONS (LEADS + ORDERS)</span><div class="stat-ico" style="background:var(--info-bg);color:var(--info)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div></div>
+            <div class="stat-value-row"><span class="stat-value" id="stat-conv">—</span></div>
+            <div class="stat-bar"><i id="stat-conv-bar" style="width:0%;background:var(--info)"></i></div>
+            <div class="stat-foot" style="margin-top:6px;" id="stat-conv-foot">&nbsp;</div>
           </div>
           <div class="stat-card">
-            <div class="stat-top"><span class="stat-label">AVG CPA / LEAD</span><div class="stat-ico" style="background:var(--warning-bg);color:var(--warning)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v10M15 9.5c0-1.4-1.3-2.5-3-2.5s-3 1.1-3 2.5 1.3 2 3 2.5 3 1.1 3 2.5-1.3 2.5-3 2.5-3-1.1-3-2.5"/></svg></div></div>
-            <div class="stat-value-row"><span class="stat-value">₹412</span><span class="stat-delta down">↘ -12.3%</span></div>
-            <div class="stat-foot">Benchmark ₹470 <b style="color:var(--success)">Efficient</b><br>LinkedIn CPA: ₹840 | Meta CPA: ₹295</div>
+            <div class="stat-top"><span class="stat-label">AVG COST / CONVERSION</span><div class="stat-ico" style="background:var(--warning-bg);color:var(--warning)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v10M15 9.5c0-1.4-1.3-2.5-3-2.5s-3 1.1-3 2.5 1.3 2 3 2.5 3 1.1 3 2.5-1.3 2.5-3 2.5-3-1.1-3-2.5"/></svg></div></div>
+            <div class="stat-value-row"><span class="stat-value" id="stat-cpa">—</span></div>
+            <div class="stat-foot" id="stat-cpa-foot">&nbsp;</div>
           </div>
         </div>
 
         <div class="grid-2col">
           <div>
-            <div class="section-title"><div><h2>Active Deployments</h2><p>8 Live • across Meta, Google &amp; LinkedIn</p></div></div>
+            <div class="section-title"><div><h2>Active Deployments</h2><p id="deploy-sub"></p></div></div>
             <div id="deploy-list"></div>
 
             <div class="funnel-card">
               <div class="funnel-head">
-                <div><b>Omni-Channel Attribution Funnel</b><p>First-touch to Opportunity conversion telemetry (past 30 days)</p></div>
-                <span class="conv-pill">Blended Conv. Rate 3.42%</span>
+                <div><b>Omni-Channel Attribution Funnel</b><p>Ad impressions through to qualified CRM leads</p></div>
+                <span class="conv-pill" id="conv-pill">—</span>
               </div>
-              <div class="funnel-steps">
-                <div class="fstep"><span>STEP 01</span><b>1,605,190</b><small>Ad Impressions • 100% reach base</small></div>
-                <div class="fstep"><span>STEP 02</span><b>45,740</b><small>Site / App visits • 2.85% CTR pacing</small></div>
-                <div class="fstep"><span>STEP 03</span><b>1,840</b><small>Inbound form leads • 4.02% visit-to-lead</small></div>
-                <div class="fstep active"><span>STEP 04</span><b>426</b><small>Qualified pipeline • 23.1% win rate floor</small></div>
-              </div>
+              <div class="funnel-steps" id="funnel-steps"></div>
             </div>
           </div>
 
@@ -183,45 +176,100 @@
     </div>
   </div>
 </div>
-<script>
-/* ---------------- Sidebar nav highlight ---------------- */
-document.querySelectorAll('.nav-item').forEach(item=>{
-  item.addEventListener('click',()=>{
-    document.querySelectorAll('.nav-item').forEach(i=>i.classList.remove('active'));
-    item.classList.add('active');
-  });
-});
-/* ---------------- Campaign deployments ---------------- */
-const deploys=[
-  {icon:'search',tag:'Google Ads',status:'Active',name:'High-AOV Google Search Intent (B2B Core)',meta:'Search Network • Demo Request / SQL • Target ROAS 5.0x',budget:'₹4,20,000 / 5.0L',pace:80,imp:'142,800',ctr:'4.82% CTR',sql:'482 leads',sqlSub:'₹871 / SQL',roas:'5.84x',roasSub:'High Yield'},
-  {icon:'people',tag:'LinkedIn Ads',status:'Active',name:'B2B SaaS Founder Direct Funnel (ABM Tier 1)',meta:'Sponsored InMail + Feed • Executive Bookings • CXO Title Filter',budget:'₹5,10,000 / 6.0L',pace:85,imp:'48,290',ctr:'1.94% CTR',sql:'294 leads',sqlSub:'₹1,734 / SQL',roas:'3.88x',roasSub:'Deal Pipeline: ₹1.2Cr'},
-  {icon:'cart',tag:'Meta Ads',status:'Active',name:'Q2 Dynamic Product Retargeting Surge',meta:'Advantage+ Catalog • Direct Purchase • Lookalike 2%',budget:'₹3,40,000 / 4.0L',pace:85,imp:'894,200',ctr:'3.12% CTR',sql:'964 orders',sqlSub:'₹352 / Conv',roas:'4.92x',roasSub:'High Volume',convLabel:'Conversions'},
-  {icon:'play',tag:'YouTube Ads',status:'Paused (A/B Test)',name:'YouTube Shorts SaaS Workflow Teaser',meta:'Shorts Placement • Top of Funnel Reach • Tech Enthusiasts',budget:'₹1,80,000 / 2.5L',pace:72,imp:'520,100',ctr:'1.45% CTR',sql:'188,400',sqlSub:'₹0.95 / View',roas:'2.14x',roasSub:'Brand Discovery',convLabel:'Video Views 100%',paused:true},
-];
-const icons={
-  search:'<circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/>',
-  people:'<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>',
-  cart:'<circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6"/>',
-  play:'<path d="m5 3 14 9-14 9V3Z"/>'
+<script type="module">
+await CRM.ready;
+const { fmt } = CRM;
+
+const icons = {
+  google: '<circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/>',
+  linkedin: '<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>',
+  meta: '<circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6"/>',
+  youtube: '<path d="m5 3 14 9-14 9V3Z"/>',
 };
-document.getElementById('deploy-list').innerHTML = deploys.map(d=>`
-  <div class="deploy-card">
+const chName = { meta: 'Meta Ads', google: 'Google Ads', linkedin: 'LinkedIn Ads', youtube: 'YouTube Ads' };
+const statusText = { live: 'Active', paused: 'Paused', scheduled: 'Scheduled', ended: 'Archived' };
+const [all, leads] = await Promise.all([API.list('campaigns'), API.list('leads')]);
+const tracked = all.filter((c) => c.impressions !== null); // campaigns with full-funnel metrics
+let activeTab = 'all', clientId = '';
+
+const sel = document.getElementById('client-filter');
+[...new Map(tracked.map((c) => [c.clientId, c.client]))].forEach(([id, name]) => sel.insertAdjacentHTML('beforeend', `<option value="${id}">${name}</option>`));
+sel.addEventListener('change', () => { clientId = sel.value; render(); });
+
+function render() {
+  const scoped = tracked.filter((c) => !clientId || String(c.clientId) === clientId);
+  const tabs = [['all', 'All', scoped.length], ['live', 'Active', scoped.filter((c) => c.status === 'live').length],
+    ['paused', 'Review', scoped.filter((c) => c.status === 'paused').length], ['ended', 'Archived', scoped.filter((c) => c.status === 'ended').length]];
+  const on = 'padding:8px 14px;background:var(--surface);border:1px solid var(--border);border-radius:8px;border-bottom:1px solid var(--border);';
+  document.getElementById('lab-tabs').innerHTML = tabs.map(([k, l, n]) => `<div class="view-tab ${k === activeTab ? 'active' : ''}" data-tab="${k}" style="${k === activeTab ? on : 'padding:8px 14px;'}">${l} (${n})</div>`).join('');
+  document.querySelectorAll('#lab-tabs .view-tab').forEach((t) => t.addEventListener('click', () => { activeTab = t.dataset.tab; render(); }));
+
+  const list = scoped.filter((c) => activeTab === 'all' || c.status === activeTab);
+  const running = scoped.filter((c) => ['live', 'paused'].includes(c.status));
+  const spend = running.reduce((a, c) => a + c.spend, 0), budget = running.reduce((a, c) => a + c.budget, 0);
+  const roasRows = running.filter((c) => c.roas !== null && c.spend > 0);
+  const roasSpend = roasRows.reduce((a, c) => a + c.spend, 0);
+  const convRows = running.filter((c) => c.convUnit !== 'views' && c.conversions);
+  const conv = convRows.reduce((a, c) => a + c.conversions, 0);
+  const convSpend = convRows.reduce((a, c) => a + c.spend, 0);
+  const pace = budget ? Math.round(spend / budget * 100) : 0;
+
+  document.getElementById('stat-spend').textContent = fmt.inr(spend);
+  document.getElementById('stat-pace').textContent = `${pace}% of budget`;
+  document.getElementById('stat-spend-bar').style.width = Math.min(100, pace) + '%';
+  document.getElementById('stat-spend-foot').textContent = `Budget cap: ${fmt.short(budget)} across ${running.length} campaigns`;
+  document.getElementById('stat-roas').textContent = roasSpend ? (roasRows.reduce((a, c) => a + c.roas * c.spend, 0) / roasSpend).toFixed(2) + 'x' : '—';
+  document.getElementById('stat-roas-foot').textContent = 'Spend-weighted • target floor 3.50x';
+  document.getElementById('stat-conv').textContent = conv.toLocaleString('en-IN');
+  document.getElementById('stat-conv-bar').style.width = Math.min(100, convRows.length / Math.max(1, running.length) * 100) + '%';
+  document.getElementById('stat-conv-foot').textContent = `From ${convRows.length} conversion-optimised campaign(s)`;
+  document.getElementById('stat-cpa').textContent = conv ? fmt.inr(convSpend / conv) : '—';
+  document.getElementById('stat-cpa-foot').innerHTML = Object.keys(chName).map((ch) => {
+    const r = convRows.filter((c) => c.ch === ch), n = r.reduce((a, c) => a + c.conversions, 0);
+    return n ? `${chName[ch].replace(' Ads', '')}: ${fmt.inr(r.reduce((a, c) => a + c.spend, 0) / n)}` : '';
+  }).filter(Boolean).join(' | ') || '&nbsp;';
+
+  const liveCount = scoped.filter((c) => c.status === 'live').length;
+  document.getElementById('deploy-sub').textContent = `${liveCount} Live • across ${[...new Set(scoped.map((c) => chName[c.ch].replace(' Ads', '')))].join(', ') || '—'}`;
+
+  document.getElementById('deploy-list').innerHTML = list.map((d) => {
+    const paused = d.status !== 'live';
+    return `
+  <div class="deploy-card" data-edit="campaigns" data-id="${d.id}">
     <div class="deploy-top">
-      <div class="deploy-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">${icons[d.icon]}</svg></div>
+      <div class="deploy-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">${icons[d.ch]}</svg></div>
       <div class="deploy-title-row">
         <b>${d.name}</b>
-        <span class="cohort-tag" style="background:var(--primary-light);color:var(--primary)">${d.tag}</span>
-        <div class="deploy-meta" style="flex-basis:100%;">${d.meta}</div>
+        <span class="cohort-tag" style="background:var(--primary-light);color:var(--primary)">${chName[d.ch]}</span>
+        <div class="deploy-meta" style="flex-basis:100%;">${d.client}${d.objective ? ' • ' + d.objective : ''}</div>
       </div>
-      <span class="status-pill ${d.paused?'paused':'on'}">${d.status}</span>
+      <span class="status-pill ${paused ? 'paused' : 'on'}">${d.statusNote || statusText[d.status]}</span>
     </div>
     <div class="deploy-metrics">
-      <div><span>BUDGET &amp; PACING</span><b>${d.budget}</b><div class="metric-bar"><i style="width:${d.pace}%"></i></div></div>
-      <div><span>IMPRESSIONS / CTR</span><b>${d.imp}</b><small>${d.ctr}</small></div>
-      <div><span>${d.convLabel||'SQLs GENERATED'}</span><b>${d.sql}</b><small>${d.sqlSub}</small></div>
-      <div><span>CURRENT ROAS</span><b class="roas">${d.roas}</b><small>${d.roasSub}</small></div>
+      <div><span>BUDGET &amp; PACING</span><b>${fmt.inr(d.spend)} / ${fmt.short(d.budget)}</b><div class="metric-bar"><i style="width:${d.pace}%"></i></div></div>
+      <div><span>IMPRESSIONS / CTR</span><b>${(d.impressions || 0).toLocaleString('en-IN')}</b><small>${d.ctr !== null ? d.ctr.toFixed(2) + '% CTR' : '—'}</small></div>
+      <div><span>${d.convLabel || 'CONVERSIONS'}</span><b>${(d.conversions || 0).toLocaleString('en-IN')}${d.convUnit && d.convUnit !== 'views' ? ' ' + d.convUnit : ''}</b><small>${d.costPerConv !== null ? '₹' + d.costPerConv.toLocaleString('en-IN') + ' / ' + (d.convUnit === 'views' ? 'view' : 'conv') : ''}</small></div>
+      <div><span>CURRENT ROAS</span><b class="roas">${d.roas !== null ? d.roas.toFixed(2) + 'x' : '—'}</b><small>${d.roasNote || ''}</small></div>
     </div>
-  </div>`).join('');
+  </div>`; }).join('') || '<div class="rail-card crm-empty">No campaigns with funnel metrics here. Add impressions / CTR / conversions to a campaign to see it in the Lab.</div>';
+
+  // Funnel: ad impressions → clicks → conversions → qualified CRM leads
+  const impr = running.reduce((a, c) => a + (c.impressions || 0), 0);
+  const clicks = Math.round(running.reduce((a, c) => a + (c.impressions || 0) * (c.ctr || 0) / 100, 0));
+  const qualified = leads.filter((l) => l.status === 'Qualified').length;
+  const pct = (a, b) => b ? (a / b * 100).toFixed(2) + '%' : '—';
+  const steps = [
+    [impr, 'Ad impressions • 100% reach base'],
+    [clicks, `Site / app visits • ${pct(clicks, impr)} CTR`],
+    [conv, `Leads &amp; orders • ${pct(conv, clicks)} visit-to-conversion`],
+    [qualified, `Qualified leads in CRM • ${pct(qualified, leads.length)} of all leads`],
+  ];
+  document.getElementById('conv-pill').textContent = `Blended Conv. Rate ${pct(conv, clicks)}`;
+  document.getElementById('funnel-steps').innerHTML = steps.map(([n, s], i) =>
+    `<div class="fstep${i === 3 ? ' active' : ''}"><span>STEP 0${i + 1}</span><b>${n.toLocaleString('en-IN')}</b><small>${s}</small></div>`).join('');
+}
+
+render();
 </script>
 </body>
 </html>

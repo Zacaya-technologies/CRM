@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Client Onboarding & Implementation Hub — OmniAgency Enterprise CRM</title>
 <link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="assets/app.css">
+<script src="assets/app.js"></script>
 </head>
 <body>
 <div class="app">
@@ -79,31 +81,31 @@
           <p class="page-sub">Track deal-to-client handoff, asset intake, ad account permissions, and kickoff velocity across active cohorts.</p>
         </div>
         <div class="page-actions">
-          <button class="btn btn-outline"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Invite Stakeholder</button>
-          <button class="btn btn-primary"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg>Initiate Onboarding</button>
+          <button class="btn btn-outline" id="invite-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Invite Stakeholder</button>
+          <button class="btn btn-primary" data-create="onboardings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg>Initiate Onboarding</button>
         </div>
       </div>
 
       <div class="stat-grid">
         <div class="stat-card">
           <div class="stat-top"><span class="stat-label">ACTIVE ONBOARDINGS</span><div class="stat-ico" style="background:var(--primary-light);color:var(--primary)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div></div>
-          <div class="stat-value-row"><span class="stat-value">4</span><span class="stat-delta up">+1 this wk</span></div>
-          <div class="stat-foot">Capacity: 4 of 5 pipeline pods allocated</div>
+          <div class="stat-value-row"><span class="stat-value" id="stat-active">—</span></div>
+            <div class="stat-foot" id="stat-active-foot">&nbsp;</div>
         </div>
         <div class="stat-card">
-          <div class="stat-top"><span class="stat-label">AVG TIME-TO-LAUNCH</span><div class="stat-ico" style="background:var(--info-bg);color:var(--info)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></div></div>
-          <div class="stat-value-row"><span class="stat-value">8.4 Days</span><span class="stat-delta up">-2.1d</span></div>
-          <div class="stat-foot">Target SLA: Under 10 business days</div>
+          <div class="stat-top"><span class="stat-label">AVG DAYS TO GO-LIVE</span><div class="stat-ico" style="background:var(--info-bg);color:var(--info)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></div></div>
+          <div class="stat-value-row"><span class="stat-value" id="stat-golive">—</span></div>
+            <div class="stat-foot" id="stat-golive-foot">&nbsp;</div>
         </div>
         <div class="stat-card">
-          <div class="stat-top"><span class="stat-label">ASSETS COLLECTED</span><div class="stat-ico" style="background:var(--success-bg);color:var(--success)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5M12 15V3"/></svg></div></div>
-          <div class="stat-value-row"><span class="stat-value">88%</span><span class="stat-delta up">44 / 50 Files</span></div>
-          <div class="stat-bar"><i style="width:88%"></i></div>
+          <div class="stat-top"><span class="stat-label">GATES VERIFIED</span><div class="stat-ico" style="background:var(--success-bg);color:var(--success)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5M12 15V3"/></svg></div></div>
+          <div class="stat-value-row"><span class="stat-value" id="stat-gates">—</span><span class="stat-delta up" id="stat-gates-delta"></span></div>
+            <div class="stat-bar"><i id="stat-gates-bar" style="width:0%"></i></div>
         </div>
         <div class="stat-card">
           <div class="stat-top"><span class="stat-label">BLOCKERS / ACCESS</span><div class="stat-ico" style="background:var(--danger-bg);color:var(--danger)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg></div></div>
-          <div class="stat-value-row"><span class="stat-value" style="color:var(--danger)">2 Critical</span></div>
-          <div class="stat-foot" style="color:var(--danger);font-weight:600;">Action required</div>
+          <div class="stat-value-row"><span class="stat-value" style="color:var(--danger)" id="stat-blockers">—</span></div>
+            <div class="stat-foot" style="color:var(--danger);font-weight:600;" id="stat-blockers-foot">&nbsp;</div>
         </div>
       </div>
 
@@ -117,12 +119,8 @@
       <div class="grid-2col">
         <div class="matrix-card">
           <div class="matrix-head">
-            <div><h3 id="matrix-client">UrbanStyle Direct — Implementation Verification Matrix</h3><p>15 critical gates mapped from MSA execution through First Campaign Launch.</p></div>
-            <div class="filter-pills">
-              <div class="filter-pill active">All (15)</div>
-              <div class="filter-pill">Pending (4)</div>
-              <div class="filter-pill">Verified (11)</div>
-            </div>
+            <div><h3 id="matrix-client">Implementation Verification Matrix</h3><p id="matrix-sub">Select an onboarding to see its gates.</p></div>
+            <div class="filter-pills" id="matrix-pills"></div>
           </div>
           <div id="matrix-body"></div>
         </div>
@@ -130,26 +128,26 @@
         <div>
           <div class="rail-card">
             <div class="rail-head"><div><h3>Client Action Triggers</h3><p>Send automated micro-prompts or generate launch collaterals instantly.</p></div></div>
-            <button class="trigger-btn solid"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4 20-7Z"/></svg>WhatsApp Access Ping</button>
-            <button class="trigger-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z"/></svg>Generate Kickoff Deck</button>
-            <button class="trigger-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Invite Client Stakeholder<span class="arrow">→</span></button>
-            <button class="trigger-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg>Verify All OAuth Tokens</button>
+            <button class="trigger-btn solid" id="act-wa"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4 20-7Z"/></svg>WhatsApp Pending Gates</button>
+            <button class="trigger-btn" id="act-deck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z"/></svg>Download Kickoff Summary</button>
+            <button class="trigger-btn" id="act-invite"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Invite Client Stakeholder<span class="arrow">→</span></button>
+            <button class="trigger-btn" id="act-gate"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg>Add Checklist Gate</button>
           </div>
 
           <div class="rail-card">
             <div class="rail-head">
-              <div><h3>Credential Submissions</h3><p>Real-time telemetry of client portal inputs &amp; permission approvals.</p></div>
-              <span class="chip chip-green" style="display:flex;align-items:center;gap:5px;"><span class="live-dot"></span>Live Stream</span>
+              <div><h3>Activity Feed</h3><p>Latest changes across the workspace.</p></div>
+              <span class="chip chip-green" style="display:flex;align-items:center;gap:5px;"><span class="live-dot"></span>Live</span>
             </div>
             <div id="feed"></div>
-            <a class="rail-link" href="#">View Complete Audit Log →</a>
+            <a class="rail-link" href="#" id="feed-more">View Complete Audit Log →</a>
           </div>
 
           <div class="rail-card">
-            <div style="font-size:10.5px;font-weight:700;color:var(--text-faint);letter-spacing:.5px;margin-bottom:10px;">LEAD ONBOARDING DIRECTOR</div>
+            <div style="font-size:10.5px;font-weight:700;color:var(--text-faint);letter-spacing:.5px;margin-bottom:10px;">ONBOARDING LEAD</div>
             <div class="director-card">
-              <div class="avatar">VM</div>
-              <div class="info"><b>Vikram Malhotra</b><span>100% On-Time SLA Record</span></div>
+              <div class="avatar" id="lead-avatar">—</div>
+              <div class="info"><b id="lead-name">—</b><span id="lead-sub">&nbsp;</span></div>
               <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--text-faint)" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2Z"/></svg>
             </div>
           </div>
@@ -159,115 +157,230 @@
     </div>
   </div>
 </div>
-<script>
-document.querySelectorAll('.nav-item').forEach(item=>{
-  item.addEventListener('click',()=>{
-    document.querySelectorAll('.nav-item').forEach(i=>i.classList.remove('active'));
-    item.classList.add('active');
-  });
-});
+<script type="module">
+await CRM.ready;
+const { fmt } = CRM;
+const $ = (id) => document.getElementById(id);
 
-const cohorts = [
-  {name:'UrbanStyle Direct',type:'E-commerce D2C',mo:'$18k/mo',pct:78,color:'#0F9D58',step:'11 / 15 Steps',gate:'Stage 3 Platform Access',blocker:'Meta BM Verification',lead:'VM',leadName:'Vikram M.',role:'Lead',goLive:'Oct 28'},
-  {name:'Zenith Media',type:'Omnichannel SaaS',mo:'$24k/mo',pct:92,color:'#0F9D58',step:'14 / 15 Steps',gate:'Strategy Call Setup',blocker:'Kickoff Ready',lead:'AK',leadName:'Anya K.',role:'Lead',goLive:'Oct 24'},
-  {name:'Kinetix Cloud',type:'DevOps Platform',mo:'$32k/mo',pct:35,color:'#D33B3B',step:'5 / 15 Steps',gate:'Brand Intake Review',blocker:'Asset Pack Upload',lead:'RR',leadName:'Rahul R.',role:'Lead',goLive:'Nov 06'},
-  {name:'Solaris Energy',type:'CleanTech B2B',mo:'$15k/mo',pct:52,color:'#B5790A',step:'8 / 15 Steps',gate:'Google Ads Access',blocker:'Legal Validation',lead:'PL',leadName:'Pooja L.',role:'Lead',goLive:'Nov 02'},
-];
-const cohortGrid = document.getElementById('cohort-grid');
-cohorts.forEach((c,i)=>{
-  const card=document.createElement('div');
-  card.className='cohort-card'+(i===0?' selected':'');
-  card.innerHTML=`
-    <div class="cohort-top"><span class="cohort-name">${c.name}</span><span class="cohort-tag" style="background:${c.color}1A;color:${c.color}">${c.pct}% Done</span></div>
-    <div class="cohort-meta">${c.type} • ${c.mo}</div>
-    <div class="cohort-pace"><span>Completion Pace</span><span>${c.step}</span></div>
-    <div class="cohort-bar"><i style="width:${c.pct}%;background:${c.color}"></i></div>
-    <div class="cohort-rows">
-      <div><span>CURRENT GATE</span><b>${c.gate}</b></div>
-      <div><span>NEXT BLOCKER</span><b>${c.blocker}</b></div>
-    </div>
-    <div class="cohort-foot">
-      <div class="mini-avatar">${c.lead}</div>
-      <div><b>${c.leadName}</b><span>${c.role}</span></div>
-      <div class="goLive"><span style="color:var(--text-faint)">Go-Live</span><b>${c.goLive}</b></div>
-    </div>`;
-  card.addEventListener('click',()=>{
-    document.querySelectorAll('.cohort-card').forEach(x=>x.classList.remove('selected'));
-    card.classList.add('selected');
-    document.getElementById('matrix-client').textContent = c.name+' — Implementation Verification Matrix';
-  });
-  cohortGrid.appendChild(card);
-});
+const [onboardings, clients] = await Promise.all([API.list('onboardings'), API.raw.list('clients')]);
+const active = onboardings.filter((o) => o.status === 'active');
+let selected = active[0] || onboardings[0] || null;
+let items = [], matrixFilter = 'all', openCats = null;
 
-const matrix = [
-  {title:'Legal, Contracts & Billing Validation',status:'3 / 3 Cleared',ok:true,items:[
-    {t:'Master Services Agreement (MSA) & SOW Executed',s:'Signed via DocuSign by Sarah Jenkins (CEO) on Oct 14, 10:14 AM',b:'Executed',ok:true},
-    {t:'Initial Retainer Invoice Cleared ($18,000)',s:'Stripe Wire ACH Transfer ID: #INV-99420 cleared in SVB Account',b:'Settled',ok:true},
-    {t:'Tax / GST / VAT Identification & Entity Validation',s:'W9 and Delaware Certificate of Good Standing filed with agency legal',b:'Approved',ok:true},
-  ]},
-  {title:'Brand Assets & Creative Toolkits',status:'3 / 3 Cleared',ok:true,items:[
-    {t:'Vector Logo Files (SVG, EPS, Light/Dark Lockups)',s:'12 master asset files deposited in client Drive folder',b:'12 Assets',ok:true},
-    {t:'Typography Licenses & Primary Font Files',s:'OTF web and desktop licenses: Neue Haas Grotesk & GT America',b:'Licensed',ok:true},
-    {t:'Brand Voice, Tone & Editorial Style Guide',s:'34-page deck reviewed by Lead Copy Strategist',b:'Reviewed',ok:true},
-    {t:'Product Photography & Video Raw B-Roll Drive',s:'Autumn / Winter catalog 4K footage synced (18.4 GB)',b:'18.4 GB',ok:true},
-  ]},
-  {title:'Platform & Ad Account Permissions',status:'2 / 5 Blocked / In Review',ok:false,items:[
-    {t:'Meta Business Manager Partner Access',s:'OmniAgency Partner ID (948210398) pending acceptance in Meta BM Security Center',b:'Critical Blocker',ok:false,red:true,wa:true},
-    {t:'Google Ads MCC Manager Account Link Request',s:'Linked to MCC #884-219-0091 with Administrative Ownership',b:'Linked',ok:true},
-    {t:'Google Analytics 4 & Tag Manager (GTM) Access',s:'Invitation dispatched to dev@apexdigital.agency; awaiting client admin confirmation',b:'Pending Approval',ok:false,resend:true},
-    {t:'Shopify Collaborator Account Access',s:'Code #7810 approved with Products, Themes, and Analytics permissions',b:'Verified',ok:true},
-    {t:'Klaviyo / CRM API Key Integration',s:"Public & Private Key 'pk_live_09...' injected into OmniSync Engine",b:'API Connected',ok:true},
-  ]},
-  {title:'Go-To-Market Strategy & Kickoff Alignment',status:'2 / 3 Cleared',ok:true,items:[
-    {t:'Target Persona & Competitor Benchmark Audit',s:'Direct competitive benchmarking against 4 tier-1 D2C competitors completed',b:'Delivered',ok:true},
-    {t:'Kickoff Deck & 90-Day Roadmap Slide Master',s:'Slide master deck assembled with ROAS projection model',b:'Ready',ok:true},
-    {t:'Executive Kickoff Strategy Call Scheduled',s:'Google Meet link dispatched with client C-suite and OmniAgency growth team',b:'Confirmed: Friday 2:00 PM',ok:false,join:true},
-  ]},
-];
-const matrixBody = document.getElementById('matrix-body');
-matrix.forEach((cat,idx)=>{
-  const el=document.createElement('div');
-  el.className='cat'+(idx===2?' open':'');
-  const itemsHtml = cat.items.map(it=>`
-    <div class="item">
-      <div class="check ${it.ok?'on':'off'}">${it.ok?'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg>':''}</div>
-      <div class="item-body">
-        <div class="item-title ${it.ok?'done':''}">${it.t}</div>
-        <div class="item-sub">${it.s}</div>
+const pctOf = (o) => (o.total ? Math.round(o.done / o.total * 100) : 0);
+const colorOf = (p) => (p >= 75 ? '#0F9D58' : p >= 45 ? '#B5790A' : '#D33B3B');
+const daysTo = (s) => (s ? Math.round((new Date(s + 'T00:00:00') - new Date(fmt.isoDate() + 'T00:00:00')) / 86400000) : null);
+const clientOf = (o) => clients.find((c) => c.id === o.clientId) || {};
+const plain = CRM.unesc;
+
+/* ---------------- Stats ---------------- */
+async function renderStats() {
+  const soon = active.filter((o) => { const d = daysTo(o.goLive); return d !== null && d >= 0 && d <= 14; });
+  $('stat-active').textContent = active.length;
+  $('stat-active-foot').textContent = `${soon.length} go-live${soon.length === 1 ? '' : 's'} in the next 14 days`;
+  const dated = active.filter((o) => o.goLive);
+  const avg = dated.length ? Math.round(dated.reduce((a, o) => a + daysTo(o.goLive), 0) / dated.length) : null;
+  $('stat-golive').textContent = avg === null ? '—' : `${avg} Days`;
+  $('stat-golive-foot').textContent = `${dated.filter((o) => daysTo(o.goLive) < 0).length} past target date`;
+  const done = active.reduce((a, o) => a + o.done, 0), total = active.reduce((a, o) => a + o.total, 0);
+  const pct = total ? Math.round(done / total * 100) : 0;
+  $('stat-gates').textContent = pct + '%';
+  $('stat-gates-delta').textContent = `${done} / ${total} gates`;
+  $('stat-gates-bar').style.width = pct + '%';
+  // Critical blockers across all active onboardings
+  const all = await Promise.all(active.map((o) => API.list('onboarding_items', { onboardingId: o.id, flag: 'critical', done: 0 })));
+  const crit = all.flat();
+  $('stat-blockers').textContent = `${crit.length} Critical`;
+  $('stat-blockers-foot').textContent = crit.length ? 'Action required' : 'No critical blockers';
+  return crit;
+}
+
+/* ---------------- Cohort cards ---------------- */
+function renderCohorts() {
+  $('cohort-grid').innerHTML = active.map((c) => {
+    const p = pctOf(c), color = colorOf(p);
+    return `
+    <div class="cohort-card${selected && c.id === selected.id ? ' selected' : ''}" data-oid="${c.id}">
+      <div class="cohort-top"><span class="cohort-name">${c.name}</span><span class="cohort-tag" style="background:${color}1A;color:${color}">${p}% Done</span></div>
+      <div class="cohort-meta">${c.type || ''} • ${fmt.short(c.mrr)}/mo</div>
+      <div class="cohort-pace"><span>Completion Pace</span><span>${c.done} / ${c.total} Steps</span></div>
+      <div class="cohort-bar"><i style="width:${p}%;background:${color}"></i></div>
+      <div class="cohort-rows">
+        <div><span>CURRENT GATE</span><b>${c.gate || '—'}</b></div>
+        <div><span>NEXT BLOCKER</span><b>${c.blocker || '—'}</b></div>
       </div>
-      ${it.wa?`<div class="item-actions"><button class="wa">WhatsApp Ping</button><button>Copy ID</button></div>`:''}
-      ${it.resend?`<div class="item-actions"><button>Resend Invite</button></div>`:''}
-      ${it.join?`<div class="item-actions"><button style="background:var(--primary);color:#fff;border:none;">Join / Link</button></div>`:''}
-      ${(!it.wa&&!it.resend&&!it.join)?`<span class="item-badge" style="background:${it.red?'var(--danger-bg)':'var(--success-bg)'};color:${it.red?'var(--danger)':'var(--success)'}">${it.b}</span>`:`<span class="item-badge" style="background:${it.red?'var(--danger-bg)':'var(--warning-bg)'};color:${it.red?'var(--danger)':'var(--warning)'}">${it.b}</span>`}
-    </div>`).join('');
-  el.innerHTML=`
-    <div class="cat-head">
-      <div class="cat-num">${idx+1}</div>
-      <b>${cat.title}</b>
-      <span class="cat-status ${cat.ok?'done':'warn'}">${cat.status}</span>
-      <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 9l6 6 6-6"/></svg>
-    </div>
-    <div class="cat-items">${itemsHtml}</div>`;
-  el.querySelector('.cat-head').addEventListener('click',()=>el.classList.toggle('open'));
-  matrixBody.appendChild(el);
+      <div class="cohort-foot">
+        <div class="mini-avatar">${c.lead}</div>
+        <div><b>${c.leadName || 'Unassigned'}</b><span data-edit="onboardings" data-id="${c.id}" style="color:var(--primary);cursor:pointer">Edit</span></div>
+        <div class="goLive"><span style="color:var(--text-faint)">Go-Live</span><b>${fmt.date(c.goLive)}</b></div>
+      </div>
+    </div>`; }).join('') || '<div class="crm-empty" style="grid-column:1/-1">No active onboardings — click “Initiate Onboarding”.</div>';
+  document.querySelectorAll('[data-oid]').forEach((card) => card.addEventListener('click', () => {
+    selected = onboardings.find((o) => o.id === +card.dataset.oid);
+    openCats = null;
+    renderCohorts();
+    loadMatrix();
+  }));
+}
+
+/* ---------------- Verification matrix ---------------- */
+async function loadMatrix() {
+  if (!selected) { $('matrix-body').innerHTML = '<div class="crm-empty">Nothing selected.</div>'; return; }
+  $('matrix-client').innerHTML = `${selected.name} — Implementation Verification Matrix`;
+  $('act-gate').dataset.create = 'onboarding_items';
+  $('act-gate').dataset.values = JSON.stringify({ onboardingId: selected.id, sort: 100 });
+  items = await API.list('onboarding_items', { onboardingId: selected.id });
+  renderMatrix();
+  renderLead();
+}
+
+function renderMatrix() {
+  const done = items.filter((i) => i.done).length;
+  $('matrix-sub').textContent = `${items.length} gates mapped from MSA execution through first campaign launch · tick a gate to verify it.`;
+  $('matrix-pills').innerHTML = [['all', `All (${items.length})`], ['pending', `Pending (${items.length - done})`], ['done', `Verified (${done})`]]
+    .map(([k, l]) => `<div class="filter-pill ${k === matrixFilter ? 'active' : ''}" data-mf="${k}">${l}</div>`).join('');
+  document.querySelectorAll('[data-mf]').forEach((p) => p.addEventListener('click', () => { matrixFilter = p.dataset.mf; renderMatrix(); }));
+
+  const cats = [...new Set(items.map((i) => i.category))];
+  if (openCats === null) openCats = new Set(cats.filter((c) => items.some((i) => i.category === c && !i.done)).slice(0, 1));
+  const shown = items.filter((i) => matrixFilter === 'all' || (matrixFilter === 'done' ? i.done : !i.done));
+  $('matrix-body').innerHTML = cats.map((cat, idx) => {
+    const all = items.filter((i) => i.category === cat), list = shown.filter((i) => i.category === cat);
+    if (!list.length) return '';
+    const ok = all.filter((i) => i.done).length;
+    const blocked = all.some((i) => !i.done && i.flag === 'critical');
+    return `
+    <div class="cat${openCats.has(cat) || matrixFilter !== 'all' ? ' open' : ''}" data-cat="${cat}">
+      <div class="cat-head">
+        <div class="cat-num">${idx + 1}</div>
+        <b>${cat}</b>
+        <span class="cat-status ${blocked || ok < all.length ? 'warn' : 'done'}">${ok} / ${all.length} ${ok === all.length ? 'Cleared' : blocked ? 'Blocked / In Review' : 'In Progress'}</span>
+        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 9l6 6 6-6"/></svg>
+      </div>
+      <div class="cat-items">${list.map((it) => {
+        const red = !it.done && it.flag === 'critical';
+        const badgeBg = it.done ? 'var(--success-bg)' : red ? 'var(--danger-bg)' : 'var(--warning-bg)';
+        const badgeFg = it.done ? 'var(--success)' : red ? 'var(--danger)' : 'var(--warning)';
+        return `
+        <div class="item">
+          <div class="check ${it.done ? 'on' : 'off'}" data-toggle="${it.id}" title="${it.done ? 'Mark as pending' : 'Mark as verified'}" style="cursor:pointer">${it.done ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg>' : ''}</div>
+          <div class="item-body" data-edit="onboarding_items" data-id="${it.id}">
+            <div class="item-title ${it.done ? 'done' : ''}">${it.title}</div>
+            <div class="item-sub">${it.detail || (it.done ? 'Verified' : 'Awaiting verification')}</div>
+          </div>
+          ${red ? `<div class="item-actions"><button class="wa" data-wa="${it.id}">WhatsApp Ping</button></div>` : ''}
+          ${!it.done && it.flag === 'resend' ? `<div class="item-actions"><button data-mail="${it.id}">Resend Invite</button></div>` : ''}
+          <span class="item-badge" style="background:${badgeBg};color:${badgeFg}">${it.badge || (it.done ? 'Verified' : 'Pending')}</span>
+        </div>`; }).join('')}</div>
+    </div>`; }).join('') || '<div class="crm-empty">No gates match this filter.</div>';
+
+  document.querySelectorAll('#matrix-body .cat-head').forEach((h) => h.addEventListener('click', () => {
+    const el = h.parentElement, cat = CRM.esc(el.dataset.cat); // openCats holds escaped names
+    el.classList.toggle('open');
+    if (el.classList.contains('open')) openCats.add(cat); else openCats.delete(cat);
+  }));
+  document.querySelectorAll('[data-toggle]').forEach((c) => c.addEventListener('click', async () => {
+    const it = items.find((i) => i.id === +c.dataset.toggle);
+    try {
+      Object.assign(it, await API.update('onboarding_items', it.id, { done: !it.done }));
+      selected.done += it.done ? 1 : -1;
+      renderMatrix(); renderCohorts(); renderLead(); renderStats(); loadFeed();
+    } catch (err) { CRM.toast(err.message, 'error'); }
+  }));
+  document.querySelectorAll('[data-wa]').forEach((b) => b.addEventListener('click', () => {
+    const it = items.find((i) => i.id === +b.dataset.wa);
+    waShare(`Hi! Quick reminder from the OmniAgency onboarding team: "${plain(it.title)}" is still pending on your side. ${plain(it.detail || '')}`);
+  }));
+  document.querySelectorAll('[data-mail]').forEach((b) => b.addEventListener('click', () => {
+    const it = items.find((i) => i.id === +b.dataset.mail);
+    mailClient(`Action needed: ${plain(it.title)}`, `Hi,\n\nCould you please complete the following onboarding step?\n\n• ${plain(it.title)}\n${plain(it.detail || '')}\n\nThank you!`);
+  }));
+}
+
+function renderLead() {
+  if (!selected) return;
+  $('lead-avatar').textContent = plain(selected.lead);
+  $('lead-name').textContent = plain(selected.leadName || 'Unassigned');
+  $('lead-sub').textContent = `${selected.done} of ${selected.total} gates verified for ${plain(selected.name)}`;
+}
+
+/* ---------------- Client actions ---------------- */
+function phoneOf() { const p = clientOf(selected).phone; return p ? p.replace(/\D/g, '') : ''; }
+function waShare(text) { window.open(`https://wa.me/${phoneOf()}?text=${encodeURIComponent(text)}`, '_blank', 'noopener'); }
+function mailClient(subject, body) {
+  const email = clientOf(selected).email || '';
+  if (!email) CRM.toast('Tip: add a billing email to this client to pre-fill the recipient.');
+  location.href = `mailto:${encodeURIComponent(email)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+}
+$('act-wa').addEventListener('click', () => {
+  if (!selected) return;
+  const pending = items.filter((i) => !i.done);
+  if (!pending.length) return CRM.toast('All gates are verified — nothing to chase.');
+  waShare(`Hi! To launch on ${fmt.date(selected.goLive)} we still need:\n` + pending.map((i) => `• ${plain(i.title)}`).join('\n'));
+});
+const invite = () => selected && mailClient(`Welcome to your onboarding with OmniAgency — ${plain(selected.name)}`,
+  `Hi,\n\nWe're excited to kick off! Your onboarding lead is ${plain(selected.leadName || 'our team')} and we're targeting go-live on ${fmt.date(selected.goLive)}.\n\nOpen items:\n${items.filter((i) => !i.done).map((i) => `• ${plain(i.title)}`).join('\n')}\n\nSpeak soon!`);
+$('act-invite').addEventListener('click', invite);
+$('invite-btn').addEventListener('click', invite);
+$('act-deck').addEventListener('click', () => {
+  if (!selected) return;
+  CRM.printDoc({
+    title: 'Kickoff Summary', number: selected.name, status: `${pctOf(selected)}% complete`, to: `<div>${selected.name}</div>`,
+    meta: [['GO-LIVE', fmt.date(selected.goLive)], ['ONBOARDING LEAD', selected.leadName || '—'], ['CURRENT GATE', selected.gate || '—']],
+    lines: items.map((i) => [`${i.title}<div style="color:#6E7086;font-size:12px">${i.category}</div>`, i.done ? '✔ Verified' : (i.badge || 'Pending')]),
+    total: `${selected.done} / ${selected.total} gates`, note: `Next blocker: ${selected.blocker || '—'}`,
+  });
 });
 
-const feed=[
-  {t:'Shopify Collab Code Approved',s:'Marcus Lee (UrbanStyle CTO) approved theme and asset scope access.',time:'12m ago',color:'var(--success)'},
-  {t:'Retainer Wire Confirmed',s:'₹18,000 received for Month 1 Retainer. Legal lock lifted.',time:'1h ago',color:'var(--primary)'},
-  {t:'Brand Kit Pack Uploaded',s:'8 SVG logos and 4 typography packages deposited via Client Portal.',time:'3h ago',color:'var(--warning)'},
-  {t:'Meta BM Partner Alert',s:'Invite expired due to 2FA security timeout. Automatic reminder queued.',time:'5h ago',color:'var(--danger)',warn:true},
-  {t:'MSA Signed by Client',s:'Legal signoff completed by Sarah Jenkins with audit trail cert.',time:'Yesterday',color:'var(--text-faint)'},
-];
-document.getElementById('feed').innerHTML = feed.map(f=>`
+/* ---------------- Activity feed ---------------- */
+const KIND = { success: 'var(--success)', info: 'var(--info)', primary: 'var(--primary)', warning: 'var(--warning)', danger: 'var(--danger)', muted: 'var(--text-faint)' };
+let feedLimit = 5;
+async function loadFeed() {
+  const feed = await API.list('activity', { limit: feedLimit });
+  $('feed').innerHTML = feed.map((f) => `
   <div class="feed-item">
-    <div class="feed-dot" style="background:${f.color}"></div>
+    <div class="feed-dot" style="background:${KIND[f.kind] || KIND.muted}"></div>
     <div class="feed-body">
-      <div class="feed-title"><span>${f.t}</span><time>${f.time}</time></div>
-      <div class="feed-sub ${f.warn?'warn':''}">${f.s}</div>
+      <div class="feed-title"><span>${f.title}</span><time>${fmt.ago(f.createdAt)}</time></div>
+      <div class="feed-sub ${f.kind === 'danger' ? 'warn' : ''}">${f.detail || ''}${f.user ? ` <span style="color:var(--text-faint)">— ${f.user}</span>` : ''}</div>
     </div>
-  </div>`).join('');
+  </div>`).join('') || '<div class="crm-empty">No activity yet.</div>';
+}
+$('feed-more').addEventListener('click', (e) => {
+  e.preventDefault();
+  feedLimit = feedLimit === 5 ? 50 : 5;
+  e.target.textContent = feedLimit === 5 ? 'View Complete Audit Log →' : 'Show less ↑';
+  loadFeed();
+});
 
+/* ---------------- Dashboard banner (index.html only) ---------------- */
+async function renderBanner(crit) {
+  if (!$('banner-title')) return;
+  const lead = active.slice().sort((a, b) => pctOf(b) - pctOf(a))[0];
+  if (!lead) { $('banner-title').textContent = 'No active onboardings'; $('banner-chip').hidden = true; return; }
+  $('banner-title').textContent = `${plain(lead.name)} is ${pctOf(lead)}% through onboarding`;
+  $('banner-chip').textContent = `Go-live ${fmt.date(lead.goLive)}`;
+  $('banner-sub').textContent = crit.length
+    ? `${crit.length} critical blocker${crit.length === 1 ? '' : 's'} open across the cohort — use “Show Blockers” to jump to them.`
+    : 'No critical blockers across active onboardings.';
+  $('probe-btn').lastChild.textContent = 'Show Blockers';
+  $('probe-btn').addEventListener('click', () => {
+    const blockedOnb = active.find((o) => crit.some((i) => i.onboardingId === o.id));
+    if (!blockedOnb) return CRM.toast('No critical blockers right now.');
+    selected = blockedOnb; matrixFilter = 'pending'; openCats = null;
+    renderCohorts(); loadMatrix();
+    $('matrix-body').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+  $('cohort-csv').addEventListener('click', () => CRM.downloadCSV(`onboarding-cohort-${fmt.isoDate()}.csv`, onboardings, [
+    ['name', 'Client'], ['type', 'Industry'], ['status', 'Status'], [(o) => pctOf(o) + '%', 'Progress'], ['done', 'Gates done'], ['total', 'Gates total'],
+    ['gate', 'Current gate'], ['blocker', 'Next blocker'], ['leadName', 'Lead'], ['goLive', 'Go-live'],
+  ]));
+}
+
+renderCohorts();
+await loadMatrix();
+loadFeed();
+renderBanner(await renderStats());
 </script>
 </body>
 </html>

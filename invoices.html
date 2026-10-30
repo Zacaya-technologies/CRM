@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Invoices &amp; Receivables — OmniAgency Enterprise CRM</title>
 <link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="assets/app.css">
+<script src="assets/app.js"></script>
 </head>
 <body>
 <div class="app">
@@ -80,7 +82,7 @@
         </div>
         <div class="page-actions">
           <a class="btn btn-outline" href="payments.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v10M15 9.5c0-1.4-1.3-2.5-3-2.5s-3 1.1-3 2.5 1.3 2 3 2.5 3 1.1 3 2.5-1.3 2.5-3 2.5-3-1.1-3-2.5"/></svg>View Payments</a>
-          <button class="btn btn-primary"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg>Create Invoice</button>
+          <button class="btn btn-primary" data-create="invoices"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg>Create Invoice</button>
         </div>
       </div>
 
@@ -102,8 +104,8 @@
         </div>
         <div class="stat-card">
           <div class="stat-top"><span class="stat-label">AVG DAYS TO PAY</span><div class="stat-ico" style="background:var(--info-bg);color:var(--info)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></div></div>
-          <div class="stat-value-row"><span class="stat-value">18 Days</span><span class="stat-delta up">-3d</span></div>
-          <div class="stat-foot">Net-15 standard terms</div>
+          <div class="stat-value-row"><span class="stat-value" id="stat-dtp">—</span></div>
+          <div class="stat-foot">Issued → paid, across paid invoices</div>
         </div>
       </div>
 
@@ -136,7 +138,8 @@
     </div>
   </div>
 </div>
-<script>
+<script type="module">
+await CRM.ready;
 document.querySelectorAll('.nav-item').forEach(item=>{
   item.addEventListener('click',()=>{
     document.querySelectorAll('.nav-item').forEach(i=>i.classList.remove('active'));
@@ -144,18 +147,7 @@ document.querySelectorAll('.nav-item').forEach(item=>{
   });
 });
 
-const invoices=[
-  {no:'INV-1088',client:'UrbanStyle Direct',desc:'November retainer',issued:'2026-10-27',due:'2026-11-11',amount:180000,paid:''},
-  {no:'INV-1087',client:'Zenith Media',desc:'November retainer',issued:'2026-10-27',due:'2026-11-11',amount:240000,paid:''},
-  {no:'INV-1086',client:'Kinetix Cloud',desc:'Developer portal — milestone 2',issued:'2026-10-20',due:'2026-11-04',amount:260000,paid:''},
-  {no:'INV-1085',client:'Solaris Energy',desc:'October retainer',issued:'2026-10-01',due:'2026-10-16',amount:150000,paid:''},
-  {no:'INV-1084',client:'ApexDigital',desc:'HubSpot rollout — phase 1',issued:'2026-09-15',due:'2026-09-30',amount:135000,paid:''},
-  {no:'INV-1083',client:'PixelForge Studio',desc:'October retainer',issued:'2026-10-01',due:'2026-10-16',amount:90000,paid:'2026-10-14'},
-  {no:'INV-1082',client:'UrbanStyle Direct',desc:'October retainer',issued:'2026-10-01',due:'2026-10-16',amount:180000,paid:'2026-10-09'},
-  {no:'INV-1081',client:'Zenith Media',desc:'Brand refresh — final',issued:'2026-10-01',due:'2026-10-16',amount:160000,paid:'2026-10-21'},
-  {no:'INV-1080',client:'Kinetix Cloud',desc:'October retainer',issued:'2026-10-01',due:'2026-10-16',amount:320000,paid:'2026-10-15'},
-  {no:'INV-1079',client:'ApexDigital',desc:'August media spend recharge',issued:'2026-08-30',due:'2026-09-14',amount:48000,paid:''},
-];
+const invoices = await API.list('invoices');
 
 const MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 const toDate=s=>{const [y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d);};
@@ -178,6 +170,8 @@ function renderStats(){
   document.getElementById('stat-overdue-foot').textContent = `${overdue.length} invoice${overdue.length!==1?'s':''} past due`;
   document.getElementById('stat-paid').textContent = inrShort(sum(thisMonth));
   document.getElementById('stat-paid-foot').textContent = `${thisMonth.length} invoice${thisMonth.length!==1?'s':''} settled in ${MONTHS[today.getMonth()]}`;
+  const paidInv=invoices.filter(i=>i.paid);
+  document.getElementById('stat-dtp').textContent = paidInv.length?Math.round(paidInv.reduce((t,i)=>t+(toDate(i.paid)-toDate(i.issued))/86400000,0)/paidInv.length)+' Days':'—';
 }
 
 function renderPills(){
@@ -192,22 +186,34 @@ function renderRows(){
   document.getElementById('invoice-body').innerHTML = rows.map(i=>{
     const s=status(i), late=daysLate(i);
     return `
-    <tr>
+    <tr data-edit="invoices" data-id="${i.id}">
       <td><div class="row-lead"><div class="row-avatar">${i.client.split(' ').map(n=>n[0]).join('').slice(0,2)}</div><div><b>${i.no} · ${i.client}</b><span>${i.desc}</span></div></div></td>
       <td>${fmtDate(i.issued)}</td>
       <td style="${s==='overdue'?'color:var(--danger);font-weight:700;':''}">${fmtDate(i.due)}${s==='overdue'?`<span style="display:block;font-size:11px;">${late}d late</span>`:''}${s==='paid'?`<span style="display:block;font-size:11px;color:var(--text-faint);font-weight:600;">Paid ${fmtDate(i.paid)}</span>`:''}</td>
       <td style="font-weight:700;">${inr(i.amount)}</td>
       <td><span class="badge-pill ${statusMeta[s][0]}">${statusMeta[s][1]}</span></td>
       <td><div class="row-actions">
-        ${s!=='paid'?`<button title="Mark as paid" data-pay="${i.no}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20 6 9 17l-5-5"/></svg></button>`:''}
-        <button title="Download PDF"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5M12 15V3"/></svg></button>
+        ${s!=='paid'?`<button title="Mark as paid" data-pay="${i.id}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20 6 9 17l-5-5"/></svg></button>`:''}
+        <button title="Download PDF" data-pdf="${i.id}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5M12 15V3"/></svg></button>
       </div></td>
     </tr>`;}).join('') || `<tr><td colspan="6" style="text-align:center;color:var(--text-faint);padding:28px;">No invoices with this status.</td></tr>`;
-  document.querySelectorAll('[data-pay]').forEach(b=>b.addEventListener('click',()=>{
-    const inv=invoices.find(i=>i.no===b.dataset.pay);
-    const t=new Date();
-    inv.paid=`${t.getFullYear()}-${String(t.getMonth()+1).padStart(2,'0')}-${String(t.getDate()).padStart(2,'0')}`;
-    renderAll();
+  document.querySelectorAll('[data-pay]').forEach(b=>b.addEventListener('click',async e=>{
+    e.stopPropagation();
+    const inv=invoices.find(i=>i.id===+b.dataset.pay);
+    if(!confirm(`Mark ${CRM.unesc(inv.no)} (${inr(inv.amount)}) as paid today by bank transfer?
+Use the edit form to choose another method or date.`)) return;
+    try{
+      Object.assign(inv, await API.update('invoices', inv.id, {paid: CRM.fmt.isoDate(), method: 'Bank transfer'}));
+      renderAll();
+      CRM.toast(`${CRM.unesc(inv.no)} marked as paid — payment recorded.`);
+    }catch(err){ CRM.toast(err.message,'error'); }
+  }));
+  document.querySelectorAll('[data-pdf]').forEach(b=>b.addEventListener('click',e=>{
+    e.stopPropagation();
+    const i=invoices.find(x=>x.id===+b.dataset.pdf);
+    CRM.printDoc({title:'Invoice',number:i.no,status:statusMeta[status(i)][1],to:`<div>${i.client}</div>`,
+      meta:[['ISSUED',fmtDate(i.issued)],['DUE',fmtDate(i.due)]].concat(i.paid?[['PAID',fmtDate(i.paid)]]:[]),
+      lines:[[i.desc||'Services',inr(i.amount)]],total:inr(i.amount),note:'Thank you for your business. Please quote the invoice number with your payment.'});
   }));
 }
 

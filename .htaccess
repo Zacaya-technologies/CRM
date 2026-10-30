@@ -1,0 +1,37 @@
+# OmniAgency CRM — web root rules (Hostinger / Apache / LiteSpeed)
+Options -Indexes
+DirectoryIndex index.html
+
+# Force HTTPS — remove the leading "#" on the 5 lines below once SSL is
+# active for your domain (hPanel → Security → SSL).
+#<IfModule mod_rewrite.c>
+#  RewriteEngine On
+#  RewriteCond %{HTTPS} !=on
+#  RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+#</IfModule>
+
+# Never serve the SQL dump, docs or dotfiles.
+<FilesMatch "(\.(sql|md|log|bak)|^\..*)$">
+  <IfModule mod_authz_core.c>
+    Require all denied
+  </IfModule>
+  <IfModule !mod_authz_core.c>
+    Order allow,deny
+    Deny from all
+  </IfModule>
+</FilesMatch>
+RedirectMatch 404 ^/database(/|$)
+
+<IfModule mod_headers.c>
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set X-Frame-Options "SAMEORIGIN"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
+
+# Always fetch fresh HTML/JS after a deploy; cache CSS briefly.
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType text/html "access plus 0 seconds"
+  ExpiresByType application/javascript "access plus 0 seconds"
+  ExpiresByType text/css "access plus 1 hour"
+</IfModule>

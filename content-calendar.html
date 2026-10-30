@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Content Calendar &amp; Publishing Queue — OmniAgency Enterprise CRM</title>
 <link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="assets/app.css">
+<script src="assets/app.js"></script>
 </head>
 <body>
 <div class="app">
@@ -80,7 +82,7 @@
         </div>
         <div class="page-actions">
           <a class="btn btn-outline" href="client-approvals.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Approval Queue</a>
-          <button class="btn btn-primary"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg>Schedule Post</button>
+          <button class="btn btn-primary" data-create="posts"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg>Schedule Post</button>
         </div>
       </div>
 
@@ -101,9 +103,9 @@
           <div class="stat-foot">Live across all client channels</div>
         </div>
         <div class="stat-card">
-          <div class="stat-top"><span class="stat-label">ON-TIME DELIVERY</span><div class="stat-ico" style="background:var(--info-bg);color:var(--info)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 14l4-4 4 4 5-6"/></svg></div></div>
-          <div class="stat-value-row"><span class="stat-value">94%</span><span class="stat-delta up">+3pt</span></div>
-          <div class="stat-bar"><i style="width:94%"></i></div>
+          <div class="stat-top"><span class="stat-label">PUBLISHED ON SCHEDULE</span><div class="stat-ico" style="background:var(--info-bg);color:var(--info)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 14l4-4 4 4 5-6"/></svg></div></div>
+          <div class="stat-value-row"><span class="stat-value" id="stat-ontime">—</span></div>
+          <div class="stat-bar"><i id="stat-ontime-bar" style="width:0%"></i></div>
         </div>
       </div>
 
@@ -122,7 +124,7 @@
 
       <div class="table-card">
         <div class="table-toolbar">
-          <div><h3>Publishing Queue</h3><p>Next 10 scheduled items from today</p></div>
+          <div><h3>Publishing Queue</h3><p>Next 10 unpublished items from today · click a calendar day to add a post</p></div>
         </div>
         <table class="data-table">
           <thead><tr><th>Content</th><th>Format</th><th>Channel</th><th>Publish Date</th><th>Status</th><th>Owner</th></tr></thead>
@@ -133,105 +135,80 @@
     </div>
   </div>
 </div>
-<script>
-document.querySelectorAll('.nav-item').forEach(item=>{
-  item.addEventListener('click',()=>{
-    document.querySelectorAll('.nav-item').forEach(i=>i.classList.remove('active'));
-    item.classList.add('active');
-  });
-});
+<script type="module">
+await CRM.ready;
 
-const channels={
-  instagram:{name:'Instagram',color:'#C13584',bg:'#FBE7F2'},
-  linkedin:{name:'LinkedIn',color:'#0A66C2',bg:'#E3EEF9'},
-  blog:{name:'Blog',color:'var(--success)',bg:'var(--success-bg)'},
-  email:{name:'Newsletter',color:'var(--warning)',bg:'var(--warning-bg)'},
-  youtube:{name:'YouTube',color:'var(--danger)',bg:'var(--danger-bg)'},
+const channels = {
+  instagram: { name: 'Instagram', color: '#C13584', bg: '#FBE7F2' },
+  linkedin: { name: 'LinkedIn', color: '#0A66C2', bg: '#E3EEF9' },
+  blog: { name: 'Blog', color: 'var(--success)', bg: 'var(--success-bg)' },
+  email: { name: 'Newsletter', color: 'var(--warning)', bg: 'var(--warning-bg)' },
+  youtube: { name: 'YouTube', color: 'var(--danger)', bg: 'var(--danger-bg)' },
 };
-const statusBadge={published:['badge-green','Published'],scheduled:['badge-blue','Scheduled'],review:['badge-amber','In Review'],draft:['badge-grey','Draft']};
-const posts=[
-  {d:'2026-10-02',title:'Festive lookbook carousel',client:'UrbanStyle Direct',ch:'instagram',fmt:'Carousel',status:'published',owner:'AK'},
-  {d:'2026-10-05',title:'Q3 platform reliability report',client:'Kinetix Cloud',ch:'blog',fmt:'Long-form',status:'published',owner:'RR'},
-  {d:'2026-10-07',title:'Solar ROI explainer',client:'Solaris Energy',ch:'linkedin',fmt:'Document post',status:'published',owner:'PL'},
-  {d:'2026-10-09',title:'Behind the brand reel',client:'PixelForge Studio',ch:'instagram',fmt:'Reel',status:'published',owner:'AK'},
-  {d:'2026-10-12',title:'October product digest',client:'Zenith Media',ch:'email',fmt:'Newsletter',status:'published',owner:'AK'},
-  {d:'2026-10-14',title:'CTO fireside clip',client:'Kinetix Cloud',ch:'youtube',fmt:'Video',status:'published',owner:'RR'},
-  {d:'2026-10-16',title:'Diwali sale teaser',client:'UrbanStyle Direct',ch:'instagram',fmt:'Story set',status:'published',owner:'VM'},
-  {d:'2026-10-19',title:'Customer win: Metro Logistics',client:'ApexDigital',ch:'linkedin',fmt:'Case study',status:'published',owner:'VM'},
-  {d:'2026-10-21',title:'Diwali sale launch',client:'UrbanStyle Direct',ch:'instagram',fmt:'Reel',status:'published',owner:'VM'},
-  {d:'2026-10-21',title:'Clean energy policy brief',client:'Solaris Energy',ch:'blog',fmt:'Long-form',status:'published',owner:'PL'},
-  {d:'2026-10-23',title:'Hiring: senior designers',client:'PixelForge Studio',ch:'linkedin',fmt:'Single image',status:'published',owner:'AK'},
-  {d:'2026-10-26',title:'Agency partner spotlight',client:'Zenith Media',ch:'linkedin',fmt:'Carousel',status:'published',owner:'AK'},
-  {d:'2026-10-28',title:'Kubernetes cost tips thread',client:'Kinetix Cloud',ch:'linkedin',fmt:'Text post',status:'scheduled',owner:'RR'},
-  {d:'2026-10-28',title:'Last-chance Diwali offer',client:'UrbanStyle Direct',ch:'email',fmt:'Newsletter',status:'scheduled',owner:'VM'},
-  {d:'2026-10-29',title:'Studio tour reel',client:'PixelForge Studio',ch:'instagram',fmt:'Reel',status:'review',owner:'AK'},
-  {d:'2026-10-30',title:'Rooftop install timelapse',client:'Solaris Energy',ch:'youtube',fmt:'Video',status:'review',owner:'PL'},
-  {d:'2026-10-31',title:'Halloween flash drop',client:'UrbanStyle Direct',ch:'instagram',fmt:'Carousel',status:'scheduled',owner:'VM'},
-  {d:'2026-11-02',title:'November feature roundup',client:'Zenith Media',ch:'email',fmt:'Newsletter',status:'draft',owner:'AK'},
-  {d:'2026-11-04',title:'SaaS pricing teardown',client:'ApexDigital',ch:'blog',fmt:'Long-form',status:'review',owner:'VM'},
-  {d:'2026-11-06',title:'Winter collection preview',client:'UrbanStyle Direct',ch:'instagram',fmt:'Reel',status:'draft',owner:'VM'},
-  {d:'2026-11-10',title:'DevOps summit recap',client:'Kinetix Cloud',ch:'linkedin',fmt:'Carousel',status:'draft',owner:'RR'},
-  {d:'2026-11-13',title:'Net-metering FAQ',client:'Solaris Energy',ch:'blog',fmt:'Long-form',status:'draft',owner:'PL'},
-  {d:'2026-11-18',title:'Client testimonial cut',client:'PixelForge Studio',ch:'youtube',fmt:'Video',status:'draft',owner:'AK'},
-  {d:'2026-11-27',title:'Black Friday countdown',client:'UrbanStyle Direct',ch:'instagram',fmt:'Story set',status:'draft',owner:'VM'},
-];
+const statusBadge = { published: ['badge-green', 'Published'], scheduled: ['badge-blue', 'Scheduled'], review: ['badge-amber', 'In Review'], draft: ['badge-grey', 'Draft'] };
+const posts = await API.list('posts');
 
-const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
-const pad=n=>String(n).padStart(2,'0');
-const iso=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
-const today=new Date();
-const todayIso=iso(today);
-let view=new Date(today.getFullYear(),today.getMonth(),1);
+const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+const pad = (n) => String(n).padStart(2, '0');
+const iso = CRM.fmt.isoDate;
+const today = new Date();
+const todayIso = iso(today);
+let view = new Date(today.getFullYear(), today.getMonth(), 1);
 
-document.getElementById('cal-legend').innerHTML = Object.values(channels).map(c=>`<span><i style="background:${c.color}"></i>${c.name}</span>`).join('');
+document.getElementById('cal-legend').innerHTML = Object.values(channels).map((c) => `<span><i style="background:${c.color}"></i>${c.name}</span>`).join('');
 
-function renderCalendar(){
-  const y=view.getFullYear(), m=view.getMonth();
+// Share of past-dated posts that actually got published
+const past = posts.filter((p) => p.d < todayIso);
+const onTime = past.length ? Math.round(past.filter((p) => p.status === 'published').length / past.length * 100) : 100;
+document.getElementById('stat-ontime').textContent = onTime + '%';
+document.getElementById('stat-ontime-bar').style.width = onTime + '%';
+
+function renderCalendar() {
+  const y = view.getFullYear(), m = view.getMonth();
   document.getElementById('cal-title').textContent = `${MONTHS[m]} ${y}`;
   // Weeks start on Monday
-  const start=new Date(y,m,1-((new Date(y,m,1).getDay()+6)%7));
-  const cells=[];
-  for(let i=0;i<42;i++){
-    const d=new Date(start.getFullYear(),start.getMonth(),start.getDate()+i);
-    if(i===35 && d.getMonth()!==m) break;
-    const key=iso(d);
-    const dayPosts=posts.filter(p=>p.d===key);
+  const start = new Date(y, m, 1 - ((new Date(y, m, 1).getDay() + 6) % 7));
+  const cells = [];
+  for (let i = 0; i < 42; i++) {
+    const d = new Date(start.getFullYear(), start.getMonth(), start.getDate() + i);
+    if (i === 35 && d.getMonth() !== m) break;
+    const key = iso(d);
+    const dayPosts = posts.filter((p) => p.d === key);
     cells.push(`
-      <div class="cal-day ${d.getMonth()!==m?'muted':''} ${key===todayIso?'today':''}">
+      <div class="cal-day ${d.getMonth() !== m ? 'muted' : ''} ${key === todayIso ? 'today' : ''}" data-create="posts" data-values='{"d":"${key}"}' title="Add a post on ${key}">
         <span class="cal-num">${d.getDate()}</span>
-        ${dayPosts.map(p=>`<span class="cal-post" style="background:${channels[p.ch].bg};color:${channels[p.ch].color}" title="${p.client} — ${p.title} (${statusBadge[p.status][1]})">${p.title}</span>`).join('')}
+        ${dayPosts.map((p) => `<span class="cal-post" data-edit="posts" data-id="${p.id}" style="background:${channels[p.ch].bg};color:${channels[p.ch].color}" title="${p.client} — ${p.title} (${statusBadge[p.status][1]})">${p.title}</span>`).join('')}
       </div>`);
   }
-  document.getElementById('cal-grid').innerHTML = ['MON','TUE','WED','THU','FRI','SAT','SUN'].map(d=>`<div class="cal-dow">${d}</div>`).join('') + cells.join('');
+  document.getElementById('cal-grid').innerHTML = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'].map((d) => `<div class="cal-dow">${d}</div>`).join('') + cells.join('');
 
-  const monthKey=`${y}-${pad(m+1)}`;
-  const inMonth=posts.filter(p=>p.d.startsWith(monthKey));
+  const monthKey = `${y}-${pad(m + 1)}`;
+  const inMonth = posts.filter((p) => p.d.startsWith(monthKey));
   document.getElementById('stat-month').textContent = inMonth.length;
-  document.getElementById('stat-month-foot').textContent = `${new Set(inMonth.map(p=>p.client)).size} clients in ${MONTHS[m]}`;
-  document.getElementById('stat-review').textContent = inMonth.filter(p=>p.status==='review').length;
-  document.getElementById('stat-published').textContent = inMonth.filter(p=>p.status==='published').length;
+  document.getElementById('stat-month-foot').textContent = `${new Set(inMonth.map((p) => p.client)).size} clients in ${MONTHS[m]}`;
+  document.getElementById('stat-review').textContent = inMonth.filter((p) => p.status === 'review').length;
+  document.getElementById('stat-published').textContent = inMonth.filter((p) => p.status === 'published').length;
 }
 
-document.getElementById('cal-prev').addEventListener('click',()=>{view=new Date(view.getFullYear(),view.getMonth()-1,1);renderCalendar();});
-document.getElementById('cal-next').addEventListener('click',()=>{view=new Date(view.getFullYear(),view.getMonth()+1,1);renderCalendar();});
-document.getElementById('cal-today').addEventListener('click',()=>{view=new Date(today.getFullYear(),today.getMonth(),1);renderCalendar();});
+document.getElementById('cal-prev').addEventListener('click', () => { view = new Date(view.getFullYear(), view.getMonth() - 1, 1); renderCalendar(); });
+document.getElementById('cal-next').addEventListener('click', () => { view = new Date(view.getFullYear(), view.getMonth() + 1, 1); renderCalendar(); });
+document.getElementById('cal-today').addEventListener('click', () => { view = new Date(today.getFullYear(), today.getMonth(), 1); renderCalendar(); });
 
-const queue=posts.filter(p=>p.d>=todayIso && p.status!=='published').slice(0,10);
-document.getElementById('queue-body').innerHTML = queue.length ? queue.map(p=>{
-  const ch=channels[p.ch];
-  const [yy,mm,dd]=p.d.split('-').map(Number);
+const queue = posts.filter((p) => p.d >= todayIso && p.status !== 'published').slice(0, 10);
+document.getElementById('queue-body').innerHTML = queue.length ? queue.map((p) => {
+  const ch = channels[p.ch];
+  const [, mm, dd] = p.d.split('-').map(Number);
   return `
-  <tr>
-    <td><div class="row-lead"><div class="row-avatar" style="background:${ch.bg};color:${ch.color}">${p.client.split(' ').map(n=>n[0]).join('').slice(0,2)}</div><div><b>${p.title}</b><span>${p.client}</span></div></div></td>
-    <td>${p.fmt}</td>
+  <tr data-edit="posts" data-id="${p.id}">
+    <td><div class="row-lead"><div class="row-avatar" style="background:${ch.bg};color:${ch.color}">${CRM.fmt.initials(p.client)}</div><div><b>${p.title}</b><span>${p.client}</span></div></div></td>
+    <td>${p.fmt || '—'}</td>
     <td><span class="badge-pill" style="background:${ch.bg};color:${ch.color}">${ch.name}</span></td>
-    <td>${MONTHS[mm-1].slice(0,3)} ${pad(dd)}${p.d===todayIso?' <span class="chip" style="background:var(--primary-light);color:var(--primary)">Today</span>':''}</td>
+    <td>${MONTHS[mm - 1].slice(0, 3)} ${pad(dd)}${p.d === todayIso ? ' <span class="chip" style="background:var(--primary-light);color:var(--primary)">Today</span>' : ''}</td>
     <td><span class="badge-pill ${statusBadge[p.status][0]}">${statusBadge[p.status][1]}</span></td>
-    <td><div class="mini-avatar">${p.owner}</div></td>
-  </tr>`;}).join('') : `<tr><td colspan="6" style="text-align:center;color:var(--text-faint);padding:28px;">Nothing scheduled ahead.</td></tr>`;
+    <td><div class="mini-avatar" title="${p.ownerName || ''}">${p.owner}</div></td>
+  </tr>`; }).join('') : '<tr><td colspan="6" class="crm-empty">Nothing scheduled ahead.</td></tr>';
 
 renderCalendar();
-
 </script>
 </body>
 </html>

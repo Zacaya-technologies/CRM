@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Agency Command Center — OmniAgency Enterprise CRM</title>
 <link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="assets/app.css">
+<script src="assets/app.js"></script>
 </head>
 <body>
 <div class="app">
@@ -89,123 +91,139 @@
         <div class="stat-grid">
           <div class="stat-card">
             <div class="stat-top"><span class="stat-label">TOTAL LEADS</span><div class="stat-ico" style="background:var(--primary-light);color:var(--primary)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div></div>
-            <div class="stat-value-row"><span class="stat-value">5</span><span class="stat-delta up">↗ 18.4%</span></div>
-            <div class="stat-foot">1 new • 2 qualified</div>
+            <div class="stat-value-row"><span class="stat-value" id="k-leads">—</span><span class="stat-delta up" id="k-leads-delta"></span></div>
+            <div class="stat-foot" id="k-leads-foot">&nbsp;</div>
           </div>
           <div class="stat-card">
             <div class="stat-top"><span class="stat-label">MONTHLY RETAINERS</span><div class="stat-ico" style="background:var(--success-bg);color:var(--success)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v10M15 9.5c0-1.4-1.3-2.5-3-2.5s-3 1.1-3 2.5 1.3 2 3 2.5 3 1.1 3 2.5-1.3 2.5-3 2.5-3-1.1-3-2.5"/></svg></div></div>
-            <div class="stat-value-row"><span class="stat-value">₹2,15,000</span><span class="stat-delta up">↗ 24%</span></div>
-            <div class="stat-foot">Across 2 active accounts</div>
+            <div class="stat-value-row"><span class="stat-value" id="k-mrr">—</span><span class="stat-delta up" id="k-mrr-delta"></span></div>
+            <div class="stat-foot" id="k-mrr-foot">&nbsp;</div>
           </div>
           <div class="stat-card">
             <div class="stat-top"><span class="stat-label">ACTIVE CLIENTS</span><div class="stat-ico" style="background:var(--info-bg);color:var(--info)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.5 9.5 12 4 3.5 9.5 12 15l8.5-5.5Z"/><path d="M6 12.5V17c0 1.5 3 3 6 3s6-1.5 6-3v-4.5"/></svg></div></div>
-            <div class="stat-value-row"><span class="stat-value">2</span><span class="stat-delta up">→ 0% churn</span></div>
-            <div class="stat-foot">1 live campaign</div>
+            <div class="stat-value-row"><span class="stat-value" id="k-clients">—</span><span class="stat-delta up" id="k-clients-delta"></span></div>
+            <div class="stat-foot" id="k-clients-foot">&nbsp;</div>
           </div>
           <div class="stat-card">
             <div class="stat-top"><span class="stat-label">OUTSTANDING INVOICES</span><div class="stat-ico" style="background:var(--warning-bg);color:var(--warning)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></div></div>
-            <div class="stat-value-row"><span class="stat-value">₹1,12,100</span><span class="stat-delta up">92% collected</span></div>
-            <div class="stat-foot">Reminders automated</div>
+            <div class="stat-value-row"><span class="stat-value" id="k-out">—</span><span class="stat-delta up" id="k-out-delta"></span></div>
+            <div class="stat-foot" id="k-out-foot">&nbsp;</div>
           </div>
         </div>
 
         <div class="grid-2col" style="margin-bottom:20px;">
           <div class="chart-card">
             <div class="chart-head">
-              <div><b>Revenue &amp; Pipeline Velocity</b><p>Monthly recognized revenue vs open pipeline</p></div>
-              <div class="legend"><span><i style="background:var(--primary)"></i>Pipeline</span><span><i style="background:var(--success)"></i>Revenue</span></div>
+              <div><b>Revenue &amp; Expenses</b><p>Last 6 months of recorded financials</p></div>
+              <div class="legend"><span><i style="background:var(--success)"></i>Revenue</span><span><i style="background:var(--primary)"></i>Expenses</span></div>
             </div>
-            <svg viewBox="0 0 620 260" style="width:100%;height:240px;overflow:visible;">
-              <line x1="0" y1="20" x2="620" y2="20" stroke="var(--border)" stroke-dasharray="3 4"/>
-              <line x1="0" y1="80" x2="620" y2="80" stroke="var(--border)" stroke-dasharray="3 4"/>
-              <line x1="0" y1="140" x2="620" y2="140" stroke="var(--border)" stroke-dasharray="3 4"/>
-              <line x1="0" y1="200" x2="620" y2="200" stroke="var(--border)"/>
-              <text x="0" y="16" font-size="11" fill="#9C9DB3">₹1200k</text>
-              <text x="0" y="76" font-size="11" fill="#9C9DB3">₹900k</text>
-              <text x="0" y="136" font-size="11" fill="#9C9DB3">₹600k</text>
-              <text x="0" y="196" font-size="11" fill="#9C9DB3">₹300k</text>
-              <path d="M40,160 C140,150 200,120 300,95 C380,75 460,50 600,25" fill="none" stroke="var(--primary)" stroke-width="2.5"/>
-              <path d="M40,160 C140,150 200,120 300,95 C380,75 460,50 600,25 L600,200 L40,200 Z" fill="var(--primary)" opacity=".08"/>
-              <path d="M40,178 C140,172 200,158 300,150 C380,142 460,120 600,105" fill="none" stroke="var(--success)" stroke-width="2.5"/>
-              <path d="M40,178 C140,172 200,158 300,150 C380,142 460,120 600,105 L600,200 L40,200 Z" fill="var(--success)" opacity=".08"/>
-              <circle cx="300" cy="95" r="4.5" fill="#fff" stroke="var(--primary)" stroke-width="2.5"/>
-              <circle cx="600" cy="25" r="4.5" fill="#fff" stroke="var(--primary)" stroke-width="2.5"/>
-              <circle cx="300" cy="150" r="4.5" fill="#fff" stroke="var(--success)" stroke-width="2.5"/>
-              <text x="35" y="218" font-size="11" fill="#9C9DB3">Oct</text>
-              <text x="145" y="218" font-size="11" fill="#9C9DB3">Nov</text>
-              <text x="255" y="218" font-size="11" fill="#9C9DB3">Dec</text>
-              <text x="290" y="218" font-size="11" fill="#9C9DB3">Jan</text>
-              <text x="400" y="218" font-size="11" fill="#9C9DB3">Feb</text>
-              <text x="560" y="218" font-size="11" fill="#9C9DB3">Mar (Est)</text>
-            </svg>
+            <svg id="rev-chart" viewBox="0 0 620 260" style="width:100%;height:240px;overflow:visible;"></svg>
           </div>
 
           <div class="chart-card">
             <div class="chart-head"><div><b>Lead Source Attribution</b><p>Where high-intent clients originate</p></div></div>
-            <div class="donut-wrap">
-              <svg width="180" height="180" viewBox="0 0 42 42">
-                <circle cx="21" cy="21" r="15.9" fill="transparent" stroke="#E6E7F2" stroke-width="6"></circle>
-                <circle cx="21" cy="21" r="15.9" fill="transparent" stroke="#5145E8" stroke-width="6" stroke-dasharray="20 80" stroke-dashoffset="25" transform="rotate(-90 21 21)"></circle>
-                <circle cx="21" cy="21" r="15.9" fill="transparent" stroke="#B5790A" stroke-width="6" stroke-dasharray="20 80" stroke-dashoffset="5" transform="rotate(-90 21 21)"></circle>
-                <circle cx="21" cy="21" r="15.9" fill="transparent" stroke="#0F9D58" stroke-width="6" stroke-dasharray="20 80" stroke-dashoffset="-15" transform="rotate(-90 21 21)"></circle>
-                <circle cx="21" cy="21" r="15.9" fill="transparent" stroke="#D33B3B" stroke-width="6" stroke-dasharray="20 80" stroke-dashoffset="-35" transform="rotate(-90 21 21)"></circle>
-                <circle cx="21" cy="21" r="15.9" fill="transparent" stroke="#2563EB" stroke-width="6" stroke-dasharray="20 80" stroke-dashoffset="-55" transform="rotate(-90 21 21)"></circle>
-                <text x="21" y="19.5" text-anchor="middle" font-size="7" font-weight="700" fill="#171532">5</text>
-                <text x="21" y="25" text-anchor="middle" font-size="2.6" font-weight="700" fill="#9C9DB3">TOTAL LEADS</text>
-              </svg>
-              <div class="donut-legend">
-                <div class="donut-legend-row"><i style="background:#5145E8"></i>Meta / Facebook Lead Ads<b>1</b></div>
-                <div class="donut-legend-row"><i style="background:#B5790A"></i>Google Search Ads (PPC)<b>1</b></div>
-                <div class="donut-legend-row"><i style="background:#0F9D58"></i>Website Enquiry Form<b>1</b></div>
-                <div class="donut-legend-row"><i style="background:#D33B3B"></i>WhatsApp Inbound Chat<b>1</b></div>
-                <div class="donut-legend-row"><i style="background:#2563EB"></i>Client Referral<b>1</b></div>
-              </div>
+            <div class="donut-wrap"><div id="source-donut" style="display:contents"></div>
             </div>
           </div>
         </div>
 
         <div class="grid-2col">
           <div class="chart-card">
-            <div class="chart-head"><div><b>Sales Pipeline Funnel</b><p>Distribution across qualification stages</p></div><a href="#" style="font-size:12.5px;font-weight:700;color:var(--primary);">Kanban View →</a></div>
-            <div class="pipe-row"><div class="pipe-head"><b>Discovery &amp; Qualification</b><span>2 Deals • ₹1.8L</span></div><div class="pipe-bar"><i style="width:75%;background:var(--primary)"></i></div></div>
-            <div class="pipe-row"><div class="pipe-head"><b>Pitch &amp; Commercial Proposal</b><span>2 Deals • ₹2.4L</span></div><div class="pipe-bar"><i style="width:55%;background:#8B7FF5"></i></div></div>
-            <div class="pipe-row"><div class="pipe-head"><b>Contract Signed / Closed Won</b><span>1 Deal • ₹1.2L</span></div><div class="pipe-bar"><i style="width:32%;background:var(--success)"></i></div></div>
-            <div class="velocity-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z"/></svg><b>Conversion Velocity: 18 days avg.</b><span class="velocity-tag">Top 10% Industry</span></div>
+            <div class="chart-head"><div><b>Sales Pipeline Funnel</b><p>Distribution across qualification stages</p></div><a href="sales-pipeline.html" style="font-size:12.5px;font-weight:700;color:var(--primary);">Kanban View →</a></div>
+            <div id="pipe-rows"></div>
+            <div class="velocity-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z"/></svg><b id="velocity">Conversion velocity: —</b><span class="velocity-tag" id="velocity-tag">Won deals</span></div>
           </div>
 
           <div class="chart-card">
             <div class="chart-head"><div><b>Activity &amp; Audit Timeline</b><p>Real-time chronological events and audit log</p></div></div>
-            <div class="activity-item">
-              <div class="activity-ico" style="background:var(--success-bg);color:var(--success)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
-              <div class="activity-body"><b>Client agreement signed</b><span>ApexDigital • ₹1,20,000/mo retainer</span></div>
-              <span class="activity-time">12m ago</span>
-            </div>
-            <div class="activity-item">
-              <div class="activity-ico" style="background:var(--info-bg);color:var(--info)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z"/></svg></div>
-              <div class="activity-body"><b>New inbound enquiry</b><span>Zenith Media • Meta Ads attribution</span></div>
-              <span class="activity-time">1h ago</span>
-            </div>
-            <div class="activity-item">
-              <div class="activity-ico" style="background:var(--primary-light);color:var(--primary)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 14l4-4 4 4 5-6"/></svg></div>
-              <div class="activity-body"><b>Campaign budget optimized</b><span>UrbanStyle E-com • ROAS escalated to 4.2x</span></div>
-              <span class="activity-time">3h ago</span>
-            </div>
-            <a class="rail-link" href="#" style="display:flex;justify-content:space-between;text-align:left;"><span style="display:flex;align-items:center;gap:6px;"><span class="live-dot"></span>Audit stream connected via WebSocket</span>View all 34 logs</a>
+            <div id="activity-list"></div>
+            <a class="rail-link" href="index.html#feed" style="display:flex;justify-content:space-between;text-align:left;"><span style="display:flex;align-items:center;gap:6px;"><span class="live-dot"></span>Audit log</span><span id="activity-count">View all</span></a>
           </div>
         </div>
       </div>
     </div>
   </div>
 </div>
-<script>
-/* ---------------- Sidebar nav highlight ---------------- */
-document.querySelectorAll('.nav-item').forEach(item=>{
-  item.addEventListener('click',()=>{
-    document.querySelectorAll('.nav-item').forEach(i=>i.classList.remove('active'));
-    item.classList.add('active');
-  });
-});
+<script type="module">
+await CRM.ready;
+const { fmt } = CRM;
+const $ = (id) => document.getElementById(id);
 
+const [d, activity] = await Promise.all([API.call('dashboard', { raw: true }), API.list('activity', { limit: 4 })]);
+
+// KPI cards
+$('k-leads').textContent = d.leads.total;
+$('k-leads-delta').textContent = d.leads.thisWeek ? `+${d.leads.thisWeek} this wk` : '';
+$('k-leads-foot').textContent = `${d.leads.new} new • ${d.leads.qualified} qualified`;
+$('k-mrr').textContent = fmt.inr(d.clients.mrr);
+$('k-mrr-foot').textContent = `Across ${d.clients.active} active account${d.clients.active === 1 ? '' : 's'}`;
+$('k-clients').textContent = d.clients.active;
+$('k-clients-foot').textContent = `${d.liveCampaigns} live campaign${d.liveCampaigns === 1 ? '' : 's'}`;
+$('k-out').textContent = fmt.inr(d.invoices.outstanding);
+$('k-out-delta').textContent = `${d.invoices.collectedPct}% collected`;
+$('k-out-foot').textContent = d.invoices.overdue ? `${fmt.short(d.invoices.overdue)} overdue` : 'Nothing overdue';
+
+// Revenue vs expenses line chart (SVG 620×260, plot area y 20…200)
+const rev = d.revenue;
+const svg = $('rev-chart');
+if (rev.length) {
+  const max = Math.max(...rev.map((r) => Math.max(r.revenue, r.expenses))) * 1.15 || 1;
+  const x = (i) => 50 + (rev.length === 1 ? 260 : i * (540 / (rev.length - 1)));
+  const y = (v) => 200 - v / max * 180;
+  const line = (k) => rev.map((r, i) => `${i ? 'L' : 'M'}${x(i).toFixed(1)},${y(r[k]).toFixed(1)}`).join(' ');
+  const area = (k) => `${line(k)} L${x(rev.length - 1)},200 L${x(0)},200 Z`;
+  const grid = [0, 1, 2, 3].map((g) => {
+    const v = max / 1.15 * (1 - g / 3), yy = y(v);
+    return `<line x1="0" y1="${yy}" x2="620" y2="${yy}" stroke="var(--border)" stroke-dasharray="3 4"/><text x="0" y="${yy - 4}" font-size="11" fill="#9C9DB3">${fmt.short(v)}</text>`;
+  }).join('');
+  const series = (k, color) => `<path d="${area(k)}" fill="${color}" opacity=".08"/><path d="${line(k)}" fill="none" stroke="${color}" stroke-width="2.5"/>`
+    + rev.map((r, i) => `<circle cx="${x(i)}" cy="${y(r[k])}" r="4" fill="#fff" stroke="${color}" stroke-width="2.5"><title>${fmt.MONTHS[+r.month.slice(5, 7) - 1]}: ${fmt.inr(r[k])}</title></circle>`).join('');
+  svg.innerHTML = grid + `<line x1="0" y1="200" x2="620" y2="200" stroke="var(--border)"/>`
+    + series('expenses', 'var(--primary)') + series('revenue', 'var(--success)')
+    + rev.map((r, i) => `<text x="${x(i)}" y="218" font-size="11" fill="#9C9DB3" text-anchor="middle">${fmt.MONTHS[+r.month.slice(5, 7) - 1]}</text>`).join('');
+} else {
+  svg.innerHTML = '<text x="310" y="120" text-anchor="middle" font-size="13" fill="#9C9DB3">Add monthly figures in Reports to see this chart</text>';
+}
+
+// Lead source donut
+const colors = ['#5145E8', '#B5790A', '#0F9D58', '#D33B3B', '#2563EB', '#6C63F0', '#9C9DB3'];
+const total = d.sources.reduce((a, s) => a + s.n, 0);
+let offset = 25;
+const arcs = d.sources.map((s, i) => {
+  const len = total ? s.n / total * 100 : 0;
+  const c = `<circle cx="21" cy="21" r="15.9" fill="transparent" stroke="${colors[i % colors.length]}" stroke-width="6" stroke-dasharray="${len} ${100 - len}" stroke-dashoffset="${offset}"></circle>`;
+  offset -= len;
+  return c;
+}).join('');
+$('source-donut').innerHTML = `
+  <svg width="180" height="180" viewBox="0 0 42 42">
+    <circle cx="21" cy="21" r="15.9" fill="transparent" stroke="#E6E7F2" stroke-width="6"></circle>${arcs}
+    <text x="21" y="19.5" text-anchor="middle" font-size="7" font-weight="700" fill="#171532">${total}</text>
+    <text x="21" y="25" text-anchor="middle" font-size="2.6" font-weight="700" fill="#9C9DB3">TOTAL LEADS</text>
+  </svg>
+  <div class="donut-legend">${d.sources.map((s, i) => `<div class="donut-legend-row"><i style="background:${colors[i % colors.length]}"></i>${CRM.esc(s.source)}<b>${s.n}</b></div>`).join('') || '<div class="crm-empty">No leads yet</div>'}</div>`;
+
+// Pipeline funnel
+const stageMeta = [['discovery', 'Discovery &amp; Qualification', 'var(--primary)'], ['pitch', 'Pitch &amp; Commercial Proposal', '#8B7FF5'],
+  ['negotiation', 'Contract &amp; Negotiation', 'var(--warning)'], ['won', 'Contract Signed / Closed Won', 'var(--success)']];
+const maxN = Math.max(1, ...d.stages.map((s) => s.n));
+$('pipe-rows').innerHTML = stageMeta.map(([k, label, color]) => {
+  const s = d.stages.find((x) => x.stage === k) || { n: 0, value: 0 };
+  return `<div class="pipe-row"><div class="pipe-head"><b>${label}</b><span>${s.n} Deal${s.n === 1 ? '' : 's'} • ${fmt.short(s.value)}</span></div><div class="pipe-bar"><i style="width:${Math.max(4, s.n / maxN * 100)}%;background:${color}"></i></div></div>`;
+}).join('');
+$('velocity').textContent = d.velocityDays === null ? 'Conversion velocity: no won deals yet' : `Conversion velocity: ${d.velocityDays} days avg.`;
+
+// Activity
+const KIND = { success: ['var(--success-bg)', 'var(--success)'], info: ['var(--info-bg)', 'var(--info)'], primary: ['var(--primary-light)', 'var(--primary)'],
+  warning: ['var(--warning-bg)', 'var(--warning)'], danger: ['var(--danger-bg)', 'var(--danger)'], muted: ['var(--bg)', 'var(--text-faint)'] };
+$('activity-list').innerHTML = activity.map((a) => {
+  const [bg, fg] = KIND[a.kind] || KIND.muted;
+  return `<div class="activity-item">
+    <div class="activity-ico" style="background:${bg};color:${fg}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20 6 9 17l-5-5"/></svg></div>
+    <div class="activity-body"><b>${a.title}</b><span>${a.detail || ''}</span></div>
+    <span class="activity-time">${fmt.ago(a.createdAt)}</span></div>`;
+}).join('') || '<div class="crm-empty">No activity yet.</div>';
+$('activity-count').textContent = `View all ${d.activityCount} logs`;
 </script>
 </body>
 </html>

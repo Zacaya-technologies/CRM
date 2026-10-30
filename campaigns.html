@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Campaign Roster &amp; Channel Performance — OmniAgency Enterprise CRM</title>
 <link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="assets/app.css">
+<script src="assets/app.js"></script>
 </head>
 <body>
 <div class="app">
@@ -80,30 +82,30 @@
         </div>
         <div class="page-actions">
           <a class="btn btn-outline" href="02-campaign-lab.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 14l4-4 4 4 5-6"/></svg>Open Campaign Lab</a>
-          <button class="btn btn-primary"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg>New Campaign</button>
+          <button class="btn btn-primary" data-create="campaigns"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg>New Campaign</button>
         </div>
       </div>
 
       <div class="stat-grid">
         <div class="stat-card">
           <div class="stat-top"><span class="stat-label">LIVE CAMPAIGNS</span><div class="stat-ico" style="background:var(--primary-light);color:var(--primary)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l18-5v12L3 14v-3Z"/><path d="M11.6 16.8 13 21l-3-1-3 1 1.4-4.2"/></svg></div></div>
-          <div class="stat-value-row"><span class="stat-value">34</span><span class="stat-delta up">+6 MoM</span></div>
-          <div class="stat-foot">Running across 14 client accounts</div>
+          <div class="stat-value-row"><span class="stat-value" id="stat-live">—</span></div>
+          <div class="stat-foot" id="stat-live-foot">&nbsp;</div>
         </div>
         <div class="stat-card">
-          <div class="stat-top"><span class="stat-label">AD SPEND (MTD)</span><div class="stat-ico" style="background:var(--info-bg);color:var(--info)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2"/></svg></div></div>
-          <div class="stat-value-row"><span class="stat-value">₹18.6L</span></div>
-          <div class="stat-bar"><i style="width:78%"></i></div>
+          <div class="stat-top"><span class="stat-label">AD SPEND TO DATE</span><div class="stat-ico" style="background:var(--info-bg);color:var(--info)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2"/></svg></div></div>
+          <div class="stat-value-row"><span class="stat-value" id="stat-spend">—</span></div>
+          <div class="stat-bar"><i id="stat-spend-bar" style="width:0%"></i></div>
         </div>
         <div class="stat-card">
           <div class="stat-top"><span class="stat-label">BLENDED ROAS</span><div class="stat-ico" style="background:var(--success-bg);color:var(--success)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 14l4-4 4 4 5-6"/></svg></div></div>
-          <div class="stat-value-row"><span class="stat-value">4.2x</span><span class="stat-delta up">↗ 0.6x</span></div>
-          <div class="stat-foot">Target 3.5x across portfolio</div>
+          <div class="stat-value-row"><span class="stat-value" id="stat-roas">—</span></div>
+          <div class="stat-foot" id="stat-roas-foot">&nbsp;</div>
         </div>
         <div class="stat-card">
           <div class="stat-top"><span class="stat-label">NEEDS ATTENTION</span><div class="stat-ico" style="background:var(--warning-bg);color:var(--warning)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg></div></div>
-          <div class="stat-value-row"><span class="stat-value">5</span></div>
-          <div class="stat-foot" style="color:var(--warning);font-weight:600;">Overpacing or below ROAS floor</div>
+          <div class="stat-value-row"><span class="stat-value" id="stat-attn">—</span></div>
+          <div class="stat-foot" style="color:var(--warning);font-weight:600;" id="stat-attn-foot">&nbsp;</div>
         </div>
       </div>
 
@@ -118,6 +120,7 @@
               <div class="filter-pill" data-status="live">Live</div>
               <div class="filter-pill" data-status="paused">Paused</div>
               <div class="filter-pill" data-status="scheduled">Scheduled</div>
+              <div class="filter-pill" data-status="ended">Ended</div>
             </div>
           </div>
           <table class="data-table">
@@ -128,14 +131,14 @@
 
         <div>
           <div class="rail-card">
-            <div class="rail-head"><div><h3>Spend by Channel</h3><p>Month to date</p></div></div>
+            <div class="rail-head"><div><h3>Spend by Channel</h3><p>All live &amp; paused campaigns</p></div></div>
             <div id="channel-mix"></div>
           </div>
           <div class="rail-card">
-            <div style="font-size:10.5px;font-weight:700;color:var(--text-faint);letter-spacing:.5px;margin-bottom:10px;">TOP PERFORMER THIS MONTH</div>
+            <div style="font-size:10.5px;font-weight:700;color:var(--text-faint);letter-spacing:.5px;margin-bottom:10px;">TOP PERFORMER (ROAS)</div>
             <div class="director-card">
-              <div class="avatar">ZM</div>
-              <div class="info"><b>Zenith Media — Retargeting</b><span>7.8x ROAS on ₹2.1L spend</span></div>
+              <div class="avatar" id="top-avatar">—</div>
+              <div class="info"><b id="top-name">—</b><span id="top-sub">&nbsp;</span></div>
             </div>
             <a class="rail-link" href="02-campaign-lab.html">View split tests in Campaign Lab →</a>
           </div>
@@ -145,75 +148,92 @@
     </div>
   </div>
 </div>
-<script>
-document.querySelectorAll('.nav-item').forEach(item=>{
-  item.addEventListener('click',()=>{
-    document.querySelectorAll('.nav-item').forEach(i=>i.classList.remove('active'));
-    item.classList.add('active');
-  });
-});
+<script type="module">
+await CRM.ready;
+const { fmt } = CRM;
 
-const channels={
-  meta:{name:'Meta Ads',color:'var(--primary)',bg:'var(--primary-light)'},
-  google:{name:'Google Ads',color:'var(--info)',bg:'var(--info-bg)'},
-  linkedin:{name:'LinkedIn',color:'#0A66C2',bg:'#E3EEF9'},
+const channels = {
+  meta: { name: 'Meta Ads', color: 'var(--primary)', bg: 'var(--primary-light)' },
+  google: { name: 'Google Ads', color: 'var(--info)', bg: 'var(--info-bg)' },
+  linkedin: { name: 'LinkedIn', color: '#0A66C2', bg: '#E3EEF9' },
+  youtube: { name: 'YouTube', color: 'var(--danger)', bg: 'var(--danger-bg)' },
 };
-const statusBadge={live:['badge-green','Live'],paused:['badge-amber','Paused'],scheduled:['badge-blue','Scheduled']};
-const campaigns=[
-  {name:'Winter Drop — Prospecting',client:'UrbanStyle Direct',ch:'meta',status:'live',pace:72,spend:'₹1.4L',roas:'5.1x',cpl:'₹142',owner:'VM'},
-  {name:'Retargeting — Cart Abandon',client:'Zenith Media',ch:'meta',status:'live',pace:64,spend:'₹2.1L',roas:'7.8x',cpl:'₹96',owner:'AK'},
-  {name:'Brand Search — Always On',client:'Kinetix Cloud',ch:'google',status:'live',pace:96,spend:'₹1.9L',roas:'2.7x',cpl:'₹610',owner:'RR',warn:true},
-  {name:'Decision Makers — ABM',client:'Solaris Energy',ch:'linkedin',status:'live',pace:58,spend:'₹1.1L',roas:'3.4x',cpl:'₹1,240',owner:'PL'},
-  {name:'Performance Max — Catalog',client:'UrbanStyle Direct',ch:'google',status:'live',pace:81,spend:'₹2.6L',roas:'4.6x',cpl:'₹188',owner:'VM'},
-  {name:'Lead Gen — Free Trial',client:'ApexDigital',ch:'meta',status:'paused',pace:41,spend:'₹0.6L',roas:'1.9x',cpl:'₹530',owner:'VM',warn:true},
-  {name:'Thought Leadership — Webinar',client:'Kinetix Cloud',ch:'linkedin',status:'scheduled',pace:0,spend:'₹0',roas:'—',cpl:'—',owner:'RR'},
-  {name:'Portfolio Showcase — Reels',client:'PixelForge Studio',ch:'meta',status:'live',pace:49,spend:'₹0.4L',roas:'3.9x',cpl:'₹210',owner:'AK'},
-  {name:'Competitor Conquesting',client:'Zenith Media',ch:'google',status:'paused',pace:88,spend:'₹1.2L',roas:'2.1x',cpl:'₹720',owner:'AK',warn:true},
-];
-const mix=[{ch:'meta',amt:'₹8.2L',pct:44},{ch:'google',amt:'₹7.4L',pct:40},{ch:'linkedin',amt:'₹3.0L',pct:16}];
+const statusBadge = { live: ['badge-green', 'Live'], paused: ['badge-amber', 'Paused'], scheduled: ['badge-blue', 'Scheduled'], ended: ['badge-grey', 'Ended'] };
+const ROAS_FLOOR = 3;
+const campaigns = await API.list('campaigns');
+const needsAttention = (c) => c.status === 'live' && (c.pace > 90 || (c.roas !== null && c.roas < ROAS_FLOOR));
+let activeChannel = 'all', activeStatus = 'all';
 
-let activeChannel='all', activeStatus='all';
+// Stats
+const live = campaigns.filter((c) => c.status === 'live');
+const running = campaigns.filter((c) => ['live', 'paused'].includes(c.status));
+const spend = running.reduce((a, c) => a + c.spend, 0);
+const budget = running.reduce((a, c) => a + c.budget, 0);
+const withRoas = running.filter((c) => c.roas !== null && c.spend > 0);
+const roasSpend = withRoas.reduce((a, c) => a + c.spend, 0);
+const blended = roasSpend ? withRoas.reduce((a, c) => a + c.roas * c.spend, 0) / roasSpend : null;
+const attention = campaigns.filter(needsAttention);
+document.getElementById('stat-live').textContent = live.length;
+document.getElementById('stat-live-foot').textContent = `Running across ${new Set(live.map((c) => c.clientId)).size} client accounts`;
+document.getElementById('stat-spend').textContent = fmt.short(spend);
+document.getElementById('stat-spend-bar').style.width = (budget ? Math.min(100, spend / budget * 100) : 0) + '%';
+document.getElementById('stat-roas').textContent = blended === null ? '—' : blended.toFixed(1) + 'x';
+document.getElementById('stat-roas-foot').textContent = `Spend-weighted · floor ${ROAS_FLOOR.toFixed(1)}x`;
+document.getElementById('stat-attn').textContent = attention.length;
+document.getElementById('stat-attn-foot').textContent = 'Live & overpacing (>90%) or below ROAS floor';
 
-function renderTabs(){
-  const tabs=[['all','All Channels',campaigns.length]].concat(Object.entries(channels).map(([k,c])=>[k,c.name,campaigns.filter(x=>x.ch===k).length]));
-  document.getElementById('channel-tabs').innerHTML = tabs.map(([k,label,n])=>`<div class="view-tab ${k===activeChannel?'active':''}" data-ch="${k}">${label} (${n})</div>`).join('');
-  document.querySelectorAll('#channel-tabs .view-tab').forEach(t=>t.addEventListener('click',()=>{activeChannel=t.dataset.ch;renderTabs();renderRows();}));
+function renderTabs() {
+  const tabs = [['all', 'All Channels', campaigns.length]].concat(Object.entries(channels).map(([k, c]) => [k, c.name, campaigns.filter((x) => x.ch === k).length]));
+  document.getElementById('channel-tabs').innerHTML = tabs.map(([k, label, n]) => `<div class="view-tab ${k === activeChannel ? 'active' : ''}" data-ch="${k}">${label} (${n})</div>`).join('');
+  document.querySelectorAll('#channel-tabs .view-tab').forEach((t) => t.addEventListener('click', () => { activeChannel = t.dataset.ch; renderTabs(); renderRows(); }));
 }
 
-function renderRows(){
-  const rows=campaigns.filter(c=>(activeChannel==='all'||c.ch===activeChannel)&&(activeStatus==='all'||c.status===activeStatus));
-  document.getElementById('roster-sub').textContent = `${rows.length} campaign${rows.length!==1?'s':''} shown`;
-  document.getElementById('campaign-body').innerHTML = rows.length ? rows.map(c=>{
-    const ch=channels[c.ch];
-    const paceColor=c.pace>90?'var(--danger)':c.pace>75?'var(--warning)':'var(--primary)';
+function renderRows() {
+  const rows = campaigns.filter((c) => (activeChannel === 'all' || c.ch === activeChannel) && (activeStatus === 'all' || c.status === activeStatus));
+  document.getElementById('roster-sub').textContent = `${rows.length} campaign${rows.length !== 1 ? 's' : ''} shown`;
+  document.getElementById('campaign-body').innerHTML = rows.length ? rows.map((c) => {
+    const ch = channels[c.ch];
+    const paceColor = c.pace > 90 ? 'var(--danger)' : c.pace > 75 ? 'var(--warning)' : 'var(--primary)';
+    const warn = c.roas !== null && c.roas < ROAS_FLOOR;
     return `
-    <tr>
-      <td><div class="row-lead"><div class="row-avatar" style="background:${ch.bg};color:${ch.color}">${c.client.split(' ').map(n=>n[0]).join('').slice(0,2)}</div><div><b>${c.name}</b><span>${c.client}</span></div></div></td>
+    <tr data-edit="campaigns" data-id="${c.id}">
+      <td><div class="row-lead"><div class="row-avatar" style="background:${ch.bg};color:${ch.color}">${fmt.initials(c.client)}</div><div><b>${c.name}</b><span>${c.client}</span></div></div></td>
       <td><span class="badge-pill" style="background:${ch.bg};color:${ch.color}">${ch.name}</span></td>
       <td><span class="badge-pill ${statusBadge[c.status][0]}">${statusBadge[c.status][1]}</span></td>
-      <td><div class="score-track"><b>${c.pace}%</b><div class="metric-bar"><i style="width:${c.pace}%;background:${paceColor}"></i></div></div><span style="font-size:11px;color:var(--text-faint)">${c.spend} spent</span></td>
-      <td style="font-weight:700;color:${c.warn?'var(--danger)':'var(--text)'}">${c.roas}</td>
-      <td>${c.cpl}</td>
-      <td><div class="mini-avatar">${c.owner}</div></td>
-    </tr>`;}).join('') : `<tr><td colspan="7" style="text-align:center;color:var(--text-faint);padding:28px;">No campaigns match these filters.</td></tr>`;
+      <td><div class="score-track"><b>${c.pace}%</b><div class="metric-bar"><i style="width:${c.pace}%;background:${paceColor}"></i></div></div><span style="font-size:11px;color:var(--text-faint)">${fmt.short(c.spend)} spent</span></td>
+      <td style="font-weight:700;color:${warn ? 'var(--danger)' : 'var(--text)'}">${c.roas === null ? '—' : c.roas.toFixed(1) + 'x'}</td>
+      <td>${c.cpl === null ? '—' : fmt.inr(c.cpl)}</td>
+      <td><div class="mini-avatar" title="${c.ownerName || ''}">${c.owner}</div></td>
+    </tr>`; }).join('') : '<tr><td colspan="7" class="crm-empty">No campaigns match these filters.</td></tr>';
 }
 
-document.querySelectorAll('#status-pills .filter-pill').forEach(p=>p.addEventListener('click',()=>{
-  document.querySelectorAll('#status-pills .filter-pill').forEach(x=>x.classList.remove('active'));
-  p.classList.add('active');
-  activeStatus=p.dataset.status;
+document.querySelectorAll('#status-pills .filter-pill').forEach((p) => p.addEventListener('click', () => {
+  activeStatus = p.dataset.status;
+  document.querySelectorAll('#status-pills .filter-pill').forEach((x) => x.classList.toggle('active', x === p));
   renderRows();
 }));
 
-document.getElementById('channel-mix').innerHTML = mix.map(m=>`
+// Spend by channel
+const byCh = {};
+running.forEach((c) => (byCh[c.ch] = (byCh[c.ch] || 0) + c.spend));
+document.getElementById('channel-mix').innerHTML = Object.entries(byCh).sort((a, b) => b[1] - a[1]).map(([ch, amt]) => {
+  const pct = spend ? Math.round(amt / spend * 100) : 0;
+  return `
   <div style="margin-bottom:14px;">
-    <div style="display:flex;justify-content:space-between;font-size:12.4px;font-weight:600;"><span>${channels[m.ch].name}</span><b>${m.amt} <span style="color:var(--text-faint);font-weight:600;">· ${m.pct}%</span></b></div>
-    <div class="metric-bar" style="height:6px;"><i style="width:${m.pct}%;background:${channels[m.ch].color}"></i></div>
-  </div>`).join('');
+    <div style="display:flex;justify-content:space-between;font-size:12.4px;font-weight:600;"><span>${channels[ch].name}</span><b>${fmt.short(amt)} <span style="color:var(--text-faint);font-weight:600;">· ${pct}%</span></b></div>
+    <div class="metric-bar" style="height:6px;"><i style="width:${pct}%;background:${channels[ch].color}"></i></div>
+  </div>`; }).join('') || '<div class="crm-empty">No spend yet.</div>';
+
+// Top performer
+const top = withRoas.slice().sort((a, b) => b.roas - a.roas)[0];
+if (top) {
+  document.getElementById('top-avatar').textContent = fmt.initials(top.client);
+  document.getElementById('top-name').innerHTML = `${top.client} — ${top.name}`;
+  document.getElementById('top-sub').textContent = `${top.roas.toFixed(1)}x ROAS on ${fmt.short(top.spend)} spend`;
+}
 
 renderTabs();
 renderRows();
-
 </script>
 </body>
 </html>

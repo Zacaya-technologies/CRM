@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Client Portfolio & Account Health — OmniAgency Enterprise CRM</title>
 <link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="assets/app.css">
+<script src="assets/app.js"></script>
 </head>
 <body>
 <div class="app">
@@ -79,37 +81,37 @@
           <p class="page-sub">Health, revenue, and renewal signal across every active retainer the agency manages.</p>
         </div>
         <div class="page-actions">
-          <button class="btn btn-outline"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><rect x="7" y="12" width="3" height="6"/><rect x="12.5" y="8" width="3" height="10"/><rect x="18" y="5" width="3" height="13"/></svg>Portfolio Report</button>
-          <button class="btn btn-primary"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg>Add Client</button>
+          <button class="btn btn-outline" id="export-csv"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><rect x="7" y="12" width="3" height="6"/><rect x="12.5" y="8" width="3" height="10"/><rect x="18" y="5" width="3" height="13"/></svg>Export CSV</button>
+          <button class="btn btn-primary" data-create="clients"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg>Add Client</button>
         </div>
       </div>
 
       <div class="stat-grid">
         <div class="stat-card">
           <div class="stat-top"><span class="stat-label">ACTIVE CLIENTS</span><div class="stat-ico" style="background:var(--primary-light);color:var(--primary)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18"/></svg></div></div>
-          <div class="stat-value-row"><span class="stat-value">21</span><span class="stat-delta up">+3 QTD</span></div>
-          <div class="stat-foot">Across 6 industry verticals</div>
+          <div class="stat-value-row"><span class="stat-value" id="stat-active">—</span></div>
+          <div class="stat-foot" id="stat-active-foot">&nbsp;</div>
         </div>
         <div class="stat-card">
           <div class="stat-top"><span class="stat-label">TOTAL MRR</span><div class="stat-ico" style="background:var(--success-bg);color:var(--success)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2"/></svg></div></div>
-          <div class="stat-value-row"><span class="stat-value">₹2.86L/mo</span><span class="stat-delta up">↗ 9.2%</span></div>
-          <div class="stat-foot">Blended across all retainers</div>
+          <div class="stat-value-row"><span class="stat-value" id="stat-mrr">—</span></div>
+          <div class="stat-foot" id="stat-mrr-foot">&nbsp;</div>
         </div>
         <div class="stat-card">
           <div class="stat-top"><span class="stat-label">AVG HEALTH SCORE</span><div class="stat-ico" style="background:var(--info-bg);color:var(--info)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 4 6v6c0 5 3.5 8.5 8 10 4.5-1.5 8-5 8-10V6Z"/></svg></div></div>
-          <div class="stat-value-row"><span class="stat-value">84</span></div>
-          <div class="stat-foot">3 accounts flagged at-risk</div>
+          <div class="stat-value-row"><span class="stat-value" id="stat-health">—</span></div>
+          <div class="stat-foot" id="stat-health-foot">&nbsp;</div>
         </div>
         <div class="stat-card">
           <div class="stat-top"><span class="stat-label">UPCOMING RENEWALS</span><div class="stat-ico" style="background:var(--warning-bg);color:var(--warning)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></div></div>
-          <div class="stat-value-row"><span class="stat-value">4</span></div>
-          <div class="stat-foot" style="color:var(--warning);font-weight:600;">Within next 30 days</div>
+          <div class="stat-value-row"><span class="stat-value" id="stat-renew">—</span></div>
+          <div class="stat-foot" style="color:var(--warning);font-weight:600;" id="stat-renew-foot">&nbsp;</div>
         </div>
       </div>
 
       <div class="section-title">
-        <div><h2>Account Health</h2><p>Retention risk, spend trajectory and renewal timing per client.</p></div>
-        <div class="sort">SORT BY: Health Score <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div>
+        <div><h2>Account Health</h2><p>The three accounts with the lowest health score — click a card to update it.</p></div>
+        <div class="sort">SORTED BY: Lowest Health <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div>
       </div>
 
       <div class="client-grid" id="client-grid"></div>
@@ -127,49 +129,59 @@
     </div>
   </div>
 </div>
-<script>
-document.querySelectorAll('.nav-item').forEach(item=>{
-  item.addEventListener('click',()=>{
-    document.querySelectorAll('.nav-item').forEach(i=>i.classList.remove('active'));
-    item.classList.add('active');
-  });
-});
+<script type="module">
+await CRM.ready;
+const { fmt } = CRM;
 
-const clients=[
-  {name:'UrbanStyle Direct',ind:'E-commerce D2C',mrr:'₹18,000',health:88,healthColor:'var(--success)',renewal:'Feb 12',owner:'VM',color1:'#8B7FF5',color2:'#5145E8'},
-  {name:'Zenith Media',ind:'Omnichannel SaaS',mrr:'₹24,000',health:92,healthColor:'var(--success)',renewal:'Mar 04',owner:'AK',color1:'#0F9D58',color2:'#0B7A43'},
-  {name:'Kinetix Cloud',ind:'DevOps Platform',mrr:'₹32,000',health:58,healthColor:'var(--warning)',renewal:'Jan 28',owner:'RR',color1:'#2563EB',color2:'#1D4ED8'},
-  {name:'Solaris Energy',ind:'CleanTech B2B',mrr:'₹15,000',health:64,healthColor:'var(--warning)',renewal:'Feb 20',owner:'PL',color1:'#B5790A',color2:'#8A5C06'},
-  {name:'ApexDigital',ind:'B2B SaaS',mrr:'₹12,000',health:47,healthColor:'var(--danger)',renewal:'Jan 18',owner:'VM',color1:'#D33B3B',color2:'#A62C2C'},
-  {name:'PixelForge Studio',ind:'Creative Agency',mrr:'₹9,000',health:81,healthColor:'var(--success)',renewal:'Apr 02',owner:'AK',color1:'#6C63F0',color2:'#5145E8'},
-];
-document.getElementById('client-grid').innerHTML = clients.slice(0,3).map(c=>`
-  <div class="client-card">
+const healthColor = (h) => h >= 75 ? 'var(--success)' : h >= 55 ? 'var(--warning)' : 'var(--danger)';
+const clients = await API.list('clients');
+const active = clients.filter((c) => c.status === 'active');
+const daysTo = (s) => s ? Math.round((new Date(s + 'T00:00:00') - new Date(fmt.isoDate() + 'T00:00:00')) / 86400000) : null;
+
+const renewSoon = active.filter((c) => { const d = daysTo(c.renewal); return d !== null && d >= 0 && d <= 30; });
+const avgHealth = active.length ? Math.round(active.reduce((a, c) => a + c.health, 0) / active.length) : 0;
+document.getElementById('stat-active').textContent = active.length;
+document.getElementById('stat-active-foot').textContent = `Across ${new Set(active.map((c) => c.ind)).size} industry verticals`;
+document.getElementById('stat-mrr').textContent = fmt.short(active.reduce((a, c) => a + c.mrr, 0)) + '/mo';
+document.getElementById('stat-mrr-foot').textContent = 'Sum of active monthly retainers';
+document.getElementById('stat-health').textContent = active.length ? avgHealth : '—';
+document.getElementById('stat-health-foot').textContent = `${active.filter((c) => c.health < 60).length} accounts flagged at-risk (< 60)`;
+document.getElementById('stat-renew').textContent = renewSoon.length;
+document.getElementById('stat-renew-foot').textContent = 'Within next 30 days';
+
+const logo = (c) => `background:linear-gradient(135deg,${c.color1},${c.color2})`;
+
+document.getElementById('client-grid').innerHTML = active.slice().sort((a, b) => a.health - b.health).slice(0, 3).map((c) => `
+  <div class="client-card" data-edit="clients" data-id="${c.id}">
     <div class="client-top">
-      <div class="client-logo" style="background:linear-gradient(135deg,${c.color1},${c.color2})">${c.name.split(' ').map(n=>n[0]).join('').slice(0,2)}</div>
-      <div><b>${c.name}</b><span>${c.ind}</span></div>
+      <div class="client-logo" style="${logo(c)}">${fmt.initials(c.name)}</div>
+      <div><b>${c.name}</b><span>${c.ind || ''}</span></div>
     </div>
     <div class="client-metrics">
-      <div><span>MONTHLY RETAINER</span><b>${c.mrr}</b></div>
-      <div><span>RENEWAL DATE</span><b>${c.renewal}</b></div>
+      <div><span>MONTHLY RETAINER</span><b>${fmt.inr(c.mrr)}</b></div>
+      <div><span>RENEWAL DATE</span><b>${fmt.date(c.renewal)}</b></div>
     </div>
-    <div class="client-health"><span>Health ${c.health}</span><div class="metric-bar" style="flex:1;"><i style="width:${c.health}%;background:${c.healthColor}"></i></div></div>
+    <div class="client-health"><span>Health ${c.health}</span><div class="metric-bar" style="flex:1;"><i style="width:${c.health}%;background:${healthColor(c.health)}"></i></div></div>
     <div class="client-foot">
-      <div class="mini-avatar">${c.owner}</div>
-      <a class="rail-link" style="margin:0;" href="#">Open Account →</a>
+      <div class="mini-avatar" title="${c.ownerName || ''}">${c.owner}</div>
+      <span class="rail-link" style="margin:0;">Open Account →</span>
     </div>
-  </div>`).join('');
+  </div>`).join('') || '<div class="crm-empty">No active clients yet — click “Add Client”.</div>';
 
-document.getElementById('clients-body').innerHTML = clients.map(c=>`
-  <tr>
-    <td><div class="row-lead"><div class="row-avatar" style="background:linear-gradient(135deg,${c.color1},${c.color2});color:#fff;">${c.name.split(' ').map(n=>n[0]).join('').slice(0,2)}</div><div><b>${c.name}</b><span>${c.ind}</span></div></div></td>
-    <td>${c.ind}</td>
-    <td>${c.mrr}/mo</td>
-    <td><div class="score-track"><b>${c.health}</b><div class="metric-bar"><i style="width:${c.health}%;background:${c.healthColor}"></i></div></div></td>
-    <td>${c.renewal}</td>
-    <td><div class="mini-avatar">${c.owner}</div></td>
-  </tr>`).join('');
+document.getElementById('clients-body').innerHTML = clients.slice().sort((a, b) => a.name.localeCompare(b.name)).map((c) => `
+  <tr data-edit="clients" data-id="${c.id}" style="${c.status !== 'active' ? 'opacity:.55' : ''}">
+    <td><div class="row-lead"><div class="row-avatar" style="${logo(c)};color:#fff;">${fmt.initials(c.name)}</div><div><b>${c.name}</b><span>${c.status === 'active' ? (c.email || c.ind || '') : c.status}</span></div></div></td>
+    <td>${c.ind || '—'}</td>
+    <td>${fmt.inr(c.mrr)}/mo</td>
+    <td><div class="score-track"><b>${c.health}</b><div class="metric-bar"><i style="width:${c.health}%;background:${healthColor(c.health)}"></i></div></div></td>
+    <td>${fmt.date(c.renewal)}</td>
+    <td><div class="mini-avatar" title="${c.ownerName || ''}">${c.owner}</div></td>
+  </tr>`).join('') || '<tr><td colspan="6" class="crm-empty">No clients yet.</td></tr>';
 
+document.getElementById('export-csv').addEventListener('click', () => CRM.downloadCSV(`clients-${fmt.isoDate()}.csv`, clients, [
+  ['name', 'Client'], ['ind', 'Industry'], ['email', 'Email'], ['phone', 'Phone'], ['mrr', 'MRR'], ['health', 'Health'],
+  ['renewal', 'Renewal'], ['status', 'Status'], ['ownerName', 'Owner'],
+]));
 </script>
 </body>
 </html>

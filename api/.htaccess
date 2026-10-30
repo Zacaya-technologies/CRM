@@ -1,0 +1,13 @@
+Options -Indexes
+DirectoryIndex index.php
+
+# Only the router may be requested; config.php and everything else is private.
+<FilesMatch "^(?!index\.php$).+">
+  <IfModule mod_authz_core.c>
+    Require all denied
+  </IfModule>
+  <IfModule !mod_authz_core.c>
+    Order allow,deny
+    Deny from all
+  </IfModule>
+</FilesMatch>

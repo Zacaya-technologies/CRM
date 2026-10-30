@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Financial Reports &amp; Profitability — OmniAgency Enterprise CRM</title>
 <link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="assets/app.css">
+<script src="assets/app.js"></script>
 </head>
 <body>
 <div class="app">
@@ -79,31 +81,31 @@
           <p class="page-sub">Agency revenue, margin and profitability by client and service line.</p>
         </div>
         <div class="page-actions">
-          <button class="btn btn-outline"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5M12 15V3"/></svg>Export PDF</button>
-          <button class="btn btn-primary"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg>New Report</button>
+          <button class="btn btn-outline" id="export-pdf"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5M12 15V3"/></svg>Export PDF</button>
+          <button class="btn btn-primary" data-create="saved_reports"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg>New Report</button>
         </div>
       </div>
 
       <div class="stat-grid">
         <div class="stat-card">
           <div class="stat-top"><span class="stat-label">REVENUE (YTD)</span><div class="stat-ico" style="background:var(--primary-light);color:var(--primary)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2"/></svg></div></div>
-          <div class="stat-value-row"><span class="stat-value">₹1.02Cr</span><span class="stat-delta up">↗ 21%</span></div>
-          <div class="stat-foot">Jan–Oct 2026 vs same period 2025</div>
+          <div class="stat-value-row"><span class="stat-value" id="stat-rev">—</span><span class="stat-delta up" id="stat-rev-delta"></span></div>
+          <div class="stat-foot" id="stat-rev-foot">&nbsp;</div>
         </div>
         <div class="stat-card">
           <div class="stat-top"><span class="stat-label">GROSS MARGIN</span><div class="stat-ico" style="background:var(--success-bg);color:var(--success)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 14l4-4 4 4 5-6"/></svg></div></div>
-          <div class="stat-value-row"><span class="stat-value">41%</span><span class="stat-delta up">+3pt</span></div>
-          <div class="stat-bar"><i style="width:41%;background:var(--success)"></i></div>
+          <div class="stat-value-row"><span class="stat-value" id="stat-margin">—</span></div>
+          <div class="stat-bar"><i id="stat-margin-bar" style="width:0%;background:var(--success)"></i></div>
         </div>
         <div class="stat-card">
           <div class="stat-top"><span class="stat-label">CLIENT RETENTION</span><div class="stat-ico" style="background:var(--info-bg);color:var(--info)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div></div>
-          <div class="stat-value-row"><span class="stat-value">94%</span></div>
-          <div class="stat-foot">Trailing 12 months, by revenue</div>
+          <div class="stat-value-row"><span class="stat-value" id="stat-retention">—</span></div>
+          <div class="stat-foot">Active clients vs churned</div>
         </div>
         <div class="stat-card">
-          <div class="stat-top"><span class="stat-label">TEAM UTILIZATION</span><div class="stat-ico" style="background:var(--warning-bg);color:var(--warning)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></div></div>
-          <div class="stat-value-row"><span class="stat-value">86%</span></div>
-          <div class="stat-foot" style="color:var(--warning);font-weight:600;">Above 85% capacity target</div>
+          <div class="stat-top"><span class="stat-label">OPEN RECEIVABLES</span><div class="stat-ico" style="background:var(--warning-bg);color:var(--warning)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></div></div>
+          <div class="stat-value-row"><span class="stat-value" id="stat-recv">—</span></div>
+          <div class="stat-foot" style="color:var(--warning);font-weight:600;" id="stat-recv-foot">&nbsp;</div>
         </div>
       </div>
 
@@ -111,6 +113,7 @@
         <div class="chart-card">
           <div class="chart-head">
             <div><b>Revenue vs Expenses</b><p id="pl-sub"></p></div>
+            <button class="btn btn-outline" style="padding:6px 10px;font-size:12px;" data-create="finance">+ Month figures</button>
             <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
               <div class="filter-pills" id="range-pills">
                 <div class="filter-pill active" data-range="6">6M</div>
@@ -163,7 +166,12 @@
   </div>
 </div>
 <div class="chart-tip" id="chart-tip"></div>
-<script>
+<script type="module">
+await CRM.ready;
+const MONTHS=CRM.fmt.MONTHS;
+const [fin, svc, allClients, savedRows, invoices, campaigns] = await Promise.all([
+  API.list('finance'), API.list('services'), API.list('clients'), API.list('saved_reports'),
+  API.list('invoices'), API.list('campaigns')]);
 document.querySelectorAll('.nav-item').forEach(item=>{
   item.addEventListener('click',()=>{
     document.querySelectorAll('.nav-item').forEach(i=>i.classList.remove('active'));
@@ -174,12 +182,7 @@ document.querySelectorAll('.nav-item').forEach(item=>{
 const REV='#5145E8', EXP='#E0912F';
 const lakh=n=>`₹${n.toFixed(1)}L`;
 // Monthly P&L in lakhs, Nov 2025 → Oct 2026
-const pl=[
-  {m:'Nov',y:2025,rev:7.4,exp:4.6},{m:'Dec',y:2025,rev:7.9,exp:4.9},{m:'Jan',y:2026,rev:8.2,exp:5.1},
-  {m:'Feb',y:2026,rev:8.6,exp:5.2},{m:'Mar',y:2026,rev:9.1,exp:5.5},{m:'Apr',y:2026,rev:9.4,exp:5.6},
-  {m:'May',y:2026,rev:9.6,exp:5.8},{m:'Jun',y:2026,rev:10.1,exp:6.0},{m:'Jul',y:2026,rev:10.3,exp:6.1},
-  {m:'Aug',y:2026,rev:11.0,exp:6.4},{m:'Sep',y:2026,rev:11.6,exp:6.7},{m:'Oct',y:2026,rev:12.4,exp:7.1},
-];
+const pl=fin.slice(-12).map(f=>({id:f.id,m:MONTHS[+f.month.slice(5,7)-1],y:f.month.slice(0,4),rev:f.revenue/1e5,exp:f.expenses/1e5}));
 let range=6, mode='chart';
 
 const tip=document.getElementById('chart-tip');
@@ -192,9 +195,10 @@ function moveTip(e){
 
 function renderPL(){
   const data=pl.slice(-range);
-  const max=Math.max(...data.map(d=>d.rev))*1.1;
+  const max=Math.max(0.01,...data.map(d=>d.rev))*1.1;
+  if(!data.length){document.getElementById('pl-sub').textContent='No monthly figures yet — click “+ Month figures”.';document.getElementById('pl-chart').innerHTML='';document.getElementById('pl-axis').innerHTML='';document.getElementById('pl-table').innerHTML='';return;}
   const tot=data.reduce((a,d)=>({rev:a.rev+d.rev,exp:a.exp+d.exp}),{rev:0,exp:0});
-  document.getElementById('pl-sub').textContent = `Last ${range} months · ${lakh(tot.rev)} revenue, ${Math.round((tot.rev-tot.exp)/tot.rev*100)}% margin`;
+  document.getElementById('pl-sub').textContent = `Last ${range} months · ${lakh(tot.rev)} revenue, ${tot.rev?Math.round((tot.rev-tot.exp)/tot.rev*100):0}% margin`;
   document.getElementById('pl-chart').innerHTML = data.map((d,i)=>`
     <div class="bar-col" data-i="${i}">
       <div class="bar" style="height:${d.rev/max*100}%;background:${REV}"></div>
@@ -208,7 +212,7 @@ function renderPL(){
     col.addEventListener('mouseleave',()=>tip.classList.remove('show'));
   });
   document.getElementById('pl-table').innerHTML = data.slice().reverse().map(d=>`
-    <tr><td>${d.m} ${d.y}</td><td>${lakh(d.rev)}</td><td>${lakh(d.exp)}</td><td style="font-weight:700;">${lakh(d.rev-d.exp)}</td><td>${Math.round((d.rev-d.exp)/d.rev*100)}%</td></tr>`).join('');
+    <tr data-edit="finance" data-id="${d.id}"><td>${d.m} ${d.y}</td><td>${lakh(d.rev)}</td><td>${lakh(d.exp)}</td><td style="font-weight:700;">${lakh(d.rev-d.exp)}</td><td>${Math.round((d.rev-d.exp)/d.rev*100)}%</td></tr>`).join('');
   document.getElementById('pl-chart-wrap').style.display = mode==='chart'?'':'none';
   document.getElementById('pl-table-wrap').style.display = mode==='table'?'':'none';
 }
@@ -223,26 +227,19 @@ function bindPills(id,key,apply){
 bindPills('range-pills','range',v=>range=Number(v));
 bindPills('mode-pills','mode',v=>mode=v);
 
-const services=[['Performance Marketing',38.6],['Web & Development',24.1],['Content & Social',17.8],['Brand & Design',12.2],['CRM & Automation',9.3]];
-const svcMax=services[0][1], svcTotal=services.reduce((a,s)=>a+s[1],0);
+const services=svc.filter(s=>s.revenueYtd>0).map(s=>[s.name,s.revenueYtd/1e5]).sort((a,b)=>b[1]-a[1]);
+const svcMax=(services[0]||[0,1])[1], svcTotal=services.reduce((a,s)=>a+s[1],0);
 document.getElementById('services').innerHTML = services.map(([label,v])=>`
   <div class="hbar-row">
     <div class="hbar-label"><span>${label}</span><b>${lakh(v)} <small>· ${Math.round(v/svcTotal*100)}%</small></b></div>
     <div class="metric-bar" style="height:6px;"><i style="width:${v/svcMax*100}%"></i></div>
   </div>`).join('');
 
-const clients=[
-  {name:'Kinetix Cloud',ind:'DevOps Platform',rev:24.6,cost:15.9},
-  {name:'Zenith Media',ind:'Omnichannel SaaS',rev:21.8,cost:11.7},
-  {name:'UrbanStyle Direct',ind:'E-commerce D2C',rev:17.4,cost:9.6},
-  {name:'Solaris Energy',ind:'CleanTech B2B',rev:13.2,cost:8.1},
-  {name:'ApexDigital',ind:'B2B SaaS',rev:11.9,cost:8.6},
-  {name:'PixelForge Studio',ind:'Creative Agency',rev:8.3,cost:4.4},
-].map(c=>({...c,gp:c.rev-c.cost,margin:Math.round((c.rev-c.cost)/c.rev*100)})).sort((a,b)=>b.gp-a.gp);
+const clients=allClients.filter(c=>c.revenueYtd>0).map(c=>({id:c.id,name:c.name,ind:c.ind||'',rev:c.revenueYtd/1e5,cost:c.costYtd/1e5})).map(c=>({...c,gp:c.rev-c.cost,margin:Math.round((c.rev-c.cost)/c.rev*100)})).sort((a,b)=>b.gp-a.gp);
 document.getElementById('profit-body').innerHTML = clients.map(c=>{
   const color=c.margin>=45?'var(--success)':c.margin>=35?'var(--warning)':'var(--danger)';
   return `
-  <tr>
+  <tr data-edit="clients" data-id="${c.id}">
     <td><div class="row-lead"><div class="row-avatar">${c.name.split(' ').map(n=>n[0]).join('').slice(0,2)}</div><div><b>${c.name}</b><span>${c.ind}</span></div></div></td>
     <td>${lakh(c.rev)}</td>
     <td>${lakh(c.cost)}</td>
@@ -250,19 +247,45 @@ document.getElementById('profit-body').innerHTML = clients.map(c=>{
     <td><div class="score-track"><b>${c.margin}%</b><div class="metric-bar"><i style="width:${c.margin}%;background:${color}"></i></div></div></td>
   </tr>`;}).join('');
 
-const saved=[
-  {name:'Monthly P&L Summary',sched:'1st of every month · Email',fmt:'PDF'},
-  {name:'Client Health & Renewals',sched:'Every Monday · Slack',fmt:'PDF'},
-  {name:'Campaign ROAS by Client',sched:'Every Friday · Email',fmt:'XLSX'},
-  {name:'Team Utilization',sched:'On demand',fmt:'XLSX'},
-  {name:'Receivables Ageing',sched:'Every Monday · Email',fmt:'PDF'},
-];
+const saved=savedRows;
 document.getElementById('saved').innerHTML = saved.map(r=>`
-  <div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-top:1px solid var(--border);">
+  <div data-edit="saved_reports" data-id="${r.id}" style="display:flex;align-items:center;gap:10px;padding:10px 0;border-top:1px solid var(--border);">
     <div style="flex:1;min-width:0;"><b style="font-size:12.8px;display:block;">${r.name}</b><span style="font-size:11px;color:var(--text-faint);">${r.sched}</span></div>
     <span class="badge-pill badge-grey">${r.fmt}</span>
-    <div class="row-actions"><button title="Download"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5M12 15V3"/></svg></button></div>
+    <div class="row-actions"><button title="Download" data-dl="${r.id}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5M12 15V3"/></svg></button></div>
   </div>`).join('');
+
+// Stats
+const year=String(new Date().getFullYear());
+const ytd=fin.filter(f=>f.month.startsWith(year)), lastYtd=fin.filter(f=>f.month.startsWith(String(+year-1))&&ytd.some(x=>x.month.slice(5,7)===f.month.slice(5,7)));
+const rev=ytd.reduce((a,f)=>a+f.revenue,0), exp=ytd.reduce((a,f)=>a+f.expenses,0), prevRev=lastYtd.reduce((a,f)=>a+f.revenue,0);
+document.getElementById('stat-rev').textContent=CRM.fmt.short(rev);
+document.getElementById('stat-rev-delta').textContent=prevRev?`↗ ${Math.round((rev-prevRev)/prevRev*100)}%`:'';
+document.getElementById('stat-rev-foot').textContent=ytd.length?`${MONTHS[+ytd[0].month.slice(5,7)-1]}–${MONTHS[+ytd[ytd.length-1].month.slice(5,7)-1]} ${year}`:'No figures for this year yet';
+const margin=rev?Math.round((rev-exp)/rev*100):0;
+document.getElementById('stat-margin').textContent=margin+'%';
+document.getElementById('stat-margin-bar').style.width=Math.max(0,margin)+'%';
+const churned=allClients.filter(c=>c.status==='churned').length, activeN=allClients.filter(c=>c.status==='active').length;
+document.getElementById('stat-retention').textContent=activeN+churned?Math.round(activeN/(activeN+churned)*100)+'%':'—';
+const unpaid=invoices.filter(i=>!i.paid);
+document.getElementById('stat-recv').textContent=CRM.fmt.short(unpaid.reduce((a,i)=>a+i.amount,0));
+document.getElementById('stat-recv-foot').textContent=`${unpaid.length} unpaid invoice${unpaid.length===1?'':'s'}`;
+
+// Saved report downloads → CSV of the matching live data
+const today=CRM.fmt.isoDate();
+const exportsByKeyword=[
+  [/p&amp;l|profit|revenue/i,()=>CRM.downloadCSV(`pl-${today}.csv`,fin,[['month','Month'],['revenue','Revenue'],['expenses','Expenses'],[f=>f.revenue-f.expenses,'Profit'],['collected','Collected']])],
+  [/client|health|renewal/i,()=>CRM.downloadCSV(`clients-${today}.csv`,allClients,[['name','Client'],['ind','Industry'],['mrr','MRR'],['health','Health'],['renewal','Renewal'],['status','Status'],['ownerName','Owner']])],
+  [/campaign|roas/i,()=>CRM.downloadCSV(`campaigns-${today}.csv`,campaigns,[['name','Campaign'],['client','Client'],['ch','Channel'],['status','Status'],['spend','Spend'],['roas','ROAS'],['cpl','CPL']])],
+  [/receivable|ageing|aging|invoice/i,()=>CRM.downloadCSV(`receivables-${today}.csv`,unpaid,[['no','Invoice'],['client','Client'],['issued','Issued'],['due','Due'],['amount','Amount']])],
+];
+document.querySelectorAll('[data-dl]').forEach(b=>b.addEventListener('click',e=>{
+  e.stopPropagation();
+  const r=saved.find(x=>x.id===+b.dataset.dl);
+  const hit=exportsByKeyword.find(([re])=>re.test(r.name));
+  (hit?hit[1]:exportsByKeyword[0][1])();
+}));
+document.getElementById('export-pdf').addEventListener('click',()=>window.print());
 
 renderPL();
 

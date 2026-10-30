@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Proposal Register &amp; Win Tracking — OmniAgency Enterprise CRM</title>
 <link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="assets/app.css">
+<script src="assets/app.js"></script>
 </head>
 <body>
 <div class="app">
@@ -80,7 +82,7 @@
         </div>
         <div class="page-actions">
           <a class="btn btn-outline" href="sales-pipeline.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 14l4-4 4 4 5-6"/></svg>Sales Pipeline</a>
-          <button class="btn btn-primary"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg>New Proposal</button>
+          <button class="btn btn-primary" data-create="proposals"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg>New Proposal</button>
         </div>
       </div>
 
@@ -97,13 +99,13 @@
         </div>
         <div class="stat-card">
           <div class="stat-top"><span class="stat-label">ACCEPTANCE RATE</span><div class="stat-ico" style="background:var(--success-bg);color:var(--success)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div></div>
-          <div class="stat-value-row"><span class="stat-value" id="stat-rate">0%</span><span class="stat-delta up">+6pt QoQ</span></div>
+          <div class="stat-value-row"><span class="stat-value" id="stat-rate">0%</span></div>
           <div class="stat-bar"><i id="stat-rate-bar" style="width:0%"></i></div>
         </div>
         <div class="stat-card">
-          <div class="stat-top"><span class="stat-label">AVG TIME TO SIGN</span><div class="stat-ico" style="background:var(--warning-bg);color:var(--warning)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></div></div>
-          <div class="stat-value-row"><span class="stat-value">6.4 Days</span><span class="stat-delta up">-1.2d</span></div>
-          <div class="stat-foot">From first send to e-signature</div>
+          <div class="stat-top"><span class="stat-label">AVG ACCEPTED VALUE</span><div class="stat-ico" style="background:var(--warning-bg);color:var(--warning)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></div></div>
+          <div class="stat-value-row"><span class="stat-value" id="stat-avg">—</span></div>
+          <div class="stat-foot">Per accepted proposal, monthly</div>
         </div>
       </div>
 
@@ -122,7 +124,7 @@
 
         <div>
           <div class="rail-card">
-            <div class="rail-head"><div><h3>Proposal Funnel</h3><p>Last 90 days</p></div></div>
+            <div class="rail-head"><div><h3>Proposal Funnel</h3><p>All proposals sent</p></div></div>
             <div id="funnel"></div>
           </div>
           <div class="rail-card">
@@ -135,7 +137,8 @@
     </div>
   </div>
 </div>
-<script>
+<script type="module">
+await CRM.ready;
 document.querySelectorAll('.nav-item').forEach(item=>{
   item.addEventListener('click',()=>{
     document.querySelectorAll('.nav-item').forEach(i=>i.classList.remove('active'));
@@ -150,22 +153,11 @@ const statusMeta={
   accepted:{label:'Accepted',badge:'badge-green'},
   declined:{label:'Declined',badge:'badge-red'},
 };
-const proposals=[
-  {no:'PR-2026-041',title:'Performance Marketing Retainer',client:'Northstar Retail Group',value:180000,sent:'2026-10-24',expires:'2026-11-07',status:'viewed',owner:'AK',views:4},
-  {no:'PR-2026-040',title:'Wellness Brand Launch — 90 Days',client:'BrightPath Wellness',value:220000,sent:'2026-10-22',expires:'2026-11-05',status:'sent',owner:'VM',views:0},
-  {no:'PR-2026-039',title:'DevRel Content + Paid Social',client:'Kinetix Cloud',value:320000,sent:'2026-10-18',expires:'2026-11-01',status:'viewed',owner:'RR',views:7},
-  {no:'PR-2026-038',title:'LinkedIn ABM Program',client:'Solaris Energy',value:150000,sent:'2026-10-15',expires:'2026-10-30',status:'viewed',owner:'PL',views:3},
-  {no:'PR-2026-037',title:'Portfolio Site + SEO',client:'PixelForge Studio',value:90000,sent:'',expires:'',status:'draft',owner:'AK',views:0},
-  {no:'PR-2026-036',title:'Omnichannel Growth Retainer',client:'Zenith Media',value:240000,sent:'2026-10-08',expires:'2026-10-22',status:'accepted',owner:'AK',views:9},
-  {no:'PR-2026-035',title:'Q4 Festive Campaign Scope',client:'UrbanStyle Direct',value:180000,sent:'2026-10-02',expires:'2026-10-16',status:'accepted',owner:'VM',views:5},
-  {no:'PR-2026-034',title:'CRM Implementation',client:'ApexDigital',value:120000,sent:'2026-09-28',expires:'2026-10-12',status:'accepted',owner:'VM',views:6},
-  {no:'PR-2026-033',title:'Fintech Brand Identity',client:'LedgerLoop',value:140000,sent:'2026-09-20',expires:'2026-10-04',status:'declined',owner:'PL',views:2},
-  {no:'PR-2026-032',title:'Marketplace Ads Management',client:'Craftory',value:75000,sent:'',expires:'',status:'draft',owner:'RR',views:0},
-];
+const proposals = await API.list('proposals');
 
 const MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 const fmtDate=s=>{if(!s) return '—';const [y,m,d]=s.split('-').map(Number);return `${MONTHS[m-1]} ${String(d).padStart(2,'0')}`;};
-const inr=n=>n>=100000?`₹${(n/100000).toFixed(n%100000?1:0)}L`:`₹${(n/1000).toFixed(0)}K`;
+const inr=CRM.fmt.short;
 const today=new Date(); today.setHours(0,0,0,0);
 const daysUntil=s=>{const [y,m,d]=s.split('-').map(Number);return Math.round((new Date(y,m-1,d)-today)/86400000);};
 const isOpen=p=>['draft','sent','viewed'].includes(p.status);
@@ -179,6 +171,8 @@ function renderStats(){
   document.getElementById('stat-value').textContent = inr(open.reduce((a,p)=>a+p.value,0))+'/mo';
   document.getElementById('stat-rate').textContent = rate+'%';
   document.getElementById('stat-rate-bar').style.width = rate+'%';
+  const acc=proposals.filter(p=>p.status==='accepted');
+  document.getElementById('stat-avg').textContent = acc.length?inr(acc.reduce((a,p)=>a+p.value,0)/acc.length)+'/mo':'—';
 }
 
 function renderTabs(){
@@ -197,18 +191,26 @@ function renderRows(){
     const s=statusMeta[p.status];
     const left=p.expires&&isOpen(p)?daysUntil(p.expires):null;
     return `
-    <tr>
+    <tr data-edit="proposals" data-id="${p.id}">
       <td><div class="row-lead"><div class="row-avatar">${p.client.split(' ').map(n=>n[0]).join('').slice(0,2)}</div><div><b>${p.title}</b><span>${p.client} · ${p.no}</span></div></div></td>
       <td style="font-weight:700;">${inr(p.value)}/mo</td>
       <td style="white-space:nowrap;">${fmtDate(p.sent)}</td>
       <td style="white-space:nowrap;${left!==null&&left<=3?'color:var(--danger);font-weight:700;':''}">${fmtDate(p.expires)}${left!==null&&left>=0?`<span style="display:block;font-size:11px;color:var(--text-faint);font-weight:600;">${left===0?'Today':left+'d left'}</span>`:''}</td>
       <td><span class="badge-pill ${s.badge}">${s.label}</span>${p.views?`<span style="display:block;font-size:11px;color:var(--text-faint);margin-top:4px;">${p.views} view${p.views!==1?'s':''}</span>`:''}</td>
-      <td><div class="mini-avatar">${p.owner}</div></td>
+      <td><div class="mini-avatar" title="${p.ownerName||''}">${p.owner}</div></td>
       <td><div class="row-actions">
-        <button title="Preview"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8Z"/><circle cx="12" cy="12" r="3"/></svg></button>
-        <button title="Download PDF"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5M12 15V3"/></svg></button>
+        <button title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8Z"/><circle cx="12" cy="12" r="3"/></svg></button>
+        <button title="Download PDF" data-pdf="${p.id}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5M12 15V3"/></svg></button>
       </div></td>
     </tr>`;}).join('') || `<tr><td colspan="7" style="text-align:center;color:var(--text-faint);padding:28px;">No proposals with this status.</td></tr>`;
+  document.querySelectorAll('[data-pdf]').forEach(b=>b.addEventListener('click',e=>{
+    e.stopPropagation();
+    const p=proposals.find(x=>x.id===+b.dataset.pdf);
+    CRM.printDoc({title:'Proposal',number:p.no,status:statusMeta[p.status].label,to:`<div>${p.client}</div>`,
+      meta:[['SENT',fmtDate(p.sent)],['VALID UNTIL',fmtDate(p.expires)],['PREPARED BY',p.ownerName||'—']],
+      lines:[[`<b>${p.title}</b><div style="color:#6E7086;font-size:12.5px">Monthly retainer</div>`,CRM.fmt.inr(p.value)+'/mo']],
+      total:CRM.fmt.inr(p.value)+'/mo',note:'Pricing excludes applicable taxes. This proposal is valid until the date shown above.'});
+  }));
 }
 
 const sentCount=proposals.filter(p=>p.status!=='draft').length;
@@ -218,7 +220,7 @@ const funnel=[
   ['Accepted',proposals.filter(p=>p.status==='accepted').length],
 ];
 document.getElementById('funnel').innerHTML = funnel.map(([label,n])=>{
-  const pct=Math.round(n/sentCount*100);
+  const pct=sentCount?Math.round(n/sentCount*100):0;
   return `
   <div class="hbar-row">
     <div class="hbar-label"><span>${label}</span><b>${n} <small>· ${pct}%</small></b></div>

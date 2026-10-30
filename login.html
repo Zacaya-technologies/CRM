@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sign in — OmniAgency Enterprise CRM</title>
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="assets/app.css">
+<script src="assets/app.js"></script>
+<style>
+  .auth-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px 16px;
+    background:radial-gradient(1200px 500px at 10% -10%,#E6E3FF 0,transparent 60%),radial-gradient(900px 500px at 110% 110%,#E4F8ED 0,transparent 55%),var(--bg);}
+  .auth-card{width:100%;max-width:420px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);box-shadow:var(--shadow);padding:30px 28px;}
+  .auth-card .brand{padding:0 0 22px;}
+  .auth-card h1{font-size:21px;margin:0 0 4px;}
+  .auth-card p.sub{margin:0 0 22px;color:var(--text-muted);font-size:13.5px;}
+  .auth-card .crm-field{margin-bottom:14px;}
+  .auth-card .btn{width:100%;justify-content:center;padding:11px;font-size:14px;}
+  .auth-foot{margin-top:18px;text-align:center;font-size:12px;color:var(--text-faint);}
+  [hidden]{display:none !important;}
+</style>
+</head>
+<body>
+<div class="auth-wrap">
+  <div class="auth-card">
+    <div class="brand">
+      <div class="brand-mark">OA</div>
+      <div class="brand-text"><b>OmniAgency</b><span>ENTERPRISE CRM</span></div>
+    </div>
+
+    <div id="loading" style="color:var(--text-faint);font-size:13.5px;">Connecting…</div>
+
+    <form id="login-form" hidden>
+      <h1>Welcome back</h1>
+      <p class="sub">Sign in to your agency workspace.</p>
+      <div class="crm-field"><label for="email">Email</label><input id="email" name="email" type="email" autocomplete="username" required></div>
+      <div class="crm-field"><label for="password">Password</label><input id="password" name="password" type="password" autocomplete="current-password" required></div>
+      <div class="crm-modal-error" hidden></div>
+      <button class="btn btn-primary" type="submit" style="margin-top:8px;">Sign in</button>
+      <div class="auth-foot">Forgot your password? Ask a workspace admin to reset it under Team &amp; Access.</div>
+    </form>
+
+    <form id="setup-form" hidden>
+      <h1>Set up your workspace</h1>
+      <p class="sub">Create the first administrator account. This screen only appears once.</p>
+      <div class="crm-field"><label for="s-name">Your name</label><input id="s-name" name="name" autocomplete="name" required></div>
+      <div class="crm-field"><label for="s-email">Email (used to sign in)</label><input id="s-email" name="email" type="email" autocomplete="username" required></div>
+      <div class="crm-field"><label for="s-pass">Password (min 8 characters)</label><input id="s-pass" name="password" type="password" minlength="8" autocomplete="new-password" required></div>
+      <div class="crm-modal-error" hidden></div>
+      <button class="btn btn-primary" type="submit" style="margin-top:8px;">Create admin &amp; continue</button>
+    </form>
+  </div>
+</div>
+<script type="module">
+const next = new URLSearchParams(location.search).get('next');
+const go = () => location.replace(next && /^[\w.-]+\.html(\?.*)?$/.test(next) ? next : 'index.html');
+const $ = (s) => document.querySelector(s);
+
+function bind(form, route, fields) {
+  const err = form.querySelector('.crm-modal-error');
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    err.hidden = true;
+    const btn = form.querySelector('button');
+    btn.disabled = true;
+    try {
+      const body = Object.fromEntries(fields.map((f) => [f, form.elements[f].value]));
+      await API.call(route, { method: 'POST', body, raw: true });
+      go();
+    } catch (ex) {
+      err.textContent = ex.message;
+      err.hidden = false;
+      btn.disabled = false;
+    }
+  });
+}
+bind($('#login-form'), 'auth/login', ['email', 'password']);
+bind($('#setup-form'), 'auth/setup', ['name', 'email', 'password']);
+
+try {
+  const s = await API.call('auth/status', { raw: true });
+  if (s.user) go();
+  $('#loading').hidden = true;
+  const form = s.needsSetup ? $('#setup-form') : $('#login-form');
+  form.hidden = false;
+  form.querySelector('input').focus();
+} catch (e) {
+  $('#loading').innerHTML = `<div class="crm-modal-error">${CRM.esc(e.message)}</div>`;
+}
+</script>
+</body>
+</html>

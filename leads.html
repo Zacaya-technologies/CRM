@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Leads — OmniAgency Enterprise CRM</title>
 <link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="assets/app.css">
+<script src="assets/app.js"></script>
 </head>
 <body>
 <div class="app">
@@ -79,7 +81,7 @@
           <p class="page-sub">Every inbound and outbound enquiry, scored and routed to the right closer before the first response window closes.</p>
         </div>
         <div class="page-actions">
-          <button class="btn btn-outline"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5M12 15V3"/></svg>Export CSV</button>
+          <button class="btn btn-outline" id="export-csv"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5M12 15V3"/></svg>Export CSV</button>
           <button class="btn btn-primary"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg>Add Lead</button>
         </div>
       </div>
@@ -87,41 +89,35 @@
       <div class="stat-grid">
         <div class="stat-card">
           <div class="stat-top"><span class="stat-label">TOTAL LEADS</span><div class="stat-ico" style="background:var(--primary-light);color:var(--primary)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div></div>
-          <div class="stat-value-row"><span class="stat-value">128</span><span class="stat-delta up">↗ 18.4%</span></div>
-          <div class="stat-foot">14 new this week</div>
+          <div class="stat-value-row"><span class="stat-value" id="stat-total">—</span></div>
+          <div class="stat-foot" id="stat-total-foot">&nbsp;</div>
         </div>
         <div class="stat-card">
           <div class="stat-top"><span class="stat-label">UNASSIGNED</span><div class="stat-ico" style="background:var(--danger-bg);color:var(--danger)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg></div></div>
-          <div class="stat-value-row"><span class="stat-value" style="color:var(--danger)">5</span></div>
-          <div class="stat-foot" style="color:var(--danger);font-weight:600;">SLA window closing</div>
+          <div class="stat-value-row"><span class="stat-value" style="color:var(--danger)" id="stat-unassigned">—</span></div>
+          <div class="stat-foot" style="color:var(--danger);font-weight:600;" id="stat-unassigned-foot">&nbsp;</div>
         </div>
         <div class="stat-card">
           <div class="stat-top"><span class="stat-label">QUALIFIED (MQL→SQL)</span><div class="stat-ico" style="background:var(--info-bg);color:var(--info)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div></div>
-          <div class="stat-value-row"><span class="stat-value">42%</span><span class="stat-delta up">+3.1pt</span></div>
-          <div class="stat-bar"><i style="width:42%"></i></div>
+          <div class="stat-value-row"><span class="stat-value" id="stat-qualified">—</span></div>
+          <div class="stat-bar"><i id="stat-qualified-bar" style="width:0%"></i></div>
         </div>
         <div class="stat-card">
-          <div class="stat-top"><span class="stat-label">AVG RESPONSE TIME</span><div class="stat-ico" style="background:var(--success-bg);color:var(--success)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></div></div>
-          <div class="stat-value-row"><span class="stat-value">11 min</span><span class="stat-delta up">-4m</span></div>
-          <div class="stat-foot">Target SLA: Under 15 min</div>
+          <div class="stat-top"><span class="stat-label">AVG LEAD SCORE</span><div class="stat-ico" style="background:var(--success-bg);color:var(--success)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></div></div>
+          <div class="stat-value-row"><span class="stat-value" id="stat-score">—</span></div>
+          <div class="stat-foot">80+ = high intent</div>
         </div>
       </div>
 
-      <div class="tab-strip">
-        <div class="view-tab active">All (128)</div>
-        <div class="view-tab">New (14)</div>
-        <div class="view-tab">Contacted (61)</div>
-        <div class="view-tab">Qualified (38)</div>
-        <div class="view-tab">Unqualified (15)</div>
-      </div>
+      <div class="tab-strip" id="status-tabs"></div>
 
       <div class="grid-2col">
         <div class="table-card">
           <div class="table-toolbar">
-            <div><h3>Lead Queue</h3><p>Sorted by score, highest intent first</p></div>
-            <div class="filter-pills">
-              <div class="filter-pill active">Score</div>
-              <div class="filter-pill">Recency</div>
+            <div><h3>Lead Queue</h3><p id="queue-sub">Sorted by score, highest intent first</p></div>
+            <div class="filter-pills" id="sort-pills">
+              <div class="filter-pill active" data-sort="score">Score</div>
+              <div class="filter-pill" data-sort="recent">Recency</div>
             </div>
           </div>
           <table class="data-table">
@@ -132,13 +128,8 @@
 
         <div>
           <div class="rail-card">
-            <div class="rail-head"><div><h3>Lead Source Mix</h3><p>Last 30 days attribution</p></div></div>
-            <div class="donut-legend">
-              <div class="donut-legend-row"><i style="background:#5145E8"></i>Meta / Facebook Lead Ads<b>38%</b></div>
-              <div class="donut-legend-row"><i style="background:#B5790A"></i>Google Search Ads (PPC)<b>26%</b></div>
-              <div class="donut-legend-row"><i style="background:#0F9D58"></i>Website Enquiry Form<b>19%</b></div>
-              <div class="donut-legend-row"><i style="background:#D33B3B"></i>WhatsApp Inbound Chat<b>11%</b></div>
-              <div class="donut-legend-row"><i style="background:#2563EB"></i>Client Referral<b>6%</b></div>
+            <div class="rail-head"><div><h3>Lead Source Mix</h3><p>Share of all leads by source</p></div></div>
+            <div class="donut-legend" id="source-mix">
             </div>
           </div>
           <div class="rail-card">
@@ -153,33 +144,73 @@
     </div>
   </div>
 </div>
-<script>
-document.querySelectorAll('.nav-item').forEach(item=>{
-  item.addEventListener('click',()=>{
-    document.querySelectorAll('.nav-item').forEach(i=>i.classList.remove('active'));
-    item.classList.add('active');
-  });
-});
+<script type="module">
+await CRM.ready;
+const { fmt } = CRM;
 
-const leads=[
-  {name:'Aditya Verma',co:'Northstar Retail Group',source:'Meta Lead Ads',score:92,status:'New',statusClass:'badge-blue',owner:'AK'},
-  {name:'Meera Kapoor',co:'BrightPath Wellness',source:'Website Form',score:88,status:'Qualified',statusClass:'badge-green',owner:'VM'},
-  {name:'Rohan Shetty',co:'Kinetix Cloud',source:'Referral',score:81,status:'Contacted',statusClass:'badge-amber',owner:'RR'},
-  {name:'Simran Bhatia',co:'UrbanStyle Direct',source:'Google Ads',score:74,status:'Contacted',statusClass:'badge-amber',owner:'PL'},
-  {name:'Farhan Ali',co:'Solaris Energy',source:'WhatsApp Inbound',score:69,status:'New',statusClass:'badge-blue',owner:'—'},
-  {name:'Divya Nair',co:'Zenith Media',source:'Website Form',score:55,status:'Unqualified',statusClass:'badge-red',owner:'AK'},
-  {name:'Karan Malhotra',co:'PixelForge Studio',source:'Meta Lead Ads',score:47,status:'Unqualified',statusClass:'badge-grey',owner:'VM'},
-];
-document.getElementById('leads-body').innerHTML = leads.map(l=>`
-  <tr>
-    <td><div class="row-lead"><div class="row-avatar">${l.name.split(' ').map(n=>n[0]).join('')}</div><div><b>${l.name}</b><span>${l.co}</span></div></div></td>
+const statusClass = { New: 'badge-blue', Qualified: 'badge-green', Contacted: 'badge-amber', Unqualified: 'badge-red' };
+const sourceColors = ['#5145E8', '#B5790A', '#0F9D58', '#D33B3B', '#2563EB', '#6C63F0', '#9C9DB3'];
+const leads = await API.list('leads');
+let activeStatus = 'all', sortBy = 'score';
+
+// Stats
+const unassigned = leads.filter((l) => !l.ownerId);
+const qualified = leads.filter((l) => l.status === 'Qualified').length;
+const worked = leads.filter((l) => l.status !== 'New').length;
+const qualRate = worked ? Math.round(qualified / worked * 100) : 0;
+const thisWeek = leads.filter((l) => Date.now() - new Date(l.createdAt) < 7 * 86400000).length;
+document.getElementById('stat-total').textContent = leads.length;
+document.getElementById('stat-total-foot').textContent = `${thisWeek} new this week`;
+document.getElementById('stat-unassigned').textContent = unassigned.length;
+document.getElementById('stat-unassigned-foot').textContent = unassigned.length ? 'Assign an owner to respond fast' : 'Every lead has an owner';
+document.getElementById('stat-qualified').textContent = qualRate + '%';
+document.getElementById('stat-qualified-bar').style.width = qualRate + '%';
+document.getElementById('stat-score').textContent = leads.length ? Math.round(leads.reduce((a, l) => a + l.score, 0) / leads.length) : '—';
+
+// Source mix
+const bySource = {};
+leads.forEach((l) => (bySource[l.source] = (bySource[l.source] || 0) + 1));
+document.getElementById('source-mix').innerHTML = Object.entries(bySource).sort((a, b) => b[1] - a[1]).map(([s, n], i) =>
+  `<div class="donut-legend-row"><i style="background:${sourceColors[i % sourceColors.length]}"></i>${s}<b>${Math.round(n / leads.length * 100)}%</b></div>`).join('')
+  || '<div class="crm-empty">No leads yet</div>';
+
+function renderTabs() {
+  const tabs = [['all', 'All', leads.length]].concat(['New', 'Contacted', 'Qualified', 'Unqualified'].map((s) => [s, s, leads.filter((l) => l.status === s).length]));
+  document.getElementById('status-tabs').innerHTML = tabs.map(([k, label, n]) => `<div class="view-tab ${k === activeStatus ? 'active' : ''}" data-status="${k}">${label} (${n})</div>`).join('');
+  document.querySelectorAll('#status-tabs .view-tab').forEach((t) => t.addEventListener('click', () => { activeStatus = t.dataset.status; renderTabs(); renderRows(); }));
+}
+
+function renderRows() {
+  const rows = leads.filter((l) => activeStatus === 'all' || l.status === activeStatus)
+    .sort((a, b) => sortBy === 'score' ? b.score - a.score : new Date(b.createdAt) - new Date(a.createdAt));
+  document.getElementById('queue-sub').textContent = sortBy === 'score' ? 'Sorted by score, highest intent first' : 'Sorted by most recent first';
+  document.getElementById('leads-body').innerHTML = rows.map((l) => {
+    const wa = l.phone ? `https://wa.me/${CRM.unesc(l.phone).replace(/\D/g, '')}` : '';
+    return `
+  <tr data-edit="leads" data-id="${l.id}">
+    <td><div class="row-lead"><div class="row-avatar">${fmt.initials(l.name)}</div><div><b>${l.name}</b><span>${l.co || '—'}</span></div></div></td>
     <td>${l.source}</td>
-    <td><div class="score-track"><b>${l.score}</b><div class="metric-bar"><i style="width:${l.score}%;background:${l.score>=80?'var(--success)':l.score>=60?'var(--warning)':'var(--danger)'}"></i></div></div></td>
-    <td><span class="badge-pill ${l.statusClass}">${l.status}</span></td>
-    <td>${l.owner==='—'?'<span style="color:var(--text-faint)">Unassigned</span>':`<div class="mini-avatar">${l.owner}</div>`}</td>
-    <td><div class="row-actions"><button title="WhatsApp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4 20-7Z"/></svg></button><button title="Open"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg></button></div></td>
-  </tr>`).join('');
+    <td><div class="score-track"><b>${l.score}</b><div class="metric-bar"><i style="width:${l.score}%;background:${l.score >= 80 ? 'var(--success)' : l.score >= 60 ? 'var(--warning)' : 'var(--danger)'}"></i></div></div></td>
+    <td><span class="badge-pill ${statusClass[l.status]}">${l.status}</span></td>
+    <td>${!l.ownerId ? '<span style="color:var(--text-faint)">Unassigned</span>' : `<div class="mini-avatar" title="${l.ownerName || ''}">${l.owner}</div>`}</td>
+    <td><div class="row-actions">${wa ? `<a href="${wa}" target="_blank" rel="noopener" title="WhatsApp" onclick="event.stopPropagation()"><button title="WhatsApp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4 20-7Z"/></svg></button></a>` : ''}<button title="Open"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg></button></div></td>
+  </tr>`;
+  }).join('') || '<tr><td colspan="6" class="crm-empty">No leads here yet — click “Add Lead” to create one.</td></tr>';
+}
 
+document.querySelectorAll('#sort-pills .filter-pill').forEach((p) => p.addEventListener('click', () => {
+  sortBy = p.dataset.sort;
+  document.querySelectorAll('#sort-pills .filter-pill').forEach((x) => x.classList.toggle('active', x === p));
+  renderRows();
+}));
+
+document.getElementById('export-csv').addEventListener('click', () => CRM.downloadCSV(`leads-${fmt.isoDate()}.csv`, leads, [
+  ['name', 'Name'], ['co', 'Company'], ['email', 'Email'], ['phone', 'Phone'], ['source', 'Source'], ['score', 'Score'],
+  ['status', 'Status'], ['ownerName', 'Owner'], [(l) => l.createdAt.slice(0, 10), 'Created'],
+]));
+
+renderTabs();
+renderRows();
 </script>
 </body>
 </html>

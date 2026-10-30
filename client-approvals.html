@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Client Approvals Queue — OmniAgency Enterprise CRM</title>
 <link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="assets/app.css">
+<script src="assets/app.js"></script>
 </head>
 <body>
 <div class="app">
@@ -79,79 +81,129 @@
           <p class="page-sub">Every creative, budget, and contract item awaiting client sign-off before it ships.</p>
         </div>
         <div class="page-actions">
-          <button class="btn btn-outline"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4 20-7Z"/></svg>Bulk Remind</button>
-          <button class="btn btn-primary"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg>Request Approval</button>
+          <button class="btn btn-outline" id="bulk-remind"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4 20-7Z"/></svg>Bulk Remind</button>
+          <button class="btn btn-primary" data-create="approvals"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg>Request Approval</button>
         </div>
       </div>
 
       <div class="stat-grid">
         <div class="stat-card">
           <div class="stat-top"><span class="stat-label">PENDING APPROVAL</span><div class="stat-ico" style="background:var(--warning-bg);color:var(--warning)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></div></div>
-          <div class="stat-value-row"><span class="stat-value">7</span></div>
-          <div class="stat-foot">Across 5 accounts</div>
+          <div class="stat-value-row"><span class="stat-value" id="stat-pending">—</span></div>
+          <div class="stat-foot" id="stat-pending-foot">&nbsp;</div>
         </div>
         <div class="stat-card">
           <div class="stat-top"><span class="stat-label">APPROVED THIS WEEK</span><div class="stat-ico" style="background:var(--success-bg);color:var(--success)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div></div>
-          <div class="stat-value-row"><span class="stat-value">19</span><span class="stat-delta up">+6</span></div>
-          <div class="stat-foot">92% approved on first pass</div>
+          <div class="stat-value-row"><span class="stat-value" id="stat-approved">—</span></div>
+          <div class="stat-foot" id="stat-approved-foot">&nbsp;</div>
         </div>
         <div class="stat-card">
           <div class="stat-top"><span class="stat-label">AVG TURNAROUND</span><div class="stat-ico" style="background:var(--info-bg);color:var(--info)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></div></div>
-          <div class="stat-value-row"><span class="stat-value">6.2 hrs</span><span class="stat-delta up">-1.4h</span></div>
-          <div class="stat-foot">From request to client decision</div>
+          <div class="stat-value-row"><span class="stat-value" id="stat-turn">—</span></div>
+          <div class="stat-foot" id="stat-turn-foot">&nbsp;</div>
         </div>
         <div class="stat-card">
           <div class="stat-top"><span class="stat-label">OVERDUE SIGN-OFFS</span><div class="stat-ico" style="background:var(--danger-bg);color:var(--danger)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg></div></div>
-          <div class="stat-value-row"><span class="stat-value" style="color:var(--danger)">2</span></div>
-          <div class="stat-foot" style="color:var(--danger);font-weight:600;">Blocking campaign launch</div>
+          <div class="stat-value-row"><span class="stat-value" style="color:var(--danger)" id="stat-overdue">—</span></div>
+          <div class="stat-foot" style="color:var(--danger);font-weight:600;" id="stat-overdue-foot">&nbsp;</div>
         </div>
       </div>
 
-      <div class="tab-strip">
-        <div class="view-tab active">Pending (7)</div>
-        <div class="view-tab">Creative</div>
-        <div class="view-tab">Budget</div>
-        <div class="view-tab">Contracts</div>
-        <div class="view-tab">Approved</div>
-      </div>
+      <div class="tab-strip" id="tabs"></div>
 
       <div class="approval-grid" id="approval-grid"></div>
 
     </div>
   </div>
 </div>
-<script>
-document.querySelectorAll('.nav-item').forEach(item=>{
-  item.addEventListener('click',()=>{
-    document.querySelectorAll('.nav-item').forEach(i=>i.classList.remove('active'));
-    item.classList.add('active');
-  });
-});
+<script type="module">
+await CRM.ready;
+const { fmt } = CRM;
 
-const approvals=[
-  {client:'UrbanStyle Direct',item:'Q2 Retargeting Creative Set (6 variants)',type:'Creative',typeColor:'badge-blue',preview:'Advantage+ catalog carousel — Autumn/Winter collection, 4 static + 2 video cuts.',waiting:'Waiting 4h',overdue:false},
-  {client:'Kinetix Cloud',item:'Additional ₹80,000 budget shift to Google Search',type:'Budget',typeColor:'badge-amber',preview:'Reallocation from YouTube Shorts to capture high-intent search demand.',waiting:'Overdue by 6h',overdue:true},
-  {client:'Zenith Media',item:'Amended SOW — Lifecycle Email add-on',type:'Contract',typeColor:'badge-green',preview:'Adds Klaviyo automation flows at ₹35,000/mo starting next billing cycle.',waiting:'Waiting 1h',overdue:false},
-  {client:'Solaris Energy',item:'Landing Page v3 — Homepage Hero Redesign',type:'Creative',typeColor:'badge-blue',preview:'New hero section with updated CleanTech messaging and CTA hierarchy.',waiting:'Waiting 9h',overdue:false},
-  {client:'PixelForge Studio',item:'Brand Refresh — Logo Lockup Variants',type:'Creative',typeColor:'badge-blue',preview:'3 lockup directions delivered for review ahead of Friday kickoff.',waiting:'Overdue by 1d',overdue:true},
-  {client:'ApexDigital',item:'Q1 Retainer Renewal — Scope Expansion',type:'Contract',typeColor:'badge-green',preview:'Adds SEO service line at ₹12,000/mo, effective next cycle.',waiting:'Waiting 2h',overdue:false},
-];
-document.getElementById('approval-grid').innerHTML = approvals.map(a=>`
-  <div class="approval-card">
+const typeColor = { Creative: 'badge-blue', Budget: 'badge-amber', Contract: 'badge-green' };
+const [approvals, clients] = await Promise.all([API.list('approvals'), API.raw.list('clients')]);
+let activeTab = 'pending';
+
+const isPending = (a) => a.status === 'pending';
+const isOverdue = (a) => isPending(a) && a.dueAt && new Date(a.dueAt) < new Date();
+
+function renderStats() {
+  const pending = approvals.filter(isPending);
+  const weekAgo = Date.now() - 7 * 86400000;
+  const decidedWeek = approvals.filter((a) => a.decidedAt && new Date(a.decidedAt) > weekAgo);
+  const approvedWeek = decidedWeek.filter((a) => a.status === 'approved');
+  const decided = approvals.filter((a) => a.decidedAt);
+  const turnaround = decided.length ? decided.reduce((t, a) => t + (new Date(a.decidedAt) - new Date(a.requestedAt)), 0) / decided.length : null;
+  const overdue = approvals.filter(isOverdue);
+  document.getElementById('stat-pending').textContent = pending.length;
+  document.getElementById('stat-pending-foot').textContent = `Across ${new Set(pending.map((a) => a.clientId)).size} accounts`;
+  document.getElementById('stat-approved').textContent = approvedWeek.length;
+  document.getElementById('stat-approved-foot').textContent = decidedWeek.length ? `${Math.round(approvedWeek.length / decidedWeek.length * 100)}% of decisions were approvals` : 'No decisions in the last 7 days';
+  document.getElementById('stat-turn').textContent = turnaround === null ? '—' : fmt.span(turnaround);
+  document.getElementById('stat-turn-foot').textContent = 'From request to client decision';
+  document.getElementById('stat-overdue').textContent = overdue.length;
+  document.getElementById('stat-overdue-foot').textContent = overdue.length ? 'Past the requested sign-off time' : 'Nothing overdue';
+}
+
+function renderTabs() {
+  const pending = approvals.filter(isPending);
+  const tabs = [['pending', `Pending (${pending.length})`], ['Creative', 'Creative'], ['Budget', 'Budget'], ['Contract', 'Contracts'],
+    ['approved', 'Approved'], ['changes', 'Changes Requested']];
+  document.getElementById('tabs').innerHTML = tabs.map(([k, l]) => `<div class="view-tab ${k === activeTab ? 'active' : ''}" data-tab="${k}">${l}</div>`).join('');
+  document.querySelectorAll('#tabs .view-tab').forEach((t) => t.addEventListener('click', () => { activeTab = t.dataset.tab; renderTabs(); renderGrid(); }));
+}
+
+function waitLabel(a) {
+  if (a.status === 'approved') return `Approved ${fmt.ago(a.decidedAt)}`;
+  if (a.status === 'changes') return `Changes requested ${fmt.ago(a.decidedAt)}`;
+  if (isOverdue(a)) return `Overdue by ${fmt.span(Date.now() - new Date(a.dueAt))}`;
+  return `Waiting ${fmt.span(Date.now() - new Date(a.requestedAt))}`;
+}
+
+function renderGrid() {
+  const rows = approvals.filter((a) => ['pending', 'approved', 'changes'].includes(activeTab) ? a.status === activeTab : isPending(a) && a.type === activeTab);
+  document.getElementById('approval-grid').innerHTML = rows.map((a) => `
+  <div class="approval-card" data-edit="approvals" data-id="${a.id}">
     <div class="approval-head">
       <div><b>${a.item}</b><span>${a.client}</span></div>
-      <span class="badge-pill ${a.typeColor}">${a.type}</span>
+      <span class="badge-pill ${typeColor[a.type]}">${a.type}</span>
     </div>
-    <div class="approval-preview">${a.preview}</div>
+    <div class="approval-preview">${a.preview || ''}</div>
     <div class="approval-foot">
-      <span class="follow-time ${a.overdue?'overdue':''}" style="font-size:11.5px;">${a.waiting}</span>
+      <span class="follow-time ${isOverdue(a) ? 'overdue' : ''}" style="font-size:11.5px;">${waitLabel(a)}</span>
       <div class="approval-actions">
-        <button class="reject">Request Changes</button>
-        <button class="approve">Approve</button>
+        ${isPending(a) ? `<button class="reject" data-decide="changes" data-aid="${a.id}">Request Changes</button>
+        <button class="approve" data-decide="approved" data-aid="${a.id}">Approve</button>`
+        : `<button class="reject" data-decide="pending" data-aid="${a.id}">Reopen</button>`}
       </div>
     </div>
-  </div>`).join('');
+  </div>`).join('') || '<div class="crm-empty" style="grid-column:1/-1">Nothing in this queue.</div>';
 
+  document.querySelectorAll('[data-decide]').forEach((b) => b.addEventListener('click', async (e) => {
+    e.stopPropagation();
+    const a = approvals.find((x) => x.id === +b.dataset.aid);
+    try {
+      Object.assign(a, await API.update('approvals', a.id, { status: b.dataset.decide }));
+      renderAll();
+      CRM.toast({ approved: 'Marked as approved.', changes: 'Changes requested.', pending: 'Moved back to pending.' }[a.status]);
+    } catch (err) { CRM.toast(err.message, 'error'); }
+  }));
+}
+
+// Bulk remind: open an email to every client with a pending item.
+document.getElementById('bulk-remind').addEventListener('click', () => {
+  const pending = approvals.filter(isPending);
+  const ids = new Set(pending.map((a) => a.clientId));
+  const emails = clients.filter((c) => ids.has(c.id) && c.email).map((c) => c.email);
+  if (!pending.length) return CRM.toast('No pending approvals.');
+  if (!emails.length) return CRM.toast('Add billing emails to these clients first (Clients → edit).', 'error');
+  const body = 'Hi,\n\nA friendly reminder that the following items are awaiting your approval:\n\n'
+    + pending.map((a) => `• ${CRM.unesc(a.client)}: ${CRM.unesc(a.item)}`).join('\n') + '\n\nThank you!';
+  location.href = `mailto:?bcc=${encodeURIComponent(emails.join(','))}&subject=${encodeURIComponent('Items awaiting your approval')}&body=${encodeURIComponent(body)}`;
+});
+
+function renderAll() { renderStats(); renderTabs(); renderGrid(); }
+renderAll();
 </script>
 </body>
 </html>

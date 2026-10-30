@@ -1,0 +1,100 @@
+/* Components added by assets/app.js — modals, forms, toasts, menus. */
+.crm-auth-pending body { visibility: hidden; }
+.role-viewer [data-create] { display: none !important; }
+
+.crm-fatal {
+  position: sticky; top: 0; z-index: 90; padding: 12px 20px;
+  background: var(--danger-bg); color: var(--danger); font-size: 13.5px; border-bottom: 1px solid #f3c4c4;
+}
+
+/* ---------- Modal ---------- */
+.crm-modal-backdrop {
+  position: fixed; inset: 0; z-index: 100; background: rgba(23, 21, 50, .38);
+  display: flex; align-items: flex-start; justify-content: center; padding: 6vh 16px 16px; overflow-y: auto;
+  animation: crm-fade .15s ease-out;
+}
+.crm-modal {
+  width: 100%; max-width: 640px; background: var(--surface); border-radius: var(--radius-lg);
+  box-shadow: 0 24px 60px -12px rgba(23, 21, 50, .35); padding: 22px 24px; animation: crm-rise .18s ease-out;
+}
+.crm-modal-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+.crm-modal-head h3 { margin: 0; font-size: 17px; }
+.crm-x { border: 0; background: var(--bg); width: 30px; height: 30px; border-radius: 8px; font-size: 20px; line-height: 1; color: var(--text-muted); }
+.crm-x:hover { background: var(--border); }
+.crm-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 14px; }
+.crm-field { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+.crm-field.full, .crm-check.full { grid-column: 1 / -1; }
+.crm-field label { font-size: 11.5px; font-weight: 700; color: var(--text-muted); letter-spacing: .2px; }
+.crm-field input, .crm-field select, .crm-field textarea {
+  font: inherit; font-size: 13.5px; color: var(--text); background: var(--surface);
+  border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 9px 11px; width: 100%;
+}
+.crm-field input[type=color] { padding: 3px; height: 38px; }
+.crm-field textarea { resize: vertical; }
+.crm-field input:focus, .crm-field select:focus, .crm-field textarea:focus {
+  outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-light);
+}
+.crm-check { display: flex; align-items: center; gap: 8px; font-size: 13.5px; font-weight: 600; align-self: end; padding: 9px 0; }
+.crm-check input { width: 16px; height: 16px; accent-color: var(--primary); }
+.crm-multi { display: flex; flex-wrap: wrap; gap: 6px 14px; padding: 4px 0; }
+.crm-multi label { font-size: 13px; font-weight: 500; color: var(--text); display: flex; gap: 6px; align-items: center; }
+.crm-modal-error { margin-top: 14px; padding: 10px 12px; border-radius: var(--radius-sm); background: var(--danger-bg); color: var(--danger); font-size: 13px; font-weight: 600; }
+.crm-modal-foot { display: flex; gap: 8px; align-items: center; margin-top: 20px; }
+.btn.crm-danger { background: var(--danger-bg); color: var(--danger); }
+.btn.crm-danger:hover { background: #f8d4d4; }
+.btn[disabled] { opacity: .6; pointer-events: none; }
+
+@media (max-width: 600px) {
+  .crm-form-grid { grid-template-columns: 1fr; }
+  .crm-modal { padding: 18px 16px; }
+}
+
+/* ---------- Toasts ---------- */
+.crm-toasts { position: fixed; right: 18px; bottom: 18px; z-index: 200; display: flex; flex-direction: column; gap: 8px; }
+.crm-toast {
+  background: var(--text); color: #fff; padding: 11px 16px; border-radius: 10px; font-size: 13.5px; font-weight: 600;
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, .4); max-width: 380px; animation: crm-rise .18s ease-out; transition: opacity .3s;
+}
+.crm-toast.success { border-left: 4px solid var(--success); }
+.crm-toast.error { background: var(--danger); }
+.crm-toast.out { opacity: 0; }
+
+/* ---------- Popover menus ---------- */
+.crm-pop {
+  position: fixed; z-index: 120; min-width: 220px; background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); box-shadow: 0 16px 40px -12px rgba(23, 21, 50, .3); padding: 6px; animation: crm-fade .12s;
+}
+.crm-pop a, .crm-pop button {
+  display: block; width: 100%; text-align: left; padding: 9px 12px; border: 0; background: none;
+  border-radius: 8px; font-size: 13.5px; font-weight: 600; color: var(--text);
+}
+.crm-pop a:hover, .crm-pop button:hover { background: var(--bg); }
+.crm-pop .danger { color: var(--danger); }
+.crm-pop-head { padding: 8px 12px 10px; border-bottom: 1px solid var(--border); margin-bottom: 4px; }
+.crm-pop-head b { display: block; font-size: 13.5px; }
+.crm-pop-head span { font-size: 12px; color: var(--text-faint); font-weight: 600; }
+.crm-pop-row { display: flex; gap: 10px; padding: 9px 12px; }
+.crm-pop-row i { width: 8px; height: 8px; border-radius: 50%; margin-top: 5px; flex-shrink: 0; }
+.crm-pop-row b { display: block; font-size: 13px; }
+.crm-pop-row span { display: block; font-size: 12px; color: var(--text-muted); }
+.crm-pop-row small { font-size: 11px; color: var(--text-faint); font-weight: 600; }
+.crm-pop-empty { padding: 14px 12px; font-size: 13px; color: var(--text-faint); }
+
+/* ---------- Command palette ---------- */
+.crm-palette .crm-modal { padding: 10px; }
+.crm-palette-input { width: 100%; border: 0; border-bottom: 1px solid var(--border); padding: 12px 10px 14px; font: inherit; font-size: 15px; outline: none; background: transparent; color: var(--text); }
+.crm-palette-list { max-height: 50vh; overflow-y: auto; padding-top: 6px; }
+.crm-palette-item { padding: 10px 12px; border-radius: 8px; font-size: 13.5px; font-weight: 600; cursor: pointer; }
+.crm-palette-item.sel, .crm-palette-item:hover { background: var(--primary-light); color: var(--primary); }
+.crm-palette-empty { padding: 14px; color: var(--text-faint); font-size: 13px; }
+
+/* ---------- Misc helpers used by pages ---------- */
+[data-edit] { cursor: pointer; }
+tr[data-edit]:hover td { background: var(--bg); }
+.crm-empty { text-align: center; color: var(--text-faint); padding: 28px; font-size: 13px; }
+.crm-add-link { background: none; border: 1px dashed var(--border); color: var(--text-muted); border-radius: 10px; padding: 9px; width: 100%; font-size: 12.5px; font-weight: 600; margin-top: 8px; }
+.crm-add-link:hover { border-color: var(--primary); color: var(--primary); }
+.kanban-col.drop-target { outline: 2px dashed var(--primary); outline-offset: -4px; }
+
+@keyframes crm-fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes crm-rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
