@@ -1,4 +1,4 @@
-# OmniAgency CRM — web root rules (Hostinger / Apache / LiteSpeed)
+# Creative Advs CRM — web root rules (Hostinger / Apache / LiteSpeed)
 Options -Indexes
 DirectoryIndex index.html
 
@@ -10,8 +10,14 @@ DirectoryIndex index.html
 #  RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 #</IfModule>
 
-# Never serve the SQL dump, docs or dotfiles.
-<FilesMatch "(\.(sql|md|log|bak)|^\..*)$">
+# Branded error pages (paths assume the CRM sits at the domain root).
+ErrorDocument 403 /403.html
+ErrorDocument 404 /404.html
+ErrorDocument 500 /500.html
+ErrorDocument 503 /maintenance.html
+
+# Never serve the SQL dump, docs, dotfiles or the local-dev setup.
+<FilesMatch "(\.(sql|md|log|bak|bat|yml)|^\..*)$">
   <IfModule mod_authz_core.c>
     Require all denied
   </IfModule>
@@ -21,17 +27,41 @@ DirectoryIndex index.html
   </IfModule>
 </FilesMatch>
 RedirectMatch 404 ^/database(/|$)
+RedirectMatch 404 ^/local(/|$)
 
 <IfModule mod_headers.c>
   Header always set X-Content-Type-Options "nosniff"
   Header always set X-Frame-Options "SAMEORIGIN"
   Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  Header always set Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=()"
+  Header always set Cross-Origin-Opener-Policy "same-origin-allow-popups"
+  # Pages may only load code and data from this site (plus Google Fonts).
+  # 'unsafe-inline' is needed because each page keeps its script inline.
+  Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'" "expr=%{CONTENT_TYPE} =~ m#text/html#"
+  Header always set Strict-Transport-Security "max-age=31536000" "expr=%{HTTPS} == 'on'"
+  Header always unset X-Powered-By
+  Header unset X-Powered-By
 </IfModule>
 
-# Always fetch fresh HTML/JS after a deploy; cache CSS briefly.
+# Compress text responses (pages, styles, scripts, API JSON, SVG artwork).
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/css application/javascript text/javascript application/json image/svg+xml
+</IfModule>
+
+# Caching. HTML is always re-checked, so a deploy shows up at once.
+# CSS/JS/SVG are linked with "?v=N": bump N in the pages whenever you change them.
 <IfModule mod_expires.c>
   ExpiresActive On
   ExpiresByType text/html "access plus 0 seconds"
-  ExpiresByType application/javascript "access plus 0 seconds"
-  ExpiresByType text/css "access plus 1 hour"
+  ExpiresByType application/json "access plus 0 seconds"
+  ExpiresByType text/css "access plus 30 days"
+  ExpiresByType application/javascript "access plus 30 days"
+  ExpiresByType text/javascript "access plus 30 days"
+  ExpiresByType image/svg+xml "access plus 30 days"
+  ExpiresByType font/woff2 "access plus 1 year"
+</IfModule>
+<IfModule mod_headers.c>
+  <FilesMatch "\.html$">
+    Header set Cache-Control "no-cache"
+  </FilesMatch>
 </IfModule>

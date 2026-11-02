@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>Something went wrong — Creative Advs CRM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,600&family=Dancing+Script:wght@600&display=swap">
+<link rel="stylesheet" href="/styles.css?v=11">
+<style>
+  .err-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px 16px;
+    background:url(/assets/leaves-ground.svg) right bottom/min(760px,90vw) auto no-repeat,url(/assets/leaf-corner-left.svg) left bottom/340px auto no-repeat,
+      radial-gradient(1200px 500px at 10% -10%,#D6F1E4 0,transparent 60%),var(--bg);}
+  .err-card{width:100%;max-width:520px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);box-shadow:var(--shadow);padding:34px 32px;text-align:center;}
+  .err-card .brand{justify-content:center;padding:0 0 26px;}
+  .err-card .brand-logo{color:var(--primary);}
+  .err-card .brand-text{text-align:left;}
+  .err-card .brand-text span{color:var(--text-muted);}
+  .err-ico{width:64px;height:64px;border-radius:50%;margin:0 auto 18px;background:var(--primary-light);color:var(--primary);display:flex;align-items:center;justify-content:center;}
+  .err-ico svg{width:30px;height:30px;}
+  .err-code{font-family:var(--serif);font-size:15px;font-weight:600;letter-spacing:3px;color:var(--primary);margin-bottom:6px;}
+  .err-card h1{font-size:24px;margin:0 0 10px;}
+  .err-card p{color:var(--text-muted);font-size:14.5px;line-height:1.6;margin:0 auto 26px;max-width:400px;}
+  .err-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+  .err-foot{margin-top:26px;font-size:12px;color:var(--text-faint);}
+  .err-spin{width:16px;height:16px;border-radius:50%;border:2px solid var(--primary-light);border-top-color:var(--primary);animation:errspin .9s linear infinite;display:inline-block;vertical-align:-3px;margin-right:8px;}
+  @keyframes errspin{to{transform:rotate(360deg);}}
+</style>
+</head>
+<body>
+<main class="err-wrap">
+  <div class="err-card">
+    <div class="brand">
+      <svg class="brand-logo" viewBox="0 0 48 48" aria-hidden="true"><defs><linearGradient id="lgA" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7EE2B8"/><stop offset="1" stop-color="#1FA37A"/></linearGradient></defs><path d="M24 3 6 43h9.5L24 22.5 32.5 43H42L24 3Z" fill="currentColor"/><path d="M4 41c9-9 25-12 40-6-12-2-26 1-36 10Z" fill="url(#lgA)"/></svg>
+      <div class="brand-text"><b>Creative Advs</b><span>IDEAS TO IMPACT</span></div>
+    </div>
+    <div class="err-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/><path d="M12 9v4M12 17h.01"/></svg></div>
+    <div class="err-code">ERROR 500</div>
+    <h1>Something went wrong on our side</h1>
+    <p>The server hit an unexpected error. Nothing you did caused it. Try again in a moment; if it keeps happening, let your admin know the time it occurred.</p>
+    <div class="err-actions"><a class="btn btn-primary" href="javascript:location.reload()">Try again</a><a class="btn btn-outline" href="/index.html">Go to dashboard</a></div>
+    <div class="err-foot">Creative Advs CRM · Ideas today. A brighter tomorrow.</div>
+  </div>
+</main>
+
+</body>
+</html>

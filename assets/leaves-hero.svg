@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 190" preserveAspectRatio="xMaxYMid slice">
+  <defs>
+    <linearGradient id="a" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#2FB385" stop-opacity=".6"/><stop offset="1" stop-color="#BDEBD5" stop-opacity=".3"/></linearGradient>
+    <linearGradient id="b" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#9EDFC2" stop-opacity=".7"/><stop offset="1" stop-color="#2FB385" stop-opacity=".25"/></linearGradient>
+  </defs>
+  <path d="M0 190C80 150 160 160 250 128s170-70 270-50v112Z" fill="#CFEEDF" opacity=".6"/>
+  <path d="M120 190c70-40 160-30 240-62s110-40 160-30v92Z" fill="#9EDFC2" opacity=".4"/>
+  <path d="M408 150c-30-50-20-104 22-128 18 52 10 98-22 128Z" fill="url(#a)"/>
+  <path d="M412 152c10-56 50-88 96-92-14 50-50 82-96 92Z" fill="url(#b)"/>
+  <path d="M404 156c-44-26-60-66-50-104 40 22 56 60 50 104Z" fill="url(#b)"/>
+  <path d="M418 26c3 40-1 82-12 124M466 80c-20 20-38 44-52 70M372 64c14 30 24 58 32 88" stroke="#fff" stroke-opacity=".45" stroke-width="1.5" fill="none"/>
+  <path d="M40 40c30-6 56 10 64 36-30 4-54-10-64-36Z" fill="url(#b)" opacity=".75"/>
+</svg>

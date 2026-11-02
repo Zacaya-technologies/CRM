@@ -1,6 +1,6 @@
 <?php
 /**
- * OmniAgency CRM — server configuration.
+ * Creative Advs CRM — server configuration.
  *
  * Fill in the MySQL details from Hostinger hPanel → Databases → MySQL Databases.
  * On Hostinger the host is almost always "localhost"; the database name and
@@ -20,9 +20,13 @@ return [
         'password' => 'CHANGE_ME',           // ← your database password
     ],
 
-    // Session cookie name and lifetime (seconds). 12 hours by default.
+    // Session cookie name; idle timeout (12 hours) and absolute maximum age (7 days), in seconds.
     'session_name'     => 'omnicrm_sid',
     'session_lifetime' => 43200,
+    'session_absolute' => 604800,
+
+    // Set to true to show the maintenance page to everyone except signed-in admins.
+    'maintenance' => false,
 
     // Set to true only while debugging — shows SQL errors in API responses.
     'debug' => false,

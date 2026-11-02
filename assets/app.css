@@ -2,6 +2,41 @@
 .crm-auth-pending body { visibility: hidden; }
 .role-viewer [data-create] { display: none !important; }
 
+/* ---------- Loading splash while the session is checked (instead of a blank page) ---------- */
+.crm-auth-pending::before {
+  content: 'Loading your workspace…'; position: fixed; inset: 0; z-index: 1000;
+  display: flex; align-items: center; justify-content: center; padding-top: 84px;
+  font: 600 14px/1.4 Inter, 'Segoe UI', sans-serif; color: var(--text-muted);
+  background:
+    url(../assets/leaves-ground.svg) right bottom / min(760px, 90vw) auto no-repeat,
+    radial-gradient(1200px 500px at 10% -10%, #D6F1E4 0, transparent 60%),
+    var(--bg);
+  animation: crm-fade .3s ease .2s both;
+}
+.crm-auth-pending::after {
+  content: ''; position: fixed; z-index: 1001; left: calc(50% - 20px); top: calc(50% - 30px);
+  width: 40px; height: 40px; border-radius: 50%; box-sizing: border-box;
+  border: 4px solid var(--primary-light); border-top-color: var(--primary);
+  animation: crm-spin .8s linear infinite, crm-fade .3s ease .2s both;
+}
+@keyframes crm-spin { to { transform: rotate(360deg); } }
+
+/* ---------- Request progress bar ---------- */
+.crm-progress {
+  position: fixed; top: 0; left: 0; height: 3px; width: 0; z-index: 300; pointer-events: none; opacity: 0;
+  background: linear-gradient(90deg, var(--primary), #5CC9A0); box-shadow: 0 0 8px rgba(47, 179, 133, .6);
+  transition: width 8s cubic-bezier(.1, .7, .2, 1), opacity .3s;
+}
+.crm-progress.on { width: 85%; opacity: 1; }
+.crm-progress.done { width: 100%; opacity: 0; transition: width .2s ease, opacity .3s ease .15s; }
+
+/* ---------- Offline banner ---------- */
+.crm-offline {
+  position: sticky; top: 0; z-index: 95; padding: 10px 20px; text-align: center;
+  background: var(--warning-bg); color: var(--warning); font-size: 13.5px; border-bottom: 1px solid #f1dcb0;
+}
+.crm-hint { font-size: 11.5px; color: var(--text-faint); line-height: 1.4; }
+
 .crm-fatal {
   position: sticky; top: 0; z-index: 90; padding: 12px 20px;
   background: var(--danger-bg); color: var(--danger); font-size: 13.5px; border-bottom: 1px solid #f3c4c4;

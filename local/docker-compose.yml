@@ -1,0 +1,33 @@
+# Runs the CRM on your computer: http://localhost:8088
+# Start/stop with start-crm.bat / stop-crm.bat in the project folder.
+name: creative-crm
+
+services:
+  db:
+    image: mariadb:10.11
+    environment:
+      MARIADB_DATABASE: crm
+      MARIADB_USER: crm
+      MARIADB_PASSWORD: crm-local-only
+      MARIADB_ROOT_PASSWORD: crm-local-root
+    volumes:
+      - crm-data:/var/lib/mysql                                          # your data survives restarts
+      - ../database/schema.sql:/docker-entrypoint-initdb.d/schema.sql:ro  # creates the tables on first start
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 3s
+      retries: 40
+
+  web:
+    build: .
+    ports:
+      - "8088:80"
+    volumes:
+      - ..:/var/www/html:ro
+      - ./crm-config.php:/var/www/crm-config.php:ro
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  crm-data:

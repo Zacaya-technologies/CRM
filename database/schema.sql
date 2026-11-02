@@ -1,5 +1,5 @@
 -- =====================================================================
---  OmniAgency Enterprise CRM — MySQL / MariaDB schema + seed data
+--  Creative Advs CRM — MySQL / MariaDB schema + seed data
 --  Import this file once in Hostinger hPanel → Databases → phpMyAdmin
 --  (select your database first, then Import → choose this file → Go).
 --  Compatible with MySQL 5.7+, MySQL 8 and MariaDB 10.3+.
@@ -11,7 +11,7 @@ SET NAMES utf8mb4;
 SET time_zone = '+05:30';
 SET FOREIGN_KEY_CHECKS = 0;
 
-DROP TABLE IF EXISTS login_attempts, activity, saved_reports, finance_monthly, payments, invoices,
+DROP TABLE IF EXISTS demo_records, security_log, login_attempts, activity, saved_reports, finance_monthly, payments, invoices,
   proposals, tasks, milestones, project_members, projects, content_posts, campaigns,
   approvals, onboarding_items, onboardings, services, followups, deals, leads,
   clients, users;
@@ -340,6 +340,42 @@ CREATE TABLE login_attempts (
   INDEX idx_login_ip (ip, attempted_at)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- Sign-ins, lockouts and account changes (admin → Team & Access → Security Log).
+CREATE TABLE security_log (
+  id         INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  event      VARCHAR(40)  NOT NULL,   -- login, login_failed, login_locked, logout, password_changed, …
+  user_id    INT UNSIGNED NULL,
+  email      VARCHAR(190) NULL,
+  ip         VARCHAR(45)  NULL,
+  user_agent VARCHAR(255) NULL,
+  detail     VARCHAR(255) NULL,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  INDEX idx_sec_created (created_at),
+  INDEX idx_sec_event (event, created_at),
+  CONSTRAINT fk_sec_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Rows created by the dashboard's "Load demo data" button, so "Remove demo data" deletes only those.
+CREATE TABLE demo_records (
+  entity VARCHAR(40)  NOT NULL,
+  row_id INT UNSIGNED NOT NULL,
+  PRIMARY KEY (entity, row_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Indexes for the filters and sorts the app runs most (lists, dashboard, overdue checks).
+ALTER TABLE leads          ADD INDEX idx_leads_created (created_at), ADD INDEX idx_leads_score (score);
+ALTER TABLE clients        ADD INDEX idx_clients_status (status), ADD INDEX idx_clients_renewal (renewal_date);
+ALTER TABLE deals          ADD INDEX idx_deals_stage (stage);
+ALTER TABLE followups      ADD INDEX idx_followups_due (done, due_at);
+ALTER TABLE approvals      ADD INDEX idx_approvals_status (status);
+ALTER TABLE campaigns      ADD INDEX idx_campaigns_status (status);
+ALTER TABLE projects       ADD INDEX idx_projects_status (status);
+ALTER TABLE tasks          ADD INDEX idx_tasks_col (col, due_date);
+ALTER TABLE proposals      ADD INDEX idx_proposals_status (status);
+ALTER TABLE invoices       ADD INDEX idx_invoices_open (paid_date, due_date), ADD INDEX idx_invoices_issued (issued_date);
+ALTER TABLE payments       ADD INDEX idx_payments_paid (paid_on);
+ALTER TABLE login_attempts ADD INDEX idx_login_email (email, attempted_at);
+
 
 -- =====================================================================
 --  SEED DATA (sample agency data shown in the original design).
@@ -349,7 +385,7 @@ CREATE TABLE login_attempts (
 -- =====================================================================
 
 INSERT INTO users (id, name, initials, email, role, title) VALUES
- (1,'Vikram Malhotra','VM','admin@apexdigital.agency','admin','Lead Onboarding Director'),
+ (1,'Vikram Malhotra','VM','admin@creativeadvs.com','admin','Lead Onboarding Director'),
  (2,'Anya Kapoor','AK',NULL,'manager','Account Director'),
  (3,'Rahul Rao','RR',NULL,'member','Growth Lead'),
  (4,'Pooja Lal','PL',NULL,'member','Account Manager'),
@@ -417,7 +453,7 @@ INSERT INTO onboarding_items (onboarding_id,category,sort,title,detail,badge,don
  (1,'Brand Assets & Creative Toolkits',5,'Typography Licenses & Primary Font Files','OTF web and desktop licenses: Neue Haas Grotesk & GT America','Licensed',1,'none'),
  (1,'Brand Assets & Creative Toolkits',6,'Brand Voice, Tone & Editorial Style Guide','34-page deck reviewed by Lead Copy Strategist','Reviewed',1,'none'),
  (1,'Brand Assets & Creative Toolkits',7,'Product Photography & Video Raw B-Roll Drive','Autumn / Winter catalog 4K footage synced (18.4 GB)','18.4 GB',1,'none'),
- (1,'Platform & Ad Account Permissions',8,'Meta Business Manager Partner Access','OmniAgency Partner ID (948210398) pending acceptance in Meta BM Security Center','Critical Blocker',0,'critical'),
+ (1,'Platform & Ad Account Permissions',8,'Meta Business Manager Partner Access','Creative Advs Partner ID (948210398) pending acceptance in Meta BM Security Center','Critical Blocker',0,'critical'),
  (1,'Platform & Ad Account Permissions',9,'Google Ads MCC Manager Account Link Request','Linked to MCC #884-219-0091 with Administrative Ownership','Linked',1,'none'),
  (1,'Platform & Ad Account Permissions',10,'Google Analytics 4 & Tag Manager (GTM) Access','Invitation dispatched; awaiting client admin confirmation','Pending Approval',0,'resend'),
  (1,'Platform & Ad Account Permissions',11,'Shopify Collaborator Account Access','Code #7810 approved with Products, Themes, and Analytics permissions','Verified',1,'none'),
@@ -590,8 +626,48 @@ INSERT INTO saved_reports (name,schedule,format) VALUES
  ('Receivables Ageing','Every Monday · Email','PDF');
 
 INSERT INTO activity (user_id,kind,title,detail,entity,created_at) VALUES
- (NULL,'muted','MSA Signed by Client','Legal signoff completed by Sarah Jenkins with audit trail cert.','onboardings',NOW() - INTERVAL 1 DAY),
- (NULL,'danger','Meta BM Partner Alert','Invite expired due to 2FA security timeout. Automatic reminder queued.','onboardings',NOW() - INTERVAL 5 HOUR),
- (NULL,'warning','Brand Kit Pack Uploaded','8 SVG logos and 4 typography packages deposited via Client Portal.','onboardings',NOW() - INTERVAL 3 HOUR),
- (NULL,'primary','Retainer Wire Confirmed','₹18,000 received for Month 1 Retainer. Legal lock lifted.','payments',NOW() - INTERVAL 1 HOUR),
- (NULL,'success','Shopify Collab Code Approved','Marcus Lee (UrbanStyle CTO) approved theme and asset scope access.','onboardings',NOW() - INTERVAL 12 MINUTE);
+  (NULL,'muted','MSA Signed by Client','Legal signoff completed by Sarah Jenkins with audit trail cert.','onboardings',NOW() - INTERVAL 1 DAY),
+  (NULL,'danger','Meta BM Partner Alert','Invite expired due to 2FA security timeout. Automatic reminder queued.','onboardings',NOW() - INTERVAL 5 HOUR),
+  (NULL,'warning','Brand Kit Pack Uploaded','8 SVG logos and 4 typography packages deposited via Client Portal.','onboardings',NOW() - INTERVAL 3 HOUR),
+  (NULL,'primary','Retainer Wire Confirmed','₹18,000 received for Month 1 Retainer. Legal lock lifted.','payments',NOW() - INTERVAL 1 HOUR),
+  (NULL,'success','Shopify Collab Code Approved','Marcus Lee (UrbanStyle CTO) approved theme and asset scope access.','onboardings',NOW() - INTERVAL 12 MINUTE);
+
+-- Additional test data for edge cases and extended coverage
+INSERT INTO users (name, initials, email, role, title, active) VALUES
+  ('Test User','TU',NULL,'viewer','Test Viewer',1),
+  ('Test Manager','TM','manager@test.com','manager','Test Manager',1),
+  ('Test Member','TEM','member@test.com','member','Test Member',1);
+
+INSERT INTO clients (name, industry, mrr, health, status, owner_id, color1, color2, revenue_ytd, cost_ytd) VALUES
+  ('Test Client A','Technology',5000,90,'active',1,'#FF0000','#0000FF',500000,300000),
+  ('Test Client B','Finance',8000,75,'paused',2,'#00FF00','#0000FF',800000,500000),
+  ('Test Client C','Healthcare',3000,60,'churned',3,'#0000FF','#FF0000',300000,200000);
+
+INSERT INTO leads (name, company, source, score, status, owner_id) VALUES
+  ('Test Lead A','Test Corp','Form',75,'New',1),
+  ('Test Lead B','Sample Inc','Referral',60,'Contacted',2),
+  ('Test Lead C','Demo Co','Website Form',45,'Qualified',3);
+
+INSERT INTO deals (name, industry, tag, value, stage, owner_id, stage_changed_at) VALUES
+  ('Test Deal A','Test Industry','Tag A',50000,'won',1,NOW()),
+  ('Test Deal B','Sample Industry','Tag B',75000,'negotiation',2,NOW() - INTERVAL 3 DAY),
+  ('Test Deal C','Healthcare Industry','Tag C',25000,'lost',3,NOW() - INTERVAL 7 DAY);
+
+-- Test records link by name/number (not fixed ids) so they attach to the Test clients above.
+INSERT INTO invoices (number, client_id, description, issued_date, due_date, amount, paid_date)
+SELECT 'INV-TEST-001', id, 'Test invoice',   '2026-11-01', '2026-11-15', 25000, NULL         FROM clients WHERE name = 'Test Client A' UNION ALL
+SELECT 'INV-TEST-002', id, 'Test invoice 2', '2026-11-01', '2026-11-15', 35000, '2026-11-01' FROM clients WHERE name = 'Test Client B' UNION ALL
+SELECT 'INV-TEST-003', id, 'Test invoice 3', '2026-11-01', '2026-11-15', 15000, NULL         FROM clients WHERE name = 'Test Client C';
+
+-- INV-TEST-002 is paid (settled payment); INV-TEST-001 is unpaid, so its payment is still processing.
+INSERT INTO payments (client_id, invoice_id, reference, method, paid_on, amount, status)
+SELECT client_id, id, 'REF-TEST-002', 'UPI',  '2026-11-01', 35000, 'settled'    FROM invoices WHERE number = 'INV-TEST-002' UNION ALL
+SELECT client_id, id, 'REF-TEST-001', 'Card', '2026-11-01', 25000, 'processing' FROM invoices WHERE number = 'INV-TEST-001';
+
+INSERT INTO proposals (number, title, client_name, value, sent_date, expires_date, status, owner_id) VALUES
+  ('PR-TEST-001','Test Proposal','Test Client A',50000,'2026-11-01','2026-11-15','sent',1),
+  ('PR-TEST-002','Test Proposal 2','Test Client B',75000,'2026-11-01','2026-11-20','draft',2);
+
+-- October 2026 already exists above (month is unique), so only November is added here.
+INSERT INTO finance_monthly (month, revenue, expenses, collected, payments_count) VALUES
+  ('2026-11-01', 150000, 80000, 120000, 3);

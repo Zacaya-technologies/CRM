@@ -3,17 +3,20 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Leads — OmniAgency Enterprise CRM</title>
-<link rel="stylesheet" href="styles.css">
-<link rel="stylesheet" href="assets/app.css">
-<script src="assets/app.js"></script>
+<title>Leads — Creative Advs CRM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,600&family=Dancing+Script:wght@600&display=swap">
+<link rel="stylesheet" href="styles.css?v=11">
+<link rel="stylesheet" href="assets/app.css?v=11">
+<script src="assets/app.js?v=11"></script>
 </head>
 <body>
 <div class="app">
   <aside class="sidebar">
     <div class="brand">
-      <div class="brand-mark">OA</div>
-      <div class="brand-text"><b>OmniAgency</b><span>ENTERPRISE CRM</span></div>
+      <svg class="brand-logo" viewBox="0 0 48 48" aria-hidden="true"><defs><linearGradient id="lgA" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7EE2B8"/><stop offset="1" stop-color="#1FA37A"/></linearGradient></defs><path d="M24 3 6 43h9.5L24 22.5 32.5 43H42L24 3Z" fill="currentColor"/><path d="M4 41c9-9 25-12 40-6-12-2-26 1-36 10Z" fill="url(#lgA)"/></svg>
+      <div class="brand-text"><b>Creative Advs</b><span>IDEAS TO IMPACT</span></div>
     </div>
 
     <div class="nav-group">
@@ -48,6 +51,11 @@
       <a class="nav-item" href="reports.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><rect x="7" y="12" width="3" height="6"/><rect x="12.5" y="8" width="3" height="10"/><rect x="18" y="5" width="3" height="13"/></svg>Reports</a>
     </div>
 
+    <a class="promo-card" href="reports.html">
+      <div><b>Create<br>Bigger Outcomes</b><span>Ideas to Impact</span></div>
+      <span class="promo-go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+    </a>
+
     <div class="role-box">
       <div class="role-box-head"><span>SWITCH ROLE</span><span class="live-pill">Live</span></div>
       <div class="role-select"><span class="dot"></span>Super Admin
@@ -60,7 +68,7 @@
       <div class="crumbs">Workspace <span>&rsaquo;</span> <b>Leads</b><span class="role-tag">Super Admin</span></div>
       <div class="search">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
-        Command palette<kbd>Ctrl K</kbd>
+        Search leads, clients, campaigns…<kbd>Ctrl K</kbd>
       </div>
       <div class="topbar-right">
         <button class="btn btn-primary"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg>Add Lead</button>
@@ -68,7 +76,7 @@
         <button class="icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg><span class="dot-alert"></span></button>
         <div class="who">
           <div class="avatar">VM</div>
-          <div class="who-text"><b>Vikram Malhotra</b><span>admin@apexdigital.agency</span></div>
+          <div class="who-text"><b>Vikram Malhotra</b><span>admin@creativeadvs.com</span></div>
         </div>
       </div>
     </div>
@@ -76,36 +84,45 @@
     <div class="content">
       <div class="page-head">
         <div>
-          <div class="eyebrow">CLIENT OPERATIONS <span class="sep">•</span> Inbound Pipeline</div>
+          <div class="eyebrow">CLIENT OPERATIONS <span class="sep">&rsaquo;</span> <span class="crumb">Inbound Pipeline</span></div>
           <h1>Leads</h1>
           <p class="page-sub">Every inbound and outbound enquiry, scored and routed to the right closer before the first response window closes.</p>
         </div>
-        <div class="page-actions">
-          <button class="btn btn-outline" id="export-csv"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5M12 15V3"/></svg>Export CSV</button>
-          <button class="btn btn-primary"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg>Add Lead</button>
-        </div>
       </div>
 
-      <div class="stat-grid">
-        <div class="stat-card">
-          <div class="stat-top"><span class="stat-label">TOTAL LEADS</span><div class="stat-ico" style="background:var(--primary-light);color:var(--primary)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div></div>
-          <div class="stat-value-row"><span class="stat-value" id="stat-total">—</span></div>
-          <div class="stat-foot" id="stat-total-foot">&nbsp;</div>
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <div class="kpi-ico"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="7" r="4"/><path d="M1 21v-1.5A5.5 5.5 0 0 1 6.5 14h5a5.5 5.5 0 0 1 5.5 5.5V21Z"/><circle cx="17.5" cy="8" r="3" opacity=".6"/><path d="M18.5 13.2A5 5 0 0 1 23 18.2V21h-4.5v-1.5a7 7 0 0 0-2.3-5.2Z" opacity=".6"/></svg></div>
+          <div class="kpi-body">
+            <span class="kpi-label">TOTAL LEADS</span>
+            <div class="kpi-value-row"><b class="kpi-value" id="stat-total">—</b><span class="kpi-delta" id="stat-total-delta"></span></div>
+            <div class="kpi-foot" id="stat-total-foot">&nbsp;</div>
+          </div>
+          <div class="kpi-spark" id="stat-total-spark" title="New leads per week, last 7 weeks"></div>
         </div>
-        <div class="stat-card">
-          <div class="stat-top"><span class="stat-label">UNASSIGNED</span><div class="stat-ico" style="background:var(--danger-bg);color:var(--danger)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg></div></div>
-          <div class="stat-value-row"><span class="stat-value" style="color:var(--danger)" id="stat-unassigned">—</span></div>
-          <div class="stat-foot" style="color:var(--danger);font-weight:600;" id="stat-unassigned-foot">&nbsp;</div>
+        <div class="kpi-card kpi-alert">
+          <div class="kpi-ico"><svg viewBox="0 0 24 24"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z" fill="currentColor"/><path d="M12 9v4M12 17h.01" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/></svg></div>
+          <div class="kpi-body">
+            <span class="kpi-label">UNASSIGNED</span>
+            <div class="kpi-value-row"><b class="kpi-value" id="stat-unassigned">—</b></div>
+            <div class="kpi-foot" id="stat-unassigned-foot">&nbsp;</div>
+          </div>
         </div>
-        <div class="stat-card">
-          <div class="stat-top"><span class="stat-label">QUALIFIED (MQL→SQL)</span><div class="stat-ico" style="background:var(--info-bg);color:var(--info)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div></div>
-          <div class="stat-value-row"><span class="stat-value" id="stat-qualified">—</span></div>
-          <div class="stat-bar"><i id="stat-qualified-bar" style="width:0%"></i></div>
+        <div class="kpi-card">
+          <div class="kpi-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/><path d="m13 11 7-7M17 4h3v3"/></svg></div>
+          <div class="kpi-body">
+            <span class="kpi-label">QUALIFIED (MQL→SQL)</span>
+            <div class="kpi-value-row"><b class="kpi-value" id="stat-qualified">—</b></div>
+            <div class="kpi-bar"><i id="stat-qualified-bar" style="width:0%"></i></div>
+          </div>
         </div>
-        <div class="stat-card">
-          <div class="stat-top"><span class="stat-label">AVG LEAD SCORE</span><div class="stat-ico" style="background:var(--success-bg);color:var(--success)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></div></div>
-          <div class="stat-value-row"><span class="stat-value" id="stat-score">—</span></div>
-          <div class="stat-foot">80+ = high intent</div>
+        <div class="kpi-card">
+          <div class="kpi-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></div>
+          <div class="kpi-body">
+            <span class="kpi-label">AVG LEAD SCORE</span>
+            <div class="kpi-value-row"><b class="kpi-value" id="stat-score">—</b><span class="kpi-unit">/ 100</span></div>
+            <div class="kpi-foot">80+ = high intent</div>
+          </div>
         </div>
       </div>
 
@@ -114,33 +131,59 @@
       <div class="grid-2col">
         <div class="table-card">
           <div class="table-toolbar">
-            <div><h3>Lead Queue</h3><p id="queue-sub">Sorted by score, highest intent first</p></div>
-            <div class="filter-pills" id="sort-pills">
-              <div class="filter-pill active" data-sort="score">Score</div>
-              <div class="filter-pill" data-sort="recent">Recency</div>
+            <div class="toolbar-title">
+              <span class="title-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
+              <div><h3>Lead Queue</h3><p id="queue-sub">Sorted by score, highest intent first</p></div>
+            </div>
+            <div class="toolbar-actions">
+              <div class="filter-pills" id="sort-pills">
+                <div class="filter-pill active" data-sort="score">Score</div>
+                <div class="filter-pill" data-sort="recent">Recency</div>
+              </div>
+              <button class="btn btn-outline btn-sm" id="export-csv" title="Download all leads as CSV"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5M12 15V3"/></svg>Export</button>
             </div>
           </div>
-          <table class="data-table">
-            <thead><tr><th>Lead</th><th>Source</th><th>Score</th><th>Status</th><th>Owner</th><th></th></tr></thead>
+          <div class="table-scroll"><table class="data-table">
+            <thead><tr><th>Lead</th><th>Source</th><th>Score</th><th>Status</th><th>Owner</th><th class="th-actions">Actions</th></tr></thead>
             <tbody id="leads-body"></tbody>
-          </table>
+          </table></div>
         </div>
 
         <div>
           <div class="rail-card">
-            <div class="rail-head"><div><h3>Lead Source Mix</h3><p>Share of all leads by source</p></div></div>
-            <div class="donut-legend" id="source-mix">
+            <div class="rail-head">
+              <div class="toolbar-title">
+                <span class="title-ico"><svg viewBox="0 0 24 24" fill="currentColor"><rect x="4" y="11" width="3.5" height="9" rx="1"/><rect x="10.25" y="5" width="3.5" height="15" rx="1"/><rect x="16.5" y="8" width="3.5" height="12" rx="1"/></svg></span>
+                <div><h3>Lead Source Mix</h3><p id="mix-sub">Last 30 days attribution</p></div>
+              </div>
+              <select class="select-pill" id="mix-range" aria-label="Attribution window">
+                <option value="30">Last 30 days</option>
+                <option value="90">Last 90 days</option>
+                <option value="0">All time</option>
+              </select>
+            </div>
+            <div class="donut-row">
+              <div class="donut" id="source-donut"></div>
+              <div class="donut-legend" id="source-mix"></div>
             </div>
           </div>
           <div class="rail-card">
-            <div class="rail-head"><div><h3>Auto-Routing Rules</h3><p>Active assignment logic</p></div></div>
-            <button class="trigger-btn solid"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z"/></svg>Round-Robin: Tier 1 Reps</button>
-            <button class="trigger-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.5 9.5 12 4 3.5 9.5 12 15l8.5-5.5Z"/></svg>₹15k+ MRR → Senior AE Pool</button>
-            <button class="trigger-btn" style="margin-bottom:0;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4 20-7Z"/></svg>Instant WhatsApp Acknowledgement</button>
+            <div class="rail-head">
+              <div class="toolbar-title">
+                <span class="title-ico"><svg viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="14" width="3.5" height="7" rx="1"/><rect x="8.5" y="10" width="3.5" height="11" rx="1"/><rect x="14" y="12" width="3.5" height="9" rx="1"/><rect x="19.5" y="5" width="3" height="16" rx="1"/></svg></span>
+                <div><h3>This Week Trend</h3><p>New leads, last 7 days</p></div>
+              </div>
+              <a class="btn btn-outline btn-sm" href="reports.html">View Report <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+            </div>
+            <div class="week-chart" id="week-chart"></div>
           </div>
         </div>
       </div>
 
+      <footer class="page-foot">
+        <span>&copy; <span id="foot-year"></span> Creative Advs. All rights reserved.</span>
+        <span class="foot-tag"><i></i>Ideas today. A brighter tomorrow.</span>
+      </footer>
     </div>
   </div>
 </div>
@@ -148,31 +191,74 @@
 await CRM.ready;
 const { fmt } = CRM;
 
+const DAY = 86400000;
 const statusClass = { New: 'badge-blue', Qualified: 'badge-green', Contacted: 'badge-amber', Unqualified: 'badge-red' };
-const sourceColors = ['#5145E8', '#B5790A', '#0F9D58', '#D33B3B', '#2563EB', '#6C63F0', '#9C9DB3'];
+const sourceColors = ['#0B4A3B', '#0E7A5F', '#2FB385', '#5CC9A0', '#9EDFC2', '#C7EEDB', '#93A39C'];
 const leads = await API.list('leads');
+const age = (l) => Date.now() - new Date(l.createdAt);
 let activeStatus = 'all', sortBy = 'score';
+
+document.getElementById('foot-year').textContent = new Date().getFullYear();
 
 // Stats
 const unassigned = leads.filter((l) => !l.ownerId);
 const qualified = leads.filter((l) => l.status === 'Qualified').length;
 const worked = leads.filter((l) => l.status !== 'New').length;
 const qualRate = worked ? Math.round(qualified / worked * 100) : 0;
-const thisWeek = leads.filter((l) => Date.now() - new Date(l.createdAt) < 7 * 86400000).length;
+const weekly = Array.from({ length: 7 }, (_, i) => leads.filter((l) => age(l) >= (6 - i) * 7 * DAY && age(l) < (7 - i) * 7 * DAY).length);
+const [thisWeek, lastWeek] = [weekly[6], weekly[5]];
 document.getElementById('stat-total').textContent = leads.length;
 document.getElementById('stat-total-foot').textContent = `${thisWeek} new this week`;
+if (lastWeek) {
+  const d = Math.round((thisWeek - lastWeek) / lastWeek * 1000) / 10;
+  const el = document.getElementById('stat-total-delta');
+  el.textContent = `${d >= 0 ? '▲' : '▼'} ${Math.abs(d)}%`;
+  el.classList.add(d >= 0 ? 'up' : 'down');
+  el.title = `vs ${lastWeek} last week`;
+}
+const peak = Math.max(1, ...weekly);
+document.getElementById('stat-total-spark').innerHTML = weekly.map((n) => `<i style="height:${Math.max(8, n / peak * 100)}%"></i>`).join('');
 document.getElementById('stat-unassigned').textContent = unassigned.length;
 document.getElementById('stat-unassigned-foot').textContent = unassigned.length ? 'Assign an owner to respond fast' : 'Every lead has an owner';
 document.getElementById('stat-qualified').textContent = qualRate + '%';
 document.getElementById('stat-qualified-bar').style.width = qualRate + '%';
 document.getElementById('stat-score').textContent = leads.length ? Math.round(leads.reduce((a, l) => a + l.score, 0) / leads.length) : '—';
 
-// Source mix
-const bySource = {};
-leads.forEach((l) => (bySource[l.source] = (bySource[l.source] || 0) + 1));
-document.getElementById('source-mix').innerHTML = Object.entries(bySource).sort((a, b) => b[1] - a[1]).map(([s, n], i) =>
-  `<div class="donut-legend-row"><i style="background:${sourceColors[i % sourceColors.length]}"></i>${s}<b>${Math.round(n / leads.length * 100)}%</b></div>`).join('')
-  || '<div class="crm-empty">No leads yet</div>';
+// Source mix (donut)
+function renderMix() {
+  const days = +document.getElementById('mix-range').value;
+  const pool = days ? leads.filter((l) => age(l) < days * DAY) : leads;
+  const bySource = {};
+  pool.forEach((l) => (bySource[l.source] = (bySource[l.source] || 0) + 1));
+  const rows = Object.entries(bySource).sort((a, b) => b[1] - a[1]);
+  document.getElementById('mix-sub').textContent = days ? `Last ${days} days attribution` : 'All-time attribution';
+  const C = 2 * Math.PI * 40;
+  let off = 0;
+  const arcs = rows.map(([, n], i) => {
+    const len = n / pool.length * C;
+    const arc = `<circle r="40" cx="60" cy="60" fill="none" stroke="${sourceColors[i % sourceColors.length]}" stroke-width="20" stroke-dasharray="${len} ${C - len}" stroke-dashoffset="${-off}"/>`;
+    off += len;
+    return arc;
+  }).join('');
+  document.getElementById('source-donut').innerHTML = `<svg viewBox="0 0 120 120"><g transform="rotate(-90 60 60)"><circle r="40" cx="60" cy="60" fill="none" stroke="var(--bg)" stroke-width="20"/>${arcs}</g></svg>
+    <div class="donut-center"><b>${pool.length}</b><span>Leads</span></div>`;
+  document.getElementById('source-mix').innerHTML = rows.map(([s, n], i) =>
+    `<div class="donut-legend-row"><i style="background:${sourceColors[i % sourceColors.length]}"></i>${s}<b>${Math.round(n / pool.length * 100)}%</b></div>`).join('')
+    || '<div class="crm-empty">No leads in this window</div>';
+}
+document.getElementById('mix-range').addEventListener('change', renderMix);
+
+// This week trend (last 7 days)
+const today = new Date(); today.setHours(0, 0, 0, 0);
+const days = Array.from({ length: 7 }, (_, i) => {
+  const start = new Date(today.getTime() - (6 - i) * DAY);
+  return { label: start.toLocaleDateString('en', { weekday: 'short' }), n: leads.filter((l) => { const t = new Date(l.createdAt); return t >= start && t < new Date(start.getTime() + DAY); }).length };
+});
+const step = Math.max(1, Math.ceil(Math.max(...days.map((d) => d.n)) / 3));
+const top = step * 3;
+document.getElementById('week-chart').innerHTML = `
+  <div class="wk-axis">${[3, 2, 1, 0].map((k) => `<span>${k * step}</span>`).join('')}</div>
+  <div class="wk-plot">${days.map((d) => `<div class="wk-col" title="${d.n} lead${d.n === 1 ? '' : 's'}"><i style="height:${d.n / top * 100}%"></i><span>${d.label}</span></div>`).join('')}</div>`;
 
 function renderTabs() {
   const tabs = [['all', 'All', leads.length]].concat(['New', 'Contacted', 'Qualified', 'Unqualified'].map((s) => [s, s, leads.filter((l) => l.status === s).length]));
@@ -180,20 +266,22 @@ function renderTabs() {
   document.querySelectorAll('#status-tabs .view-tab').forEach((t) => t.addEventListener('click', () => { activeStatus = t.dataset.status; renderTabs(); renderRows(); }));
 }
 
+const visibleRows = () => leads.filter((l) => activeStatus === 'all' || l.status === activeStatus)
+  .sort((a, b) => sortBy === 'score' ? b.score - a.score : new Date(b.createdAt) - new Date(a.createdAt));
+
 function renderRows() {
-  const rows = leads.filter((l) => activeStatus === 'all' || l.status === activeStatus)
-    .sort((a, b) => sortBy === 'score' ? b.score - a.score : new Date(b.createdAt) - new Date(a.createdAt));
   document.getElementById('queue-sub').textContent = sortBy === 'score' ? 'Sorted by score, highest intent first' : 'Sorted by most recent first';
-  document.getElementById('leads-body').innerHTML = rows.map((l) => {
+  document.getElementById('leads-body').innerHTML = visibleRows().map((l) => {
     const wa = l.phone ? `https://wa.me/${CRM.unesc(l.phone).replace(/\D/g, '')}` : '';
+    const send = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4 20-7Z"/></svg>';
     return `
   <tr data-edit="leads" data-id="${l.id}">
     <td><div class="row-lead"><div class="row-avatar">${fmt.initials(l.name)}</div><div><b>${l.name}</b><span>${l.co || '—'}</span></div></div></td>
     <td>${l.source}</td>
-    <td><div class="score-track"><b>${l.score}</b><div class="metric-bar"><i style="width:${l.score}%;background:${l.score >= 80 ? 'var(--success)' : l.score >= 60 ? 'var(--warning)' : 'var(--danger)'}"></i></div></div></td>
+    <td><div class="score-track"><b>${l.score}</b><div class="metric-bar"><i style="width:${l.score}%;background:${l.score >= 70 ? 'linear-gradient(90deg,#0E7A5F,#2FB385)' : l.score >= 50 ? 'var(--warning)' : 'var(--danger)'}"></i></div></div></td>
     <td><span class="badge-pill ${statusClass[l.status]}">${l.status}</span></td>
     <td>${!l.ownerId ? '<span style="color:var(--text-faint)">Unassigned</span>' : `<div class="mini-avatar" title="${l.ownerName || ''}">${l.owner}</div>`}</td>
-    <td><div class="row-actions">${wa ? `<a href="${wa}" target="_blank" rel="noopener" title="WhatsApp" onclick="event.stopPropagation()"><button title="WhatsApp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4 20-7Z"/></svg></button></a>` : ''}<button title="Open"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg></button></div></td>
+    <td><div class="row-actions">${wa ? `<a href="${wa}" target="_blank" rel="noopener" title="WhatsApp" onclick="event.stopPropagation()"><button title="WhatsApp">${send}</button></a>` : `<button disabled title="No phone number">${send}</button>`}<button title="Open lead"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg></button></div></td>
   </tr>`;
   }).join('') || '<tr><td colspan="6" class="crm-empty">No leads here yet — click “Add Lead” to create one.</td></tr>';
 }
@@ -209,6 +297,7 @@ document.getElementById('export-csv').addEventListener('click', () => CRM.downlo
   ['status', 'Status'], ['ownerName', 'Owner'], [(l) => l.createdAt.slice(0, 10), 'Created'],
 ]));
 
+renderMix();
 renderTabs();
 renderRows();
 </script>

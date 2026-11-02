@@ -60,10 +60,12 @@ const ONBOARDING_TEMPLATE = [
 
 function next_number(string $table, string $prefix, int $pad): string
 {
-    $st = db()->prepare("SELECT number FROM $table WHERE number LIKE ? ORDER BY LENGTH(number) DESC, number DESC LIMIT 1");
-    $st->execute([$prefix . '%']);
-    $last = $st->fetchColumn();
-    $n = $last ? ((int) substr($last, strlen($prefix))) + 1 : 1;
+    // Only numbers that are the prefix + digits count (ignores hand-typed ones like "INV-TEST-001"),
+    // and they're compared as numbers so INV-1000 comes after INV-999.
+    $st = db()->prepare("SELECT MAX(CAST(SUBSTRING(number, ?) AS UNSIGNED)) FROM $table WHERE number LIKE ? AND SUBSTRING(number, ?) REGEXP '^[0-9]+$'");
+    $from = strlen($prefix) + 1;
+    $st->execute([$from, str_replace(['\\', '%', '_'], ['\\\\', '\\%', '\\_'], $prefix) . '%', $from]);
+    $n = ((int) $st->fetchColumn()) + 1;
     return $prefix . str_pad((string) $n, $pad, '0', STR_PAD_LEFT);
 }
 
@@ -202,7 +204,7 @@ function resources(): array
                 'flag'         => ['col' => 'flag', 'enum' => ['none', 'critical', 'resend', 'join']],
             ],
             'after' => function (int $id, array $in, ?array $old, string $op, array $row) {
-                if ($op === 'update' && $old && (bool) $old['done'] !== $row['done']) {
+                if ($op === 'update' && $old && ((bool) $old['done'] !== (bool) $row['done'])) {
                     $client = db()->prepare('SELECT c.name FROM onboardings o JOIN clients c ON c.id = o.client_id WHERE o.id = ?');
                     $client->execute([$row['onboardingId']]);
                     return [$row['done'] ? 'success' : 'warning', ($row['done'] ? 'Gate verified: ' : 'Gate reopened: ') . $row['title'], $client->fetchColumn() ?: null];
@@ -230,7 +232,8 @@ function resources(): array
                 }
                 if ($old && isset($cols['status']) && $cols['status'] !== $old['status']) {
                     $cols['decided_at'] = $cols['status'] === 'pending' ? null : date('Y-m-d H:i:s');
-                    $cols['decided_by'] = $cols['status'] === 'pending' ? null : current_user()['id'];
+                    $decidedBy = $cols['status'] === 'pending' ? null : (current_user() ?? null)['id'];
+                    $cols['decided_by'] = $decidedBy;
                 }
             },
             'after' => function (int $id, array $in, ?array $old, string $op, array $row) {
@@ -437,9 +440,16 @@ function resources(): array
                 'collected' => ['col' => 'collected', 'type' => 'num'],
                 'count'     => ['col' => 'payments_count', 'type' => 'int'],
             ],
-            'before' => function (array &$cols) {
+            'before' => function (array &$cols, ?array $old) {
                 if (!empty($cols['month'])) {
                     $cols['month'] = substr($cols['month'], 0, 8) . '01';
+                    // One row per month: point people at the existing month instead of a duplicate-key error.
+                    $st = db()->prepare('SELECT id FROM finance_monthly WHERE month = ? AND id <> ?');
+                    $st->execute([$cols['month'], $old['id'] ?? 0]);
+                    if ($st->fetchColumn()) {
+                        $label = date('F Y', strtotime($cols['month']));
+                        throw new HttpError(422, "Figures for $label are already recorded. Open $label in the table to edit them, or pick another month.");
+                    }
                 }
             },
         ],
@@ -488,9 +498,7 @@ function resources(): array
                     $cols['initials'] = initials_of($cols['name']);
                 }
                 if (isset($in['password']) && $in['password'] !== '') {
-                    if (strlen((string) $in['password']) < 8) {
-                        throw new HttpError(422, 'Password must be at least 8 characters.');
-                    }
+                    check_new_password((string) $in['password'], (string) ($cols['email'] ?? $old['email'] ?? ''));
                     $cols['password_hash'] = password_hash((string) $in['password'], PASSWORD_DEFAULT);
                 }
                 $me = current_user();
@@ -505,7 +513,35 @@ function resources(): array
                         throw new HttpError(422, 'Please enter a valid email address.');
                     }
                 }
+                // Account changes made by an admin go to the Security Log.
+                if ($old) {
+                    $who = $cols['email'] ?? $old['email'];
+                    $by = 'by ' . $me['name'];
+                    if (isset($cols['password_hash'])) log_security('password_reset', $who, (int) $old['id'], "Password set $by");
+                    // An admin resetting their own password here keeps their current session.
+                    if (isset($cols['password_hash']) && (int) $old['id'] === $me['id']) $_SESSION['pw'] = password_stamp($cols['password_hash']);
+                    if (isset($cols['role']) && $cols['role'] !== $old['role']) log_security('role_changed', $who, (int) $old['id'], "{$old['role']} → {$cols['role']} $by");
+                    if (isset($cols['active']) && (int) $cols['active'] !== (int) $old['active']) log_security($cols['active'] ? 'reactivated' : 'deactivated', $who, (int) $old['id'], ucfirst($cols['active'] ? 'reactivated' : 'deactivated') . " $by");
+                } elseif (isset($cols['password_hash'])) {
+                    log_security('account_created', $cols['email'] ?? null, null, 'Login created by ' . $me['name']);
+                }
             },
+        ],
+
+        // Sign-ins, lockouts and account changes. Written by the API only; admins can read it.
+        'security_log' => [
+            'table' => 'security_log', 'singular' => 'Security event', 'label' => 'event',
+            'from' => 'security_log t LEFT JOIN users u ON u.id = t.user_id',
+            'order' => 't.created_at DESC, t.id DESC',
+            'read' => 'admin', 'write' => 'none', 'delete' => 'admin', 'log' => false, 'limit' => 200,
+            'fields' => [
+                'event'  => ['col' => 'event', 'ro' => true],
+                'email'  => ['col' => 'email', 'ro' => true],
+                'ip'     => ['col' => 'ip', 'ro' => true],
+                'agent'  => ['expr' => 't.user_agent'],
+                'detail' => ['expr' => 't.detail'],
+                'user'   => ['expr' => 'u.name'],
+            ],
         ],
     ];
 }

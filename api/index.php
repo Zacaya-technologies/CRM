@@ -1,6 +1,6 @@
 <?php
 /**
- * OmniAgency CRM — REST API entry point.
+ * Creative Advs CRM — REST API entry point.
  *
  *   GET  api/?r=auth/status          session + first-run status
  *   POST api/?r=auth/setup           create first admin (only when none exists)
@@ -8,6 +8,7 @@
  *   POST api/?r=auth/logout
  *   POST api/?r=auth/password        { current, new }
  *   GET  api/?r=dashboard            command-center aggregates
+ *   GET|POST api/?r=demo/status|load|remove   free demo data (admin)
  *   GET|POST|PUT|DELETE api/?r=<resource>[&id=N]   see lib/resources.php
  *
  * Every request must send the header "X-CRM: 1" (blocks cross-site form posts).
@@ -19,9 +20,10 @@ require __DIR__ . '/lib/bootstrap.php';
 require __DIR__ . '/lib/resources.php';
 require __DIR__ . '/lib/crud.php';
 require __DIR__ . '/lib/endpoints.php';
+require __DIR__ . '/lib/demo.php';
 
 date_default_timezone_set(config()['timezone'] ?? 'UTC');
-header('X-Content-Type-Options: nosniff');
+security_headers();
 
 try {
     if (($_SERVER['HTTP_X_CRM'] ?? '') !== '1') {
@@ -32,6 +34,7 @@ try {
     if ($method === 'POST' && !empty($_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE'])) {
         $method = strtoupper($_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE']);
     }
+    check_origin($method);
 
     start_session();
 
@@ -40,10 +43,18 @@ try {
 
     if ($route === 'health') {
         db()->query('SELECT 1');
-        json_out(['ok' => true, 'php' => PHP_VERSION, 'time' => date(DATE_ATOM)]);
+        // Version details only while debugging — they help attackers more than admins.
+        json_out(['ok' => true, 'time' => date(DATE_ATOM)] + (!empty(config()['debug']) ? ['php' => PHP_VERSION] : []));
     }
     if (strpos($route, 'auth/') === 0) {
         handle_auth(substr($route, 5), $method);
+    }
+    // Maintenance mode: sign-in still works, but only admins can use the CRM.
+    if (!empty(config()['maintenance']) && (current_user()['role'] ?? '') !== 'admin') {
+        throw new HttpError(503, 'The CRM is down for maintenance. Please try again shortly.', ['maintenance' => true]);
+    }
+    if (strpos($route, 'demo/') === 0) {
+        handle_demo(substr($route, 5), $method);
     }
     if ($route === 'dashboard') {
         handle_dashboard();

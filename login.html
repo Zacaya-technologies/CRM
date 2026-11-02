@@ -3,13 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sign in — OmniAgency Enterprise CRM</title>
-<link rel="stylesheet" href="styles.css">
-<link rel="stylesheet" href="assets/app.css">
-<script src="assets/app.js"></script>
+<title>Sign in — Creative Advs CRM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,600&family=Dancing+Script:wght@600&display=swap">
+<link rel="stylesheet" href="styles.css?v=11">
+<link rel="stylesheet" href="assets/app.css?v=11">
+<script src="assets/app.js?v=11"></script>
 <style>
   .auth-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px 16px;
-    background:radial-gradient(1200px 500px at 10% -10%,#E6E3FF 0,transparent 60%),radial-gradient(900px 500px at 110% 110%,#E4F8ED 0,transparent 55%),var(--bg);}
+    background:url(assets/leaves-ground.svg) right bottom/min(760px,90vw) auto no-repeat,url(assets/leaf-corner-left.svg) left bottom/340px auto no-repeat,radial-gradient(1200px 500px at 10% -10%,#D6F1E4 0,transparent 60%),radial-gradient(900px 500px at 110% 110%,#E4F8ED 0,transparent 55%),var(--bg);}
   .auth-card{width:100%;max-width:420px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);box-shadow:var(--shadow);padding:30px 28px;}
   .auth-card .brand{padding:0 0 22px;}
   .auth-card h1{font-size:21px;margin:0 0 4px;}
@@ -17,6 +20,9 @@
   .auth-card .crm-field{margin-bottom:14px;}
   .auth-card .btn{width:100%;justify-content:center;padding:11px;font-size:14px;}
   .auth-foot{margin-top:18px;text-align:center;font-size:12px;color:var(--text-faint);}
+  .auth-card .brand-logo{color:var(--primary);}
+  .auth-card .brand-text span{color:var(--text-muted);}
+  .auth-notice{margin:-6px 0 18px;padding:10px 12px;border-radius:var(--radius-sm);background:var(--info-bg);color:var(--info);font-size:13px;font-weight:600;}
   [hidden]{display:none !important;}
 </style>
 </head>
@@ -24,10 +30,11 @@
 <div class="auth-wrap">
   <div class="auth-card">
     <div class="brand">
-      <div class="brand-mark">OA</div>
-      <div class="brand-text"><b>OmniAgency</b><span>ENTERPRISE CRM</span></div>
+      <svg class="brand-logo" viewBox="0 0 48 48" aria-hidden="true"><defs><linearGradient id="lgA" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7EE2B8"/><stop offset="1" stop-color="#1FA37A"/></linearGradient></defs><path d="M24 3 6 43h9.5L24 22.5 32.5 43H42L24 3Z" fill="currentColor"/><path d="M4 41c9-9 25-12 40-6-12-2-26 1-36 10Z" fill="url(#lgA)"/></svg>
+      <div class="brand-text"><b>Creative Advs</b><span>IDEAS TO IMPACT</span></div>
     </div>
 
+    <div class="auth-notice" id="notice" hidden></div>
     <div id="loading" style="color:var(--text-faint);font-size:13.5px;">Connecting…</div>
 
     <form id="login-form" hidden>
@@ -45,7 +52,7 @@
       <p class="sub">Create the first administrator account. This screen only appears once.</p>
       <div class="crm-field"><label for="s-name">Your name</label><input id="s-name" name="name" autocomplete="name" required></div>
       <div class="crm-field"><label for="s-email">Email (used to sign in)</label><input id="s-email" name="email" type="email" autocomplete="username" required></div>
-      <div class="crm-field"><label for="s-pass">Password (min 8 characters)</label><input id="s-pass" name="password" type="password" minlength="8" autocomplete="new-password" required></div>
+      <div class="crm-field"><label for="s-pass">Password</label><input id="s-pass" name="password" type="password" minlength="8" maxlength="72" autocomplete="new-password" required><small class="crm-hint">8+ characters, with a letter and a number or symbol.</small></div>
       <div class="crm-modal-error" hidden></div>
       <button class="btn btn-primary" type="submit" style="margin-top:8px;">Create admin &amp; continue</button>
     </form>
@@ -73,6 +80,10 @@ function bind(form, route, fields) {
       btn.disabled = false;
     }
   });
+}
+if (new URLSearchParams(location.search).get('reason') === 'expired') {
+  $('#notice').textContent = 'Your session ended — please sign in again.';
+  $('#notice').hidden = false;
 }
 bind($('#login-form'), 'auth/login', ['email', 'password']);
 bind($('#setup-form'), 'auth/setup', ['name', 'email', 'password']);

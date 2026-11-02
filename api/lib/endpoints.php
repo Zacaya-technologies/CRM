@@ -4,8 +4,22 @@
  */
 defined('CRM') or exit;
 
-const MAX_LOGIN_FAILURES = 8;   // per IP …
-const LOGIN_WINDOW_MIN   = 15;  // … within this many minutes
+const MAX_LOGIN_FAILURES   = 8;   // per IP …
+const MAX_ACCOUNT_FAILURES = 5;   // … or per account (stops slow attacks spread across IPs) …
+const LOGIN_WINDOW_MIN     = 15;  // … within this many minutes
+const MAX_PASSWORD_BYTES   = 72;  // bcrypt ignores anything longer
+// A real bcrypt hash (cost 10) of a throw-away string; checked when the email is unknown.
+const DUMMY_HASH = '$2y$10$.vGA1O9wmRjrwAVXD98HNOgsNpDczlqm3Jq7KnEd1rVAGv3Fykk1a';
+
+function check_new_password(string $pass, string $email = ''): void
+{
+    if (strlen($pass) < 8) throw new HttpError(422, 'Password must be at least 8 characters.');
+    if (strlen($pass) > MAX_PASSWORD_BYTES) throw new HttpError(422, 'Password must be at most 72 characters.');
+    if ($email !== '' && strcasecmp($pass, $email) === 0) throw new HttpError(422, 'Password cannot be the same as the email.');
+    if (!preg_match('/[A-Za-z]/', $pass) || !preg_match('/[0-9\W_]/', $pass)) {
+        throw new HttpError(422, 'Password needs at least one letter and one number or symbol.');
+    }
+}
 
 function needs_setup(): bool
 {
@@ -16,6 +30,10 @@ function sign_in(int $uid): array
 {
     session_regenerate_id(true);
     $_SESSION['uid'] = $uid;
+    $_SESSION['born'] = time();
+    $st = db()->prepare('SELECT password_hash FROM users WHERE id = ?');
+    $st->execute([$uid]);
+    $_SESSION['pw'] = password_stamp($st->fetchColumn());
     db()->prepare('UPDATE users SET last_login_at = NOW() WHERE id = ?')->execute([$uid]);
     return current_user_fresh($uid);
 }
@@ -49,8 +67,8 @@ function handle_auth(string $action, string $method): void
             $name = trim((string) ($in['name'] ?? ''));
             $email = strtolower(trim((string) ($in['email'] ?? '')));
             $pass = (string) ($in['password'] ?? '');
-            if ($name === '' || !filter_var($email, FILTER_VALIDATE_EMAIL)) throw new HttpError(422, 'Enter your name and a valid email.');
-            if (strlen($pass) < 8) throw new HttpError(422, 'Password must be at least 8 characters.');
+            if ($name === '' || mb_strlen($name) > 120 || !filter_var($email, FILTER_VALIDATE_EMAIL)) throw new HttpError(422, 'Enter your name and a valid email.');
+            check_new_password($pass, $email);
             $hash = password_hash($pass, PASSWORD_DEFAULT);
 
             $st = db()->prepare('SELECT id FROM users WHERE email = ?');
@@ -63,6 +81,7 @@ function handle_auth(string $action, string $method): void
                 $uid = db()->lastInsertId();
             }
             $user = sign_in((int) $uid);
+            log_security('setup', $email, (int) $uid, 'First administrator created');
             log_activity('success', 'CRM workspace set up', $name . ' created the administrator account', 'users', (int) $uid);
             json_out(['user' => $user]);
             // no break
@@ -70,31 +89,39 @@ function handle_auth(string $action, string $method): void
         case 'login':
             if ($method !== 'POST') throw new HttpError(405, 'Method not allowed.');
             $ip = client_ip();
-            $st = db()->prepare('SELECT COUNT(*) FROM login_attempts WHERE ip = ? AND attempted_at > NOW() - INTERVAL ' . LOGIN_WINDOW_MIN . ' MINUTE');
-            $st->execute([$ip]);
-            if ((int) $st->fetchColumn() >= MAX_LOGIN_FAILURES) {
-                throw new HttpError(429, 'Too many failed attempts. Try again in ' . LOGIN_WINDOW_MIN . ' minutes.');
-            }
             $in = body();
             $email = strtolower(trim((string) ($in['email'] ?? '')));
+            $st = db()->prepare('SELECT COALESCE(SUM(ip = ?), 0), COALESCE(SUM(email = ?), 0) FROM login_attempts WHERE attempted_at > NOW() - INTERVAL ' . LOGIN_WINDOW_MIN . ' MINUTE AND (ip = ? OR email = ?)');
+            $st->execute([$ip, $email, $ip, $email]);
+            [$byIp, $byAccount] = array_map('intval', $st->fetch(PDO::FETCH_NUM));
+            if ($byIp >= MAX_LOGIN_FAILURES || $byAccount >= MAX_ACCOUNT_FAILURES) {
+                log_security('login_locked', $email, null, $byAccount >= MAX_ACCOUNT_FAILURES ? 'Account temporarily locked' : 'IP temporarily locked');
+                throw new HttpError(429, 'Too many failed attempts. Try again in ' . LOGIN_WINDOW_MIN . ' minutes.');
+            }
             $st = db()->prepare('SELECT id, password_hash FROM users WHERE email = ? AND active = 1');
             $st->execute([$email]);
             $row = $st->fetch();
-            if (!$row || !$row['password_hash'] || !password_verify((string) ($in['password'] ?? ''), $row['password_hash'])) {
+            $pass = substr((string) ($in['password'] ?? ''), 0, 4096);
+            // Unknown emails are checked against a dummy hash so timing doesn't reveal which accounts exist.
+            $hash = ($row && $row['password_hash']) ? $row['password_hash'] : DUMMY_HASH;
+            if (!password_verify($pass, $hash) || !$row || !$row['password_hash']) {
                 db()->prepare('INSERT INTO login_attempts (ip, email) VALUES (?, ?)')->execute([$ip, mb_substr($email, 0, 190)]);
+                log_security('login_failed', $email, $row ? (int) $row['id'] : null);
                 usleep(400000);
                 throw new HttpError(401, 'Incorrect email or password.');
             }
             if (password_needs_rehash($row['password_hash'], PASSWORD_DEFAULT)) {
-                db()->prepare('UPDATE users SET password_hash = ? WHERE id = ?')->execute([password_hash($in['password'], PASSWORD_DEFAULT), $row['id']]);
+                db()->prepare('UPDATE users SET password_hash = ? WHERE id = ?')->execute([password_hash($pass, PASSWORD_DEFAULT), $row['id']]);
             }
-            db()->prepare('DELETE FROM login_attempts WHERE ip = ? OR attempted_at < NOW() - INTERVAL 1 DAY')->execute([$ip]);
-            json_out(['user' => sign_in((int) $row['id'])]);
+            db()->prepare('DELETE FROM login_attempts WHERE ip = ? OR email = ? OR attempted_at < NOW() - INTERVAL 1 DAY')->execute([$ip, $email]);
+            $user = sign_in((int) $row['id']);
+            log_security('login', $email, (int) $row['id']);
+            json_out(['user' => $user]);
             // no break
 
         case 'logout':
-            $_SESSION = [];
-            session_destroy();
+            if ($u = current_user()) log_security('logout', $u['email'], $u['id']);
+            end_session();
             json_out(['ok' => true]);
             // no break
 
@@ -107,8 +134,15 @@ function handle_auth(string $action, string $method): void
             if (!password_verify((string) ($in['current'] ?? ''), (string) $st->fetchColumn())) {
                 throw new HttpError(422, 'Your current password is incorrect.');
             }
-            if (strlen((string) ($in['new'] ?? '')) < 8) throw new HttpError(422, 'New password must be at least 8 characters.');
-            db()->prepare('UPDATE users SET password_hash = ? WHERE id = ?')->execute([password_hash($in['new'], PASSWORD_DEFAULT), $me['id']]);
+            $new = (string) ($in['new'] ?? '');
+            check_new_password($new, (string) $me['email']);
+            if ($new === (string) ($in['current'] ?? '')) throw new HttpError(422, 'Choose a password different from your current one.');
+            $hash = password_hash($new, PASSWORD_DEFAULT);
+            db()->prepare('UPDATE users SET password_hash = ? WHERE id = ?')->execute([$hash, $me['id']]);
+            // This session stays signed in; every other session for the account is signed out.
+            session_regenerate_id(true);
+            $_SESSION['pw'] = password_stamp($hash);
+            log_security('password_changed', $me['email'], $me['id']);
             json_out(['ok' => true]);
             // no break
 

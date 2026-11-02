@@ -3,17 +3,20 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Agency Command Center — OmniAgency Enterprise CRM</title>
-<link rel="stylesheet" href="styles.css">
-<link rel="stylesheet" href="assets/app.css">
-<script src="assets/app.js"></script>
+<title>Agency Command Center — Creative Advs CRM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,600&family=Dancing+Script:wght@600&display=swap">
+<link rel="stylesheet" href="styles.css?v=11">
+<link rel="stylesheet" href="assets/app.css?v=11">
+<script src="assets/app.js?v=11"></script>
 </head>
 <body>
 <div class="app">
   <aside class="sidebar">
     <div class="brand">
-      <div class="brand-mark">OA</div>
-      <div class="brand-text"><b>OmniAgency</b><span>ENTERPRISE CRM</span></div>
+      <svg class="brand-logo" viewBox="0 0 48 48" aria-hidden="true"><defs><linearGradient id="lgA" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7EE2B8"/><stop offset="1" stop-color="#1FA37A"/></linearGradient></defs><path d="M24 3 6 43h9.5L24 22.5 32.5 43H42L24 3Z" fill="currentColor"/><path d="M4 41c9-9 25-12 40-6-12-2-26 1-36 10Z" fill="url(#lgA)"/></svg>
+      <div class="brand-text"><b>Creative Advs</b><span>IDEAS TO IMPACT</span></div>
     </div>
 
     <div class="nav-group">
@@ -48,6 +51,11 @@
       <a class="nav-item" href="reports.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><rect x="7" y="12" width="3" height="6"/><rect x="12.5" y="8" width="3" height="10"/><rect x="18" y="5" width="3" height="13"/></svg>Reports</a>
     </div>
 
+    <a class="promo-card" href="reports.html">
+      <div><b>Create<br>Bigger Outcomes</b><span>Ideas to Impact</span></div>
+      <span class="promo-go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+    </a>
+
     <div class="role-box">
       <div class="role-box-head"><span>SWITCH ROLE</span><span class="live-pill">Live</span></div>
       <div class="role-select"><span class="dot"></span>Super Admin
@@ -60,7 +68,7 @@
       <div class="crumbs">Workspace <span>›</span> <b>Dashboard</b><span class="role-tag">Super Admin</span></div>
       <div class="search">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
-        Command palette<kbd>Ctrl K</kbd>
+        Search leads, clients, campaigns…<kbd>Ctrl K</kbd>
       </div>
       <div class="topbar-right">
         <button class="btn btn-primary"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg>Add Lead</button>
@@ -68,7 +76,7 @@
         <button class="icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg><span class="dot-alert"></span></button>
         <div class="who">
           <div class="avatar">VM</div>
-          <div class="who-text"><b>Vikram Malhotra</b><span>admin@apexdigital.agency</span></div>
+          <div class="who-text"><b>Vikram Malhotra</b><span>admin@creativeadvs.com</span></div>
         </div>
       </div>
     </div>
@@ -83,6 +91,7 @@
         <div class="page-head">
           <div><h1>Agency Command Center</h1><p class="page-sub">Real-time operations, pipeline performance, client health &amp; revenue analytics.</p></div>
           <div class="page-actions">
+            <button class="btn btn-outline" type="button" data-demo-control hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v6c0 1.7 3.6 3 8 3s8-1.3 8-3V5"/><path d="M4 11v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6"/></svg><span>Load demo data</span></button>
             <button class="btn btn-primary"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg>Add Lead</button>
             <button class="btn btn-outline"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-4 4"/></svg>View Pipeline</button>
           </div>
@@ -115,9 +124,9 @@
           <div class="chart-card">
             <div class="chart-head">
               <div><b>Revenue &amp; Expenses</b><p>Last 6 months of recorded financials</p></div>
-              <div class="legend"><span><i style="background:var(--success)"></i>Revenue</span><span><i style="background:var(--primary)"></i>Expenses</span></div>
+              <div class="legend"><span><i style="background:var(--primary)"></i>Revenue</span><span><i style="background:#E0912F"></i>Expenses</span></div>
             </div>
-            <svg id="rev-chart" viewBox="0 0 620 260" style="width:100%;height:240px;overflow:visible;"></svg>
+            <svg id="rev-chart" viewBox="0 0 620 260" style="width:100%;height:240px;overflow:visible;" class="chart-fill"></svg>
           </div>
 
           <div class="chart-card">
@@ -163,30 +172,37 @@ $('k-out').textContent = fmt.inr(d.invoices.outstanding);
 $('k-out-delta').textContent = `${d.invoices.collectedPct}% collected`;
 $('k-out-foot').textContent = d.invoices.overdue ? `${fmt.short(d.invoices.overdue)} overdue` : 'Nothing overdue';
 
-// Revenue vs expenses line chart (SVG 620×260, plot area y 20…200)
+// Revenue vs expenses line chart, drawn 1:1 in pixels so it fills the card at any width.
 const rev = d.revenue;
 const svg = $('rev-chart');
-if (rev.length) {
+const EXP = '#E0912F';
+function drawRevenue() {
+  const W = Math.max(320, svg.clientWidth), H = Math.max(220, svg.clientHeight), base = H - 40;
+  svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
   const max = Math.max(...rev.map((r) => Math.max(r.revenue, r.expenses))) * 1.15 || 1;
-  const x = (i) => 50 + (rev.length === 1 ? 260 : i * (540 / (rev.length - 1)));
-  const y = (v) => 200 - v / max * 180;
+  const x = (i) => 50 + (rev.length === 1 ? (W - 80) / 2 : i * ((W - 80) / (rev.length - 1)));
+  const y = (v) => base - v / max * (base - 20);
   const line = (k) => rev.map((r, i) => `${i ? 'L' : 'M'}${x(i).toFixed(1)},${y(r[k]).toFixed(1)}`).join(' ');
-  const area = (k) => `${line(k)} L${x(rev.length - 1)},200 L${x(0)},200 Z`;
+  const area = (k) => `${line(k)} L${x(rev.length - 1)},${base} L${x(0)},${base} Z`;
   const grid = [0, 1, 2, 3].map((g) => {
     const v = max / 1.15 * (1 - g / 3), yy = y(v);
-    return `<line x1="0" y1="${yy}" x2="620" y2="${yy}" stroke="var(--border)" stroke-dasharray="3 4"/><text x="0" y="${yy - 4}" font-size="11" fill="#9C9DB3">${fmt.short(v)}</text>`;
+    return `<line x1="0" y1="${yy}" x2="${W}" y2="${yy}" stroke="var(--border)" stroke-dasharray="3 4"/><text x="0" y="${yy - 4}" font-size="11" fill="#93A39C">${fmt.short(v)}</text>`;
   }).join('');
   const series = (k, color) => `<path d="${area(k)}" fill="${color}" opacity=".08"/><path d="${line(k)}" fill="none" stroke="${color}" stroke-width="2.5"/>`
     + rev.map((r, i) => `<circle cx="${x(i)}" cy="${y(r[k])}" r="4" fill="#fff" stroke="${color}" stroke-width="2.5"><title>${fmt.MONTHS[+r.month.slice(5, 7) - 1]}: ${fmt.inr(r[k])}</title></circle>`).join('');
-  svg.innerHTML = grid + `<line x1="0" y1="200" x2="620" y2="200" stroke="var(--border)"/>`
-    + series('expenses', 'var(--primary)') + series('revenue', 'var(--success)')
-    + rev.map((r, i) => `<text x="${x(i)}" y="218" font-size="11" fill="#9C9DB3" text-anchor="middle">${fmt.MONTHS[+r.month.slice(5, 7) - 1]}</text>`).join('');
+  svg.innerHTML = grid + `<line x1="0" y1="${base}" x2="${W}" y2="${base}" stroke="var(--border)"/>`
+    + series('expenses', EXP) + series('revenue', 'var(--primary)')
+    + rev.map((r, i) => `<text x="${x(i)}" y="${base + 20}" font-size="11" fill="#93A39C" text-anchor="middle">${fmt.MONTHS[+r.month.slice(5, 7) - 1]}</text>`).join('');
+}
+if (rev.length) {
+  drawRevenue();
+  if (window.ResizeObserver) new ResizeObserver(drawRevenue).observe(svg);
 } else {
   svg.innerHTML = '<text x="310" y="120" text-anchor="middle" font-size="13" fill="#9C9DB3">Add monthly figures in Reports to see this chart</text>';
 }
 
 // Lead source donut
-const colors = ['#5145E8', '#B5790A', '#0F9D58', '#D33B3B', '#2563EB', '#6C63F0', '#9C9DB3'];
+const colors = ['#0B4A3B', '#0E7A5F', '#2FB385', '#5CC9A0', '#9EDFC2', '#C7EEDB', '#93A39C'];
 const total = d.sources.reduce((a, s) => a + s.n, 0);
 let offset = 25;
 const arcs = d.sources.map((s, i) => {
@@ -204,7 +220,7 @@ $('source-donut').innerHTML = `
   <div class="donut-legend">${d.sources.map((s, i) => `<div class="donut-legend-row"><i style="background:${colors[i % colors.length]}"></i>${CRM.esc(s.source)}<b>${s.n}</b></div>`).join('') || '<div class="crm-empty">No leads yet</div>'}</div>`;
 
 // Pipeline funnel
-const stageMeta = [['discovery', 'Discovery &amp; Qualification', 'var(--primary)'], ['pitch', 'Pitch &amp; Commercial Proposal', '#8B7FF5'],
+const stageMeta = [['discovery', 'Discovery &amp; Qualification', 'var(--primary)'], ['pitch', 'Pitch &amp; Commercial Proposal', '#5CC9A0'],
   ['negotiation', 'Contract &amp; Negotiation', 'var(--warning)'], ['won', 'Contract Signed / Closed Won', 'var(--success)']];
 const maxN = Math.max(1, ...d.stages.map((s) => s.n));
 $('pipe-rows').innerHTML = stageMeta.map(([k, label, color]) => {
