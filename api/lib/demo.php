@@ -146,7 +146,7 @@ function demo_load(): int
         // --- Leads: spread over the last 60 days, more recent ones newer ---
         $people = ['Aditya Verma', 'Meera Kapoor', 'Rohan Shetty', 'Priya Patel', 'Darshan Kumar', 'Kavya Rao', 'Arjun Mehta', 'Sneha Iyer', 'Farhan Ali', 'Ishita Bose', 'Vivek Nair', 'Tara Menon'];
         $firms = ['Coastal Cafe Co', 'Lumen Labs', 'Saffron Spice House', 'Peak Physio', 'Orbit Logistics', 'Kite Learning', 'Nova Interiors', 'Rangoli Textiles', 'Vertex Motors', 'Aqua Pure Water', 'Monsoon Travel', 'Harbor Dental'];
-        $sources = ['Meta Lead Ads', 'Meta Lead Ads', 'Meta Lead Ads', 'Google Search Ads (PPC)', 'Google Search Ads (PPC)', 'Website Enquiry Form', 'Website Enquiry Form', 'WhatsApp Inbound Chat', 'Client Referral'];
+        $sources = ['Meta Lead Ads', 'Meta Lead Ads', 'Meta Lead Ads', 'Google Ads', 'Google Ads', 'Website Form', 'Website Form', 'WhatsApp Inbound', 'Referral'];
         $statuses = ['New', 'Contacted', 'Qualified', 'Contacted', 'New', 'Qualified', 'Unqualified', 'Contacted'];
         for ($i = 0; $i < 36; $i++) {
             $created = $at(-(($i * 37) % 60) * 0.95, 9 + $i % 8);

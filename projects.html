@@ -11,9 +11,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,600&family=Dancing+Script:wght@600&display=swap">
-<link rel="stylesheet" href="styles.css?v=14">
-<link rel="stylesheet" href="assets/app.css?v=14">
-<script src="assets/app.js?v=14"></script>
+<link rel="stylesheet" href="styles.css?v=16">
+<link rel="stylesheet" href="assets/app.css?v=16">
+<script src="assets/app.js?v=16"></script>
 </head>
 <body>
 <div class="app">
@@ -149,7 +149,13 @@ const statusMeta = {
   review: { label: 'In Review', badge: 'badge-amber', bar: 'var(--warning)' },
   done: { label: 'Completed', badge: 'badge-grey', bar: 'var(--text-faint)' },
 };
-const [projects, milestones] = await Promise.all([API.list('projects'), API.list('milestones')]);
+const [projects, milestones, allTasks] = await Promise.all([API.list('projects'), API.list('milestones'), API.list('tasks')]);
+// Count the real tasks on the Tasks board that belong to each project (by project name);
+// projects with no linked tasks keep the numbers typed into the project form.
+projects.forEach((p) => {
+  const linked = allTasks.filter((t) => (t.project || '').trim().toLowerCase() === p.name.trim().toLowerCase());
+  if (linked.length) { p.tasksTotal = linked.length; p.tasksDone = linked.filter((t) => t.col === 'done').length; }
+});
 let activeStatus = 'all';
 
 function renderTabs() {

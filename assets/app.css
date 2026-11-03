@@ -166,3 +166,19 @@ tr[data-edit]:hover td { background: var(--bg); }
   .crm-leaving .content { transform: none; }
   .nav-item:not(.active):hover { transform: none; }
 }
+
+/* Sales pipeline: five stages including Closed Lost. */
+.kanban.k5 { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+.kanban.k5 .kanban-col[data-stage="lost"] { opacity: .85; }
+@media (max-width: 1200px) { .kanban.k5 { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 760px) { .kanban.k5 { grid-template-columns: none; } }
+
+/* Phones: page action buttons wrap onto new lines instead of running off-screen. */
+@media (max-width: 760px) {
+  .page-actions { flex-shrink: 1; min-width: 0; max-width: 100%; flex-wrap: wrap; }
+}
+
+/* Viewers are read-only: hide actions that change data instead of offering them and then refusing. */
+.role-viewer [data-decide], .role-viewer [data-pay], .role-viewer #snooze-all, .role-viewer #act-gate,
+.role-viewer .crm-fab { display: none !important; }
+.role-viewer [data-toggle], .role-viewer [data-done] { pointer-events: none; cursor: default !important; }

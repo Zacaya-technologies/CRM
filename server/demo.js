@@ -142,7 +142,7 @@ async function demoLoad(ctx) {
     // --- Leads: spread over the last 60 days, more recent ones newer ---
     const people = ['Aditya Verma', 'Meera Kapoor', 'Rohan Shetty', 'Priya Patel', 'Darshan Kumar', 'Kavya Rao', 'Arjun Mehta', 'Sneha Iyer', 'Farhan Ali', 'Ishita Bose', 'Vivek Nair', 'Tara Menon'];
     const firms = ['Coastal Cafe Co', 'Lumen Labs', 'Saffron Spice House', 'Peak Physio', 'Orbit Logistics', 'Kite Learning', 'Nova Interiors', 'Rangoli Textiles', 'Vertex Motors', 'Aqua Pure Water', 'Monsoon Travel', 'Harbor Dental'];
-    const sources = ['Meta Lead Ads', 'Meta Lead Ads', 'Meta Lead Ads', 'Google Search Ads (PPC)', 'Google Search Ads (PPC)', 'Website Enquiry Form', 'Website Enquiry Form', 'WhatsApp Inbound Chat', 'Client Referral'];
+    const sources = ['Meta Lead Ads', 'Meta Lead Ads', 'Meta Lead Ads', 'Google Ads', 'Google Ads', 'Website Form', 'Website Form', 'WhatsApp Inbound', 'Referral'];
     const statuses = ['New', 'Contacted', 'Qualified', 'Contacted', 'New', 'Qualified', 'Unqualified', 'Contacted'];
     for (let i = 0; i < 36; i++) {
       const created = at(-((i * 37) % 60) * 0.95, 9 + (i % 8));

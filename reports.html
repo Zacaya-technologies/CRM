@@ -11,9 +11,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,600&family=Dancing+Script:wght@600&display=swap">
-<link rel="stylesheet" href="styles.css?v=14">
-<link rel="stylesheet" href="assets/app.css?v=14">
-<script src="assets/app.js?v=14"></script>
+<link rel="stylesheet" href="styles.css?v=16">
+<link rel="stylesheet" href="assets/app.css?v=16">
+<script src="assets/app.js?v=16"></script>
 </head>
 <body>
 <div class="app">
@@ -227,12 +227,12 @@ function renderPL(){
   document.getElementById('pl-axis').innerHTML = data.map(d=>`<span>${d.m}</span>`).join('');
   document.querySelectorAll('#pl-chart .bar-col').forEach(col=>{
     const d=data[col.dataset.i];
-    col.addEventListener('mouseenter',e=>showTip(e,`<b>${d.m} ${d.y}</b><br><i style="background:#5CC9A0"></i>Revenue ${lakh(d.rev)}<br><i style="background:${EXP}"></i>Expenses ${lakh(d.exp)}<br>Profit ${lakh(d.rev-d.exp)} · ${Math.round((d.rev-d.exp)/d.rev*100)}% margin`));
+    col.addEventListener('mouseenter',e=>showTip(e,`<b>${d.m} ${d.y}</b><br><i style="background:#5CC9A0"></i>Revenue ${lakh(d.rev)}<br><i style="background:${EXP}"></i>Expenses ${lakh(d.exp)}<br>Profit ${lakh(d.rev-d.exp)} · ${(d.rev?Math.round((d.rev-d.exp)/d.rev*100):0)}% margin`));
     col.addEventListener('mousemove',moveTip);
     col.addEventListener('mouseleave',()=>tip.classList.remove('show'));
   });
   document.getElementById('pl-table').innerHTML = data.slice().reverse().map(d=>`
-    <tr data-edit="finance" data-id="${d.id}"><td>${d.m} ${d.y}</td><td>${lakh(d.rev)}</td><td>${lakh(d.exp)}</td><td style="font-weight:700;">${lakh(d.rev-d.exp)}</td><td>${Math.round((d.rev-d.exp)/d.rev*100)}%</td></tr>`).join('');
+    <tr data-edit="finance" data-id="${d.id}"><td>${d.m} ${d.y}</td><td>${lakh(d.rev)}</td><td>${lakh(d.exp)}</td><td style="font-weight:700;">${lakh(d.rev-d.exp)}</td><td>${(d.rev?Math.round((d.rev-d.exp)/d.rev*100):0)}%</td></tr>`).join('');
   document.getElementById('pl-chart-wrap').style.display = mode==='chart'?'':'none';
   document.getElementById('pl-table-wrap').style.display = mode==='table'?'':'none';
 }
@@ -248,7 +248,7 @@ bindPills('range-pills','range',v=>range=Number(v));
 bindPills('mode-pills','mode',v=>mode=v);
 
 const services=svc.filter(s=>s.revenueYtd>0).map(s=>[s.name,s.revenueYtd/1e5]).sort((a,b)=>b[1]-a[1]);
-const svcMax=(services[0]||[0,1])[1], svcTotal=services.reduce((a,s)=>a+s[1],0);
+const svcMax=(services[0]||[0,1])[1], svcTotal=services.reduce((a,s)=>a+s[1],0)||1;
 document.getElementById('services').innerHTML = services.map(([label,v])=>`
   <div class="hbar-row">
     <div class="hbar-label"><span>${label}</span><b>${lakh(v)} <small>· ${Math.round(v/svcTotal*100)}%</small></b></div>
@@ -298,12 +298,20 @@ const exportsByKeyword=[
   [/client|health|renewal/i,()=>CRM.downloadCSV(`clients-${today}.csv`,allClients,[['name','Client'],['ind','Industry'],['mrr','MRR'],['health','Health'],['renewal','Renewal'],['status','Status'],['ownerName','Owner']])],
   [/campaign|roas/i,()=>CRM.downloadCSV(`campaigns-${today}.csv`,campaigns,[['name','Campaign'],['client','Client'],['ch','Channel'],['status','Status'],['spend','Spend'],['roas','ROAS'],['cpl','CPL']])],
   [/receivable|ageing|aging|invoice/i,()=>CRM.downloadCSV(`receivables-${today}.csv`,unpaid,[['no','Invoice'],['client','Client'],['issued','Issued'],['due','Due'],['amount','Amount']])],
+  [/lead|source/i,async()=>{
+    const leads=await API.list('leads');
+    const bySource={};
+    leads.forEach(l=>{const k=l.source||'Unknown';const s=bySource[k]||(bySource[k]={source:k,total:0,qualified:0,score:0});s.total++;if(l.status==='Qualified')s.qualified++;s.score+=l.score||0;});
+    const rows=Object.values(bySource).map(s=>({...s,rate:Math.round(s.qualified/s.total*100)+'%',avg:Math.round(s.score/s.total)})).sort((a,b)=>b.total-a.total);
+    CRM.downloadCSV(`lead-sources-${today}.csv`,rows,[['source','Source'],['total','Leads'],['qualified','Qualified'],['rate','Qualification rate'],['avg','Avg score']]);
+  }],
+  [/service|mrr/i,()=>CRM.downloadCSV(`services-${today}.csv`,svc,[['name','Service'],['tier','Tier'],['clients','Active clients'],['mrr','MRR'],['revenueYtd','Revenue YTD']])],
 ];
 document.querySelectorAll('[data-dl]').forEach(b=>b.addEventListener('click',e=>{
   e.stopPropagation();
   const r=saved.find(x=>x.id===+b.dataset.dl);
   const hit=exportsByKeyword.find(([re])=>re.test(r.name));
-  (hit?hit[1]:exportsByKeyword[0][1])();
+  Promise.resolve((hit?hit[1]:exportsByKeyword[0][1])()).catch(err=>CRM.toast(err.message,'error'));
 }));
 document.getElementById('export-pdf').addEventListener('click',()=>window.print());
 

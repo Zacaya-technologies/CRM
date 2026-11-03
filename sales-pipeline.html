@@ -11,9 +11,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,600&family=Dancing+Script:wght@600&display=swap">
-<link rel="stylesheet" href="styles.css?v=14">
-<link rel="stylesheet" href="assets/app.css?v=14">
-<script src="assets/app.js?v=14"></script>
+<link rel="stylesheet" href="styles.css?v=16">
+<link rel="stylesheet" href="assets/app.css?v=16">
+<script src="assets/app.js?v=16"></script>
 </head>
 <body>
 <div class="app">
@@ -126,7 +126,7 @@
         <div class="sort">SORT BY: Deal Value <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div>
       </div>
 
-      <div class="kanban" id="kanban-board"></div>
+      <div class="kanban k5" id="kanban-board"></div>
 
     </div>
   </div>
@@ -140,6 +140,7 @@ const stages = [
   { key: 'pitch', name: 'Pitch & Proposal', weight: 0.3 },
   { key: 'negotiation', name: 'Contract & Negotiation', weight: 0.6 },
   { key: 'won', name: 'Closed Won', weight: 1 },
+  { key: 'lost', name: 'Closed Lost', weight: 0 },
 ];
 const tagStyle = (tag) => {
   const t = (tag || '').toLowerCase();
@@ -150,6 +151,12 @@ const tagStyle = (tag) => {
   return ['var(--primary-light)', 'var(--primary)'];
 };
 const deals = await API.list('deals');
+const DEAL_SORTS = {
+  value: (a, b) => b.value - a.value,
+  age: (a, b) => new Date(a.stageChangedAt) - new Date(b.stageChangedAt),
+  name: (a, b) => CRM.unesc(a.name).localeCompare(CRM.unesc(b.name)),
+};
+let dealSort = 'value';
 
 function renderStats() {
   const open = deals.filter((d) => !['won', 'lost'].includes(d.stage));
@@ -168,14 +175,14 @@ function renderStats() {
 
 function daysLabel(d) {
   const days = Math.floor((Date.now() - new Date(d.stageChangedAt)) / 86400000);
-  return d.stage === 'won' ? `Closed ${days ? days + 'd ago' : 'today'}` : `${days}d in stage`;
+  return ['won', 'lost'].includes(d.stage) ? `Closed ${days ? days + 'd ago' : 'today'}` : `${days}d in stage`;
 }
 
 function renderBoard() {
   const board = document.getElementById('kanban-board');
   board.innerHTML = '';
   stages.forEach((st) => {
-    const list = deals.filter((d) => d.stage === st.key).sort((a, b) => b.value - a.value);
+    const list = deals.filter((d) => d.stage === st.key).sort(DEAL_SORTS[dealSort]);
     const total = list.reduce((a, d) => a + d.value, 0);
     const col = document.createElement('div');
     col.className = 'kanban-col';
@@ -196,7 +203,7 @@ function renderBoard() {
         </div>`; }).join('')}
       <button class="crm-add-link" data-create="deals" data-values='{"stage":"${st.key}"}'>+ Add deal</button>`;
     col.addEventListener('dragover', (e) => { e.preventDefault(); col.classList.add('drop-target'); });
-    col.addEventListener('dragleave', () => col.classList.remove('drop-target'));
+    col.addEventListener('dragleave', (e) => { if (!col.contains(e.relatedTarget)) col.classList.remove('drop-target'); });
     col.addEventListener('drop', async (e) => {
       e.preventDefault();
       col.classList.remove('drop-target');
@@ -219,6 +226,8 @@ document.getElementById('export-csv').addEventListener('click', () => CRM.downlo
 
 renderStats();
 renderBoard();
+CRM.sortMenu(document.querySelector('.section-title .sort'), [['value', 'Deal Value'], ['age', 'Longest in Stage'], ['name', 'Name (A–Z)']], 'value',
+  (k) => { dealSort = k; renderBoard(); });
 </script>
 </body>
 </html>

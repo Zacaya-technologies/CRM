@@ -11,9 +11,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,600&family=Dancing+Script:wght@600&display=swap">
-<link rel="stylesheet" href="styles.css?v=14">
-<link rel="stylesheet" href="assets/app.css?v=14">
-<script src="assets/app.js?v=14"></script>
+<link rel="stylesheet" href="styles.css?v=16">
+<link rel="stylesheet" href="assets/app.css?v=16">
+<script src="assets/app.js?v=16"></script>
 </head>
 <body>
 <div class="app">
@@ -324,18 +324,20 @@ function mailClient(subject, body) {
   if (!email) CRM.toast('Tip: add a billing email to this client to pre-fill the recipient.');
   location.href = `mailto:${encodeURIComponent(email)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 }
+const needOnboarding = () => CRM.toast('Start an onboarding first: click “Initiate Onboarding”.', 'error');
 $('act-wa').addEventListener('click', () => {
-  if (!selected) return;
+  if (!selected) return needOnboarding();
   const pending = items.filter((i) => !i.done);
   if (!pending.length) return CRM.toast('All gates are verified — nothing to chase.');
   waShare(`Hi! To launch on ${fmt.date(selected.goLive)} we still need:\n` + pending.map((i) => `• ${plain(i.title)}`).join('\n'));
 });
-const invite = () => selected && mailClient(`Welcome to your onboarding with Creative Advs — ${plain(selected.name)}`,
+const invite = () => !selected ? needOnboarding() : mailClient(`Welcome to your onboarding with Creative Advs — ${plain(selected.name)}`,
   `Hi,\n\nWe're excited to kick off! Your onboarding lead is ${plain(selected.leadName || 'our team')} and we're targeting go-live on ${fmt.date(selected.goLive)}.\n\nOpen items:\n${items.filter((i) => !i.done).map((i) => `• ${plain(i.title)}`).join('\n')}\n\nSpeak soon!`);
 $('act-invite').addEventListener('click', invite);
+$('act-gate').addEventListener('click', () => { if (!selected) CRM.toast('Start an onboarding first: click “Initiate Onboarding”.', 'error'); });
 $('invite-btn').addEventListener('click', invite);
 $('act-deck').addEventListener('click', () => {
-  if (!selected) return;
+  if (!selected) return needOnboarding();
   CRM.printDoc({
     title: 'Kickoff Summary', number: selected.name, status: `${pctOf(selected)}% complete`, to: `<div>${selected.name}</div>`,
     meta: [['GO-LIVE', fmt.date(selected.goLive)], ['ONBOARDING LEAD', selected.leadName || '—'], ['CURRENT GATE', selected.gate || '—']],
@@ -389,6 +391,14 @@ async function renderBanner(crit) {
   ]));
 }
 
+/* ---------------- Cohort sort ---------------- */
+const COHORT_SORTS = {
+  date: (a, b) => (a.goLive || '9999').localeCompare(b.goLive || '9999'),
+  pct: (a, b) => pctOf(a) - pctOf(b),
+  mrr: (a, b) => b.mrr - a.mrr,
+};
+CRM.sortMenu(document.querySelector('.section-title .sort'), [['date', 'Target Launch Date'], ['pct', 'Least Complete First'], ['mrr', 'Retainer Value']], 'date',
+  (k) => { active.sort(COHORT_SORTS[k]); renderCohorts(); });
 renderCohorts();
 await loadMatrix();
 loadFeed();

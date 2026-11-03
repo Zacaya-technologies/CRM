@@ -500,6 +500,9 @@
     switch (f.type) {
       case 'select': {
         const list = (opts || []).map((o) => (Array.isArray(o) ? o : [o, o]));
+        // Keep a value that isn't in the list (imported data, an older option, an inactive user),
+        // otherwise saving the form would silently clear it.
+        if (v !== '' && !list.some(([val]) => String(val) === String(v))) list.unshift([v, v]);
         const empty = f.required ? '<option value="">Select…</option>' : `<option value="">${esc(f.empty || '—')}</option>`;
         input = `<select id="${id}" name="${f.k}"${req}>${empty}${list.map(([val, label]) =>
           `<option value="${esc(val)}"${String(val) === String(v) ? ' selected' : ''}>${esc(label)}</option>`).join('')}</select>`;
@@ -557,9 +560,9 @@
   async function openForm(resource, { id = null, values = {}, onSaved = null, onDeleted = null, copy = false } = {}) {
     const def = FORMS[resource];
     if (!def) throw new Error('No form for ' + resource);
-    if (!CRM.can('member') || (resource === 'users' && !CRM.can('admin'))) {
-      return toast('Your role is read-only for this section.', 'error');
-    }
+    // Read-only roles can open a record to see its details, but not create or change anything.
+    const readOnly = !CRM.can('member') || (resource === 'users' && !CRM.can('admin'));
+    if (readOnly && !id) return toast('Your role is read-only for this section.', 'error');
     let data;
     try {
       data = id ? await API.raw.get(resource, id) : Object.assign({}, def.defaults ? def.defaults() : {}, values);
@@ -567,22 +570,23 @@
       return toast(e.message, 'error');
     }
     const fieldsHtml = (await Promise.all(def.fields.map((f) => renderField(f, data[f.k])))).join('');
-    const canDelete = id && CRM.can(resource === 'users' ? 'admin' : 'manager');
-    const canDuplicate = id && resource !== 'users' && !def.noDuplicate;
+    const canDelete = !readOnly && id && CRM.can(resource === 'users' ? 'admin' : 'manager');
+    const canDuplicate = !readOnly && id && resource !== 'users' && !def.noDuplicate;
 
     const wrap = document.createElement('div');
     wrap.className = 'crm-modal-backdrop';
     wrap.innerHTML = `
       <form class="crm-modal" novalidate>
-        <div class="crm-modal-head"><h3>${id ? 'Edit' : copy ? 'Duplicate' : 'New'} ${esc(def.title)}</h3><button type="button" class="crm-x" aria-label="Close">×</button></div>
+        <div class="crm-modal-head"><h3>${readOnly ? 'View' : id ? 'Edit' : copy ? 'Duplicate' : 'New'} ${esc(def.title)}</h3><button type="button" class="crm-x" aria-label="Close">×</button></div>
         <div class="crm-form-grid">${fieldsHtml}</div>
         <div class="crm-modal-error" hidden></div>
         <div class="crm-modal-foot">
           ${canDelete ? '<button type="button" class="btn crm-danger" data-del>Delete</button>' : ''}
           ${canDuplicate ? '<button type="button" class="btn btn-ghost" data-dup title="Create a new record with these values"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Duplicate</button>' : ''}
           <span style="flex:1"></span>
-          <button type="button" class="btn btn-outline" data-cancel>Cancel</button>
-          <button type="submit" class="btn btn-primary">${id ? 'Save changes' : 'Create ' + esc(def.title)}</button>
+          ${readOnly ? '<span class="crm-hint">Your role can view this record but not change it.</span>' : ''}
+          <button type="button" class="btn btn-outline" data-cancel>${readOnly ? 'Close' : 'Cancel'}</button>
+          ${readOnly ? '' : `<button type="submit" class="btn btn-primary">${id ? 'Save changes' : 'Create ' + esc(def.title)}</button>`}
         </div>
       </form>`;
     document.body.appendChild(wrap);
@@ -594,6 +598,11 @@
     wrap.addEventListener('mousedown', (e) => { if (e.target === wrap) close(); });
     wrap.querySelector('.crm-x').onclick = close;
     wrap.querySelector('[data-cancel]').onclick = close;
+    if (readOnly) {
+      form.querySelectorAll('input, select, textarea').forEach((el) => { el.disabled = true; });
+      form.addEventListener('submit', (e) => e.preventDefault());
+      return;
+    }
     const first = form.querySelector('input:not([type=checkbox]),select,textarea');
     if (first) first.focus();
 
@@ -714,6 +723,30 @@
       if (!pop.contains(e.target)) { pop.remove(); document.removeEventListener('mousedown', off); }
     }), 0);
     return pop;
+  }
+
+  /**
+   * Turns a "SORT BY: …" label into a working menu.
+   *   CRM.sortMenu(el, [['date', 'Target Launch Date'], ['pct', 'Completion']], 'date', (key) => rerender(key))
+   */
+  function sortMenu(el, options, current, onChange, prefix = 'SORT BY') {
+    if (!el) return;
+    const chev = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>';
+    const label = () => { el.innerHTML = `${prefix}: ${esc(options.find(([k]) => k === current)[1])} ${chev}`; };
+    label();
+    el.setAttribute('role', 'button');
+    el.tabIndex = 0;
+    el.style.cursor = 'pointer';
+    el.title = 'Change sort order';
+    el.addEventListener('click', () => {
+      const pop = popover(el, options.map(([k, l]) => `<button data-sort="${esc(k)}"${k === current ? ' class="on"' : ''}>${k === current ? '✓ ' : ''}${esc(l)}</button>`).join(''));
+      pop.querySelectorAll('[data-sort]').forEach((b) => b.addEventListener('click', () => {
+        pop.remove();
+        current = b.dataset.sort;
+        label();
+        onChange(current);
+      }));
+    });
   }
 
   function openPalette() {
@@ -888,7 +921,7 @@
   }
 
   const CRM = {
-    API, fmt, esc, unesc, toast, flash, form: openForm, FORMS, downloadCSV, printDoc, logout, lookup,
+    API, fmt, esc, unesc, toast, flash, form: openForm, FORMS, downloadCSV, printDoc, logout, lookup, sortMenu,
     user: null,
     can: (min) => !!CRM.user && ROLE_RANK[CRM.user.role] >= ROLE_RANK[min],
   };
@@ -1138,6 +1171,7 @@
         const a = e.target.closest && e.target.closest('a');
         if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || !isPage(a)) return;
         root.classList.add('crm-leaving');
+        setTimeout(() => root.classList.remove('crm-leaving'), 2500); // navigation cancelled or slow: never leave the page faded
       });
     }
   }

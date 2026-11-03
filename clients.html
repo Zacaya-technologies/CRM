@@ -11,9 +11,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,600&family=Dancing+Script:wght@600&display=swap">
-<link rel="stylesheet" href="styles.css?v=14">
-<link rel="stylesheet" href="assets/app.css?v=14">
-<script src="assets/app.js?v=14"></script>
+<link rel="stylesheet" href="styles.css?v=16">
+<link rel="stylesheet" href="assets/app.css?v=16">
+<script src="assets/app.js?v=16"></script>
 </head>
 <body>
 <div class="app">
@@ -122,7 +122,7 @@
       </div>
 
       <div class="section-title">
-        <div><h2>Account Health</h2><p>The three accounts with the lowest health score — click a card to update it.</p></div>
+        <div><h2>Account Health</h2><p id="cards-sub">The three accounts with the lowest health score — click a card to update it.</p></div>
         <div class="sort">SORTED BY: Lowest Health <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div>
       </div>
 
@@ -163,7 +163,14 @@ document.getElementById('stat-renew-foot').textContent = 'Within next 30 days';
 
 const logo = (c) => `background:linear-gradient(135deg,${c.color1},${c.color2})`;
 
-document.getElementById('client-grid').innerHTML = active.slice().sort((a, b) => a.health - b.health).slice(0, 3).map((c) => `
+const CARD_SORTS = {
+  health: [(a, b) => a.health - b.health, 'The three accounts with the lowest health score'],
+  renewal: [(a, b) => (a.renewal || '9999').localeCompare(b.renewal || '9999'), 'The three accounts renewing soonest'],
+  mrr: [(a, b) => b.mrr - a.mrr, 'The three largest retainers'],
+};
+const renderCards = (key) => {
+document.getElementById('cards-sub').textContent = CARD_SORTS[key][1] + ' — click a card to update it.';
+document.getElementById('client-grid').innerHTML = active.slice().sort(CARD_SORTS[key][0]).slice(0, 3).map((c) => `
   <div class="client-card" data-edit="clients" data-id="${c.id}">
     <div class="client-top">
       <div class="client-logo" style="${logo(c)}">${fmt.initials(c.name)}</div>
@@ -179,6 +186,9 @@ document.getElementById('client-grid').innerHTML = active.slice().sort((a, b) =>
       <span class="rail-link" style="margin:0;">Open Account →</span>
     </div>
   </div>`).join('') || '<div class="crm-empty">No active clients yet — click “Add Client”.</div>';
+};
+renderCards('health');
+CRM.sortMenu(document.querySelector('.section-title .sort'), [['health', 'Lowest Health'], ['renewal', 'Renewal Soonest'], ['mrr', 'Highest Retainer']], 'health', renderCards, 'SORTED BY');
 
 document.getElementById('clients-body').innerHTML = clients.slice().sort((a, b) => a.name.localeCompare(b.name)).map((c) => `
   <tr data-edit="clients" data-id="${c.id}" style="${c.status !== 'active' ? 'opacity:.55' : ''}">
