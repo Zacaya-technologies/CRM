@@ -1,74 +1,64 @@
 # Deploying Creative Advs CRM on Hostinger
 
-The CRM is a static front end (`*.html`, `styles.css`, `assets/`) plus a PHP REST API (`api/`) backed by MySQL. It runs on any Hostinger plan with PHP 7.4+ (8.x recommended) — Premium, Business or Cloud. No Node.js, Composer or build step is needed.
+The CRM is a complete Node.js application: `server.js` serves the pages (`*.html`, `styles.css`, `assets/`)
+and the REST API, and stores everything in MySQL. `package.json` lists everything Hostinger needs to
+install and start it. There is no build step.
 
-## Run it on your computer (no hosting needed)
+```
+package.json        ← Hostinger reads this: installs dependencies, runs "npm start"
+server.js           ← entry file
+server/             ← API, sign-in, demo data, automatic table setup
+database/schema.sql ← table definitions (the app creates the tables itself on first start)
+*.html, styles.css, assets/
+```
 
-The CRM needs PHP and MySQL, so opening the HTML files directly, or with VS Code Live Server,
-cannot work. You'll see "PHP is not running on this server". Instead:
+## Deploy on Hostinger (Node.js Web App)
 
-1. Install **Docker Desktop** (free) once: https://www.docker.com/products/docker-desktop/
-2. Double-click **`start-crm.bat`** in the project folder. The first run downloads PHP and MariaDB
-   (a few minutes); after that it starts in seconds. Your browser opens **http://localhost:8088**.
-3. Create your admin account, then click **Load demo data** on the Dashboard.
-
-- **Stop:** double-click `stop-crm.bat`. Your data is kept for next time.
-- **Start completely fresh:** run `stop-crm.bat --reset` from a terminal (deletes all local data).
-- **Edits show immediately:** the project folder is served live, so changes to `.html`, `.css`,
-  `.js` and `.php` files appear as soon as you reload the page.
-- **Settings:** the local setup uses `local/crm-config.php`, so your `api/config.php` for Hostinger
-  stays untouched. Don't upload the `local/` folder or the `.bat` files to Hostinger; `.htaccess`
-  blocks them if you do.
-
-## 1. Create the database
+### 1. Create the database
 
 1. hPanel → **Databases → MySQL Databases**.
-2. Create a database and a user (for example `u123456789_crm` / `u123456789_crmuser`) with a strong password. Write all three down.
-3. Click **Enter phpMyAdmin** next to the new database.
-4. In phpMyAdmin, select the database in the left column → **Import** → choose `database/schema.sql` → **Go**.
-   This creates all tables and loads the sample agency data. Re-importing wipes and recreates everything.
+2. Create a database and a user (for example `u123456789_crm` / `u123456789_crmuser`) with a strong
+   password. Write down the database name, user, password and the MySQL host shown on that page.
 
-## 2. Configure the API
+You do **not** need to import anything in phpMyAdmin: the app creates all tables on its first start.
 
-Edit `api/config.php` and fill in the values from step 1:
+### 2. Create the Node.js app
 
-```php
-'db' => [
-    'host'     => 'localhost',
-    'port'     => 3306,
-    'name'     => 'u123456789_crm',
-    'user'     => 'u123456789_crmuser',
-    'password' => 'your-db-password',
-],
-'timezone' => 'Asia/Kolkata',
-```
+1. hPanel → **Websites → Add website → Node.js Apps** (the exact labels may differ slightly).
+2. Choose how to send the code:
+   - **Upload files:** upload `creative-advs-crm-node.zip`. `package.json` must be at the top level
+     of the ZIP, not inside a folder.
+   - **Import Git repository:** connect the GitHub repository that holds this project.
+3. Build settings:
+   - Framework: **Express** (or "Other")
+   - Node.js version: **20** or newer (18 works too)
+   - Entry file: **server.js**
+   - Install command `npm install` and start command `npm start` (usually filled in automatically)
+4. **Environment variables.** Add these (values from step 1):
 
-**Optional, more secure:** copy the finished file to `/home/<your-user>/crm-config.php` (one level above `public_html`), then put the placeholder values back in `api/config.php`. The API reads the file outside `public_html` first if it exists.
+   | Name | Example |
+   |---|---|
+   | `DB_HOST` | `localhost` (or the MySQL host shown in hPanel) |
+   | `DB_NAME` | `u123456789_crm` |
+   | `DB_USER` | `u123456789_crmuser` |
+   | `DB_PASSWORD` | your database password |
+   | `TIMEZONE` | `Asia/Kolkata` |
 
-## 3. Upload the files
+   Optional: `FORCE_HTTPS=true` once SSL is active, `MAINTENANCE=true`, `DEBUG=true` (only while fixing a problem).
+   Hostinger sets `PORT` itself. You don't need to set it.
+5. Click **Deploy**. When it finishes, the app log shows
+   `Creative Advs CRM running on port …` and, on the first start, `created 24 database tables`.
 
-hPanel → **Files → File Manager → public_html** (or use FTP / Git). Upload:
+If your plan has no environment-variable screen, copy `.env.example` to `.env`, fill it in and upload it
+with the other files. The server never serves `.env` to browsers.
 
-```
-public_html/
-├── .htaccess
-├── index.html, login.html, team.html, …all other *.html
-├── 404.html, 403.html, 500.html, maintenance.html   (error pages)
-├── styles.css
-├── assets/         (app.js, app.css, *.svg leaf artwork)
-└── api/            (index.php, config.php, .htaccess, lib/)
-```
+### 3. First sign-in
 
-You do **not** need to upload `database/`, `DEPLOY.md` or `.git/`. If you do, `.htaccess` blocks access to them.
-
-Make sure the hidden `.htaccess` files are uploaded. In File Manager, enable "Show hidden files".
-
-## 4. First sign-in
-
-1. Open `https://your-domain.com/api/?r=health` — this needs the header, so you should see `{"error":"Missing X-CRM request header."}`. That message means PHP is running.
+1. Open `https://your-domain.com/api/index.php?r=health`. You should see `{"error":"Missing X-CRM request header."}`, which means the app is running.
 2. Open `https://your-domain.com/`. You'll be sent to the login page, which shows **Set up your workspace** on first visit.
-3. Create the administrator account. Passwords need 8+ characters with a letter and a number or symbol. If you use the seeded email `admin@creativeadvs.com`, your account takes over the sample "Vikram Malhotra" record.
-4. Add teammates under **Team & Access** (sidebar, admins only). Give each person a login email and password, and pick a role:
+3. Create the administrator account. Passwords need 8+ characters with a letter and a number or symbol.
+4. Click **Load demo data** on the Dashboard if you want sample data to explore.
+5. Add teammates under **Team & Access** (sidebar, admins only). Give each person a login email and password, and pick a role:
 
 | Role    | View | Add & edit | Delete | Manage team |
 |---------|------|------------|--------|-------------|
@@ -77,19 +67,35 @@ Make sure the hidden `.htaccess` files are uploaded. In File Manager, enable "Sh
 | Member  | ✔    | ✔          | —      | —           |
 | Viewer  | ✔    | —          | —      | —           |
 
-## 5. Turn on HTTPS
+### 4. HTTPS
 
-Once SSL shows as active in hPanel → **Security → SSL**, open the root `.htaccess` and remove the `#` from the five "Force HTTPS" lines.
+Once SSL shows as active for the domain, set the environment variable `FORCE_HTTPS=true` and redeploy / restart the app.
 
-## Upgrading an existing installation
+### Updating to a new version
 
-If your database was created with an older `schema.sql`, keep your data and run these once
-in phpMyAdmin → SQL (both are safe to run twice):
+Upload the new ZIP (or push to the connected Git repository) and redeploy. Your data stays in MySQL.
+New tables are added automatically on start; existing tables and data are never changed.
 
-1. `database/migrations/2026-11-02-security-and-indexes.sql` — Security Log table and speed indexes.
-2. `database/migrations/2026-11-03-demo-data.sql` — optional: the demo-data button creates its table automatically on first use.
+### Moving from the PHP version
 
-Then upload the new files. Everyone will need to sign in again once.
+Point `DB_NAME`, `DB_USER` and `DB_PASSWORD` at your existing database. All data, users and passwords keep
+working (both versions use the same tables and bcrypt passwords). Everyone signs in once more.
+
+## Run it on your computer
+
+**Option A: Node.js + any MySQL/MariaDB** (for example XAMPP's MySQL):
+
+```
+npm install
+copy .env.example .env     (then fill in the DB_ settings)
+npm start                  → http://localhost:3000
+```
+
+**Option B: Docker (no other installs).** Install **Docker Desktop** once, then double-click
+**`start-crm.bat`**. It starts the Node server and a MariaDB database and opens **http://localhost:8088**.
+Stop it with `stop-crm.bat` (data is kept); `stop-crm.bat --reset` deletes all local data.
+
+Opening the HTML files directly or with VS Code Live Server cannot work: the pages need the server.
 
 ## Free demo data
 
@@ -99,36 +105,35 @@ approvals, 6 campaigns, a content calendar, 5 projects with tasks, proposals, 14
 and any missing months of financials. A brand-new, empty workspace shows a welcome banner offering it.
 
 The same button then reads **Remove demo data** and deletes exactly the rows the demo created; your
-own records are never touched. If the button reports that the server is missing the demo feature,
-upload the latest `api/index.php` and `api/lib/demo.php`. If you attached your own invoice or payment to a demo client, removal
+own records are never touched. If you attached your own invoice or payment to a demo client, removal
 stops and names those records so you can delete or move them first.
 
 ## Security built in
 
 - Passwords are stored with bcrypt; 8–72 characters with a letter and a number or symbol.
 - Sign-in locks for 15 minutes after 8 failures from one IP **or** 5 failures on one account.
-- Sessions end after 12 hours idle or 7 days in total (`session_lifetime`, `session_absolute` in `api/config.php`).
+- Sessions end after 12 hours idle or 7 days in total (`SESSION_LIFETIME`, `SESSION_ABSOLUTE`).
 - Changing a password, an admin reset, or deactivating someone signs out their other sessions immediately.
 - Every request needs the `X-CRM` header and a same-site origin, which blocks cross-site request forgery.
 - Pages send a Content-Security-Policy, HSTS (on HTTPS), and anti-framing and no-sniff headers. API responses are never cached.
-- `api/config.php`, `api/lib/`, `database/` and dotfiles cannot be downloaded.
+- Only the pages, `styles.css` and `assets/` are public. Server code, `.env`, `database/` and `node_modules/` can never be downloaded.
 - **Team & Access → Security Log** (admins only) lists sign-ins, failed attempts, lockouts, password and role changes, with IP and browser.
 
 ## Maintenance mode
 
-Set `'maintenance' => true` in `api/config.php`. Everyone except signed-in admins sees the maintenance page, which checks every 30 seconds and returns users to where they were once you set it back to `false`.
+Set the environment variable `MAINTENANCE=true` and restart the app. Everyone except signed-in admins sees the maintenance page, which checks every 30 seconds and returns users to where they were once you set it back to `false`.
 
 ## After changing CSS or JavaScript
 
-Browsers cache `styles.css`, `assets/app.css` and `assets/app.js` for 30 days, which makes pages load faster. Every page links them as `?v=11`. When you edit one of these files, change `v=11` to `v=12` in all `*.html` files so everyone gets the new version. HTML pages are never cached.
+Browsers cache `styles.css`, `assets/app.css` and `assets/app.js` for 30 days, which makes pages load faster. Every page links them as `?v=12`. When you edit one of these files, change `v=12` to `v=13` in all `*.html` files so everyone gets the new version. HTML pages are never cached.
 
 ## Backups
 
-hPanel → **Files → Backups** covers files. For the data, run phpMyAdmin → your database → **Export → Quick → SQL** regularly, for example weekly, and keep the file somewhere off the server.
+For the data, run phpMyAdmin → your database → **Export → Quick → SQL** regularly, for example weekly, and keep the file somewhere off the server.
 
 ## Starting with an empty CRM
 
-The sample data is for demonstration. To start clean, run this in phpMyAdmin → SQL (it keeps your users and logins):
+Use **Remove demo data** on the Dashboard. If you imported `database/schema.sql` (which has its own sample rows), run this in phpMyAdmin → SQL instead (it keeps your users and logins):
 
 ```sql
 SET FOREIGN_KEY_CHECKS = 0;
@@ -136,7 +141,7 @@ TRUNCATE activity; TRUNCATE payments; TRUNCATE invoices; TRUNCATE proposals; TRU
 TRUNCATE milestones; TRUNCATE project_members; TRUNCATE projects; TRUNCATE content_posts;
 TRUNCATE campaigns; TRUNCATE approvals; TRUNCATE onboarding_items; TRUNCATE onboardings;
 TRUNCATE services; TRUNCATE followups; TRUNCATE deals; TRUNCATE leads; TRUNCATE clients;
-TRUNCATE finance_monthly; TRUNCATE saved_reports; TRUNCATE security_log;
+TRUNCATE finance_monthly; TRUNCATE saved_reports; TRUNCATE security_log; TRUNCATE demo_records;
 SET FOREIGN_KEY_CHECKS = 1;
 ```
 
@@ -144,14 +149,14 @@ SET FOREIGN_KEY_CHECKS = 1;
 
 | Symptom | Fix |
 |---|---|
-| Red bar "Cannot connect to the database" | Wrong details in `api/config.php`. Re-check the database name, user and password in hPanel. |
-| "Database tables are missing" | Import `database/schema.sql` into the right database (step 1.4). |
-| Red bar "Server error (500)… Is PHP enabled" | Set PHP 8.x in hPanel → **Advanced → PHP Configuration**, and confirm the `pdo_mysql` extension is enabled there. |
+| Hostinger says `package.json` is missing | The ZIP has the files inside a folder. Zip the *contents* of the project folder so `package.json` is at the top level. |
+| Red bar "Cannot connect to the database" | Check `DB_HOST`, `DB_NAME`, `DB_USER`, `DB_PASSWORD` in the app's environment variables, then restart. Try the MySQL host shown in hPanel if `localhost` doesn't work. |
+| "Database tables are missing" | Restart the app; it creates missing tables on start. Check the app log for errors. |
+| The site shows a Hostinger error page | Open the app's logs in hPanel. A missing `DB_` setting or a typo in the entry file (`server.js`) is the usual cause. |
 | "Too many failed attempts" | Sign-in locks for 15 minutes after 8 wrong passwords from one IP or 5 on one account. Wait, or run `TRUNCATE login_attempts;` in phpMyAdmin. |
-| Error pages show unstyled | The error pages assume the CRM is at the domain root. If it lives in a sub-folder, update the `ErrorDocument` lines in `.htaccess`. |
-| Everyone was signed out | Expected after a password change, an admin reset, or when upgrading to this version. |
+| Everyone was signed out | Expected after a password change, an admin reset, or when moving to a new version. |
 | Forgot the only admin password | In phpMyAdmin run `UPDATE users SET password_hash = NULL WHERE role = 'admin';`, then open the login page to run setup again. |
-| Need to see the actual SQL error | Temporarily set `'debug' => true` in `api/config.php`, reproduce the error, then set it back to `false`. |
+| Need to see the actual SQL error | Temporarily set `DEBUG=true`, reproduce the error, then set it back to `false`. |
 
 ## API reference
 
@@ -159,16 +164,18 @@ Every request goes to `api/index.php` with the header `X-CRM: 1` and the session
 
 | Route | Methods | Purpose |
 |---|---|---|
+| `?r=health` | GET | Server and database check |
 | `?r=auth/status` | GET | Current user and whether first-run setup is needed |
 | `?r=auth/setup` | POST | Create the first admin (only while none exists) |
 | `?r=auth/login` / `auth/logout` | POST | Start / end a session |
 | `?r=auth/password` | POST | Change your own password `{current, new}`; signs out other sessions |
 | `?r=security_log` | GET | Security events (admins only) |
 | `?r=dashboard` | GET | Command Center aggregates |
+| `?r=demo/status` / `demo/load` / `demo/remove` | GET / POST | Demo data (admins only) |
 | `?r=<resource>` | GET, POST | List (filter by any field, `q=` search, `limit=`) / create |
 | `?r=<resource>&id=N` | GET, PUT, DELETE | Read / update (partial) / delete |
 
-Resources: `leads, clients, deals, followups, services, onboardings, onboarding_items, approvals, campaigns, posts, projects, milestones, tasks, proposals, invoices, payments, finance, saved_reports, activity, users`. Their fields are defined in `api/lib/resources.php`.
+Resources: `leads, clients, deals, followups, services, onboardings, onboarding_items, approvals, campaigns, posts, projects, milestones, tasks, proposals, invoices, payments, finance, saved_reports, activity, users`. Their fields are defined in `server/resources.js`.
 
 Automatic behaviour:
 - New invoices and proposals get the next number (`INV-1089`, `PR-2026-042`).
@@ -178,10 +185,16 @@ Automatic behaviour:
 - A new onboarding gets the standard 15-gate checklist.
 - Every change is written to the activity log.
 
+## Alternative: PHP shared hosting
+
+The original PHP version of the API is still in `api/` (with the root `.htaccess`). On a plain PHP hosting
+plan, upload everything except `server.js`, `server/` and `node_modules/` to `public_html`, import
+`database/schema.sql` in phpMyAdmin and fill in `api/config.php`.
+
 ## Features that still need third-party accounts
 
 These panels in the original design are still illustrative content. Making them live needs API keys from those services:
 - **Campaign Lab:** creative split tests, landing-page health and the AI recommendation (Meta / Google Ads APIs).
-- **Lead routing rules and invoice auto-reminders:** these need a cron job plus an email or WhatsApp provider.
+- **Lead routing rules and invoice auto-reminders:** these need a scheduled job plus an email or WhatsApp provider.
 
 Campaign metrics (spend, ROAS, impressions and so on) are entered or edited by hand in each campaign's form.

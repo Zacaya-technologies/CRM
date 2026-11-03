@@ -1,6 +1,6 @@
 /* =====================================================================
    Creative Advs CRM — shared front-end runtime
-   - API client (talks to api/index.php)
+   - API client (talks to api/index.php, served by server.js)
    - Session guard (redirects to login.html when signed out)
    - Add / edit / delete modal forms for every resource
    - Top-bar user menu, notifications, Ctrl+K command palette, toasts
@@ -83,7 +83,7 @@
       });
     } catch (e) {
       if (location.protocol === 'file:') {
-        throw new Error('The CRM was opened as a file. Double-click start-crm.bat and use http://localhost:8088 instead.');
+        throw new Error('The CRM was opened as a file. Start the server (npm start, or double-click start-crm.bat) and open it in the browser instead.');
       }
       throw new Error(e.name === 'AbortError'
         ? 'The server is taking too long to respond. Please try again.'
@@ -93,19 +93,19 @@
       busy(-1);
     }
     let data = null;
-    try { data = await res.json(); } catch (e) { /* non-JSON (e.g. PHP fatal) */ }
+    try { data = await res.json(); } catch (e) { /* non-JSON (e.g. a static file server) */ }
     if (res.status === 401 && !route.startsWith('auth/')) return toLogin(!!(window.CRM && window.CRM.user));
     if (res.status === 503 && data && data.details && data.details.maintenance && !IS_LOGIN) {
       location.replace('maintenance.html?next=' + encodeURIComponent(here()));
       return new Promise(() => {});
     }
     if (!res.ok || data === null) {
-      // A 200 that isn't JSON means api/index.php was sent as a plain file: PHP isn't running
-      // (typical with VS Code Live Server or other static servers).
-      const noPhp = res.ok && data === null;
-      const err = new Error((data && data.error) || (noPhp
-        ? 'PHP is not running on this server, so the CRM has no database. On your computer, double-click start-crm.bat and use http://localhost:8088 (Live Server and similar tools cannot run PHP).'
-        : `Server error (${res.status}). Is PHP enabled and api/config.php correct?`));
+      // A 200 that isn't JSON means api/index.php was sent as a plain file: the CRM server isn't
+      // running (typical with VS Code Live Server or other static servers).
+      const noServer = res.ok && data === null;
+      const err = new Error((data && data.error) || (noServer
+        ? 'The CRM server is not running here, so there is no database. Start it with "npm start" (or double-click start-crm.bat) and open the address it prints. Live Server and similar tools cannot run it.'
+        : `Server error (${res.status}). Is the CRM app running and are its database settings correct?`));
       err.status = res.status;
       err.details = data && data.details;
       throw err;
@@ -978,7 +978,7 @@
     let status, statusError = null;
     try { status = await request('demo/status', { raw: true }); } catch (e) { statusError = e; status = { loaded: false, empty: false }; }
     const explain = (e) => (e.status === 404
-      ? 'The server is missing the demo-data feature. Upload the latest api/index.php and api/lib/demo.php, then reload this page.'
+      ? 'The server is missing the demo-data feature. Deploy the latest version of the CRM, then reload this page.'
       : e.message);
     const run = async (btn) => {
       const loading = !status.loaded;

@@ -19,12 +19,20 @@ services:
       retries: 40
 
   web:
-    build: .
+    build:
+      context: ..
+      dockerfile: local/Dockerfile
     ports:
-      - "8088:80"
+      - "8088:3000"
+    environment:
+      DB_HOST: db
+      DB_NAME: crm
+      DB_USER: crm
+      DB_PASSWORD: crm-local-only
+      DEBUG: "true"               # show real error details while developing locally
+      TIMEZONE: Asia/Kolkata
     volumes:
-      - ..:/var/www/html:ro
-      - ./crm-config.php:/var/www/crm-config.php:ro
+      - ..:/app/src:ro            # edits to pages and server code apply on reload / restart
     depends_on:
       db:
         condition: service_healthy
