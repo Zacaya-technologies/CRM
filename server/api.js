@@ -50,7 +50,26 @@ function checkOrigin(req, method) {
 }
 
 const DB_CONNECT_CODES = new Set(['ER_ACCESS_DENIED_ERROR', 'ER_DBACCESS_DENIED_ERROR', 'ER_BAD_DB_ERROR', 'ECONNREFUSED', 'ENOTFOUND',
-  'ETIMEDOUT', 'EHOSTUNREACH', 'ECONNRESET', 'PROTOCOL_CONNECTION_LOST', 'ER_HOST_NOT_PRIVILEGED', 'ER_NOT_SUPPORTED_AUTH_MODE']);
+  'ETIMEDOUT', 'EHOSTUNREACH', 'ECONNRESET', 'PROTOCOL_CONNECTION_LOST', 'ER_HOST_NOT_PRIVILEGED', 'ER_NOT_SUPPORTED_AUTH_MODE', 'CRM_DB_SETTINGS_MISSING']);
+
+/** Which setting to fix, from the MySQL error. Names settings only, never their values. */
+function connectHint(e) {
+  const c = config.db;
+  const missing = [['DB_NAME', c.name], ['DB_USER', c.user], ['DB_PASSWORD', c.password]].filter(([, v]) => !v).map(([k]) => k);
+  if (missing.length) return `${missing.join(', ')} ${missing.length > 1 ? 'are' : 'is'} not set. Add ${missing.length > 1 ? 'them' : 'it'} in the app's environment variables and redeploy. (${e.code})`;
+  switch (e.code) {
+    case 'ER_ACCESS_DENIED_ERROR':
+      return `MySQL rejected user "${c.user}" or its password. Check DB_USER (the full name with the u…_ prefix) and DB_PASSWORD. (${e.code})`;
+    case 'ER_DBACCESS_DENIED_ERROR':
+      return `user "${c.user}" has no access to database "${c.name}". In hPanel, make sure this user belongs to this database. (${e.code})`;
+    case 'ER_BAD_DB_ERROR':
+      return `database "${c.name}" does not exist. Check DB_NAME (the full name with the u…_ prefix). (${e.code})`;
+    case 'ER_HOST_NOT_PRIVILEGED':
+      return `MySQL does not accept connections from this app's server. Use the MySQL host shown in hPanel → Databases, or allow this server under Remote MySQL. (${e.code})`;
+    default:
+      return `no MySQL server answered at DB_HOST "${c.host}". Use the MySQL host shown in hPanel → Databases. (${e.code || e.errno})`;
+  }
+}
 
 /** Error → [status, body]. */
 function errorResponse(e) {
@@ -66,7 +85,7 @@ function errorResponse(e) {
     }
     let msg = 'Database error.';
     if (DB_CONNECT_CODES.has(e.code) || [1044, 1045, 1049, 2002, 2005, 2006].includes(e.errno)) {
-      msg = 'Cannot connect to the database. Check the DB_HOST, DB_NAME, DB_USER and DB_PASSWORD settings of the app.';
+      msg = 'Cannot connect to the database: ' + connectHint(e);
     } else if (e.code === 'ER_NO_SUCH_TABLE') {
       msg = 'Database tables are missing. Restart the app so it can create them.';
     }

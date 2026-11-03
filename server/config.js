@@ -32,6 +32,7 @@ const config = {
     name: env.DB_NAME || env.DB_DATABASE || '',
     user: env.DB_USER || env.DB_USERNAME || '',
     password: env.DB_PASSWORD || '',
+    socket: env.DB_SOCKET || '', // optional: MySQL socket path, used instead of host/port
   },
   // Session cookie name; idle timeout (12 hours) and absolute maximum age (7 days), in seconds.
   sessionName: env.SESSION_NAME || 'omnicrm_sid',
