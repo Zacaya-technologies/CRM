@@ -52,6 +52,9 @@ function sendPage(res, file, status = 200) {
   });
 }
 
+// Browsers ask for /favicon.ico on their own.
+app.get('/favicon.ico', (req, res) => res.sendFile(path.join(ROOT, 'assets', 'favicon.ico'), { maxAge: '30d' }));
+
 app.get('*', (req, res, next) => {
   const p = req.path === '/' ? '/index.html' : req.path;
   if (!PUBLIC.test(p)) return next();

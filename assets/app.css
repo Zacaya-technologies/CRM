@@ -133,3 +133,36 @@ tr[data-edit]:hover td { background: var(--bg); }
 
 @keyframes crm-fade { from { opacity: 0; } to { opacity: 1; } }
 @keyframes crm-rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+/* ---------- Page transitions ----------
+   Chrome, Edge and Safari animate between pages natively: the sidebar stays put while the
+   page content slides and fades. Other browsers get the same entrance on each page. */
+@view-transition { navigation: auto; }
+.sidebar { view-transition-name: crm-sidebar; }
+.topbar { view-transition-name: crm-topbar; }
+::view-transition-old(root) { animation: crm-page-out .16s ease-in both; }
+::view-transition-new(root) { animation: crm-page-in .34s cubic-bezier(.2, .8, .2, 1) both; }
+::view-transition-group(crm-topbar) { animation-duration: .25s; }
+
+.crm-enter .content { animation: crm-page-in .34s cubic-bezier(.2, .8, .2, 1) both; }
+.crm-vt.crm-enter .content { animation: none; }
+/* Blocks on the page rise in one after another. */
+.crm-enter .content > * { animation: crm-rise .42s cubic-bezier(.2, .8, .2, 1) both; }
+.crm-enter .content > :nth-child(2) { animation-delay: .04s; }
+.crm-enter .content > :nth-child(3) { animation-delay: .08s; }
+.crm-enter .content > :nth-child(4) { animation-delay: .12s; }
+.crm-enter .content > :nth-child(5) { animation-delay: .16s; }
+.crm-enter .content > :nth-child(n+6) { animation-delay: .2s; }
+.crm-leaving .content { opacity: .35; transform: translateY(-4px); transition: opacity .15s ease, transform .15s ease; }
+.nav-item { transition: background .15s, color .15s, transform .15s ease; }
+.nav-item:not(.active):hover { transform: translateX(3px); }
+
+@keyframes crm-page-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+@keyframes crm-page-out { to { opacity: 0; transform: translateY(-6px); } }
+
+@media (prefers-reduced-motion: reduce) {
+  @view-transition { navigation: none; }
+  .crm-enter .content, .crm-enter .content > * { animation: none; }
+  .crm-leaving .content { transform: none; }
+  .nav-item:not(.active):hover { transform: none; }
+}

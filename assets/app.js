@@ -15,7 +15,32 @@
   const ROLE_LABEL = { admin: 'Super Admin', manager: 'Manager', member: 'Team Member', viewer: 'Viewer' };
   const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
-  if (!IS_LOGIN) document.documentElement.classList.add('crm-auth-pending');
+  // The signed-in user, remembered for this tab so moving between pages shows the page at once
+  // instead of a loading screen. It only shapes the UI: the server still checks every request.
+  const USER_KEY = 'crm-user';
+  const cachedUser = (() => {
+    if (IS_LOGIN) { try { sessionStorage.removeItem(USER_KEY); } catch (e) {} return null; }
+    try { const u = JSON.parse(sessionStorage.getItem(USER_KEY)); return u && u.id && u.role ? u : null; } catch (e) { return null; }
+  })();
+  const rememberUser = (u) => { try { if (u) sessionStorage.setItem(USER_KEY, JSON.stringify(u)); else sessionStorage.removeItem(USER_KEY); } catch (e) {} };
+
+  if (!IS_LOGIN && !cachedUser) document.documentElement.classList.add('crm-auth-pending');
+
+  // Page entrance animation (app.css). Only while a page opens, so later re-renders don't replay it.
+  const root = document.documentElement;
+  let enterTimer = null;
+  function playEntrance() {
+    root.classList.remove('crm-enter');
+    void root.offsetWidth; // restart the CSS animations
+    root.classList.add('crm-enter');
+    clearTimeout(enterTimer);
+    enterTimer = setTimeout(() => root.classList.remove('crm-enter'), 900);
+  }
+  playEntrance();
+  // Browsers with cross-document view transitions animate the whole page change themselves.
+  window.addEventListener('pagereveal', (e) => { if (e.viewTransition) root.classList.add('crm-vt'); });
+  // Coming back with the Back button from the browser cache: show the page, not the faded-out state.
+  window.addEventListener('pageshow', (e) => { if (e.persisted) root.classList.remove('crm-leaving'); });
 
   /* ---------------- HTML escaping ----------------
      Data from the API is escaped once on arrival so page templates that
@@ -40,6 +65,7 @@
 
   // `expired` = the user was signed in on this page and the server has since ended the session.
   function toLogin(expired) {
+    rememberUser(null);
     const next = here();
     const qs = new URLSearchParams();
     if (next && next !== 'login.html') qs.set('next', next);
@@ -723,6 +749,7 @@
   }
 
   async function logout() {
+    rememberUser(null);
     try { await request('auth/logout', { method: 'POST' }); } catch (e) {}
     location.replace('login.html');
   }
@@ -1082,19 +1109,72 @@
     if (navigator.onLine === false) show();
   }
 
+  // Faster, smoother page changes: fetch the next page before the click, and fade the
+  // current content out on browsers that can't animate between pages themselves.
+  function setupPageTransitions() {
+    const isPage = (a) => a && a.href && a.origin === location.origin && /\.html$/.test(a.pathname)
+      && (!a.target || a.target === '_self') && !a.hasAttribute('download') && a.pathname !== location.pathname;
+    if (window.HTMLScriptElement && HTMLScriptElement.supports && HTMLScriptElement.supports('speculationrules')) {
+      const rules = document.createElement('script');
+      rules.type = 'speculationrules';
+      rules.textContent = JSON.stringify({ prefetch: [{ source: 'document', where: { href_matches: '/*.html' }, eagerness: 'moderate' }] });
+      document.head.appendChild(rules);
+    } else {
+      const warmed = new Set();
+      const warm = (e) => {
+        const a = e.target.closest && e.target.closest('a');
+        if (!isPage(a) || warmed.has(a.href)) return;
+        warmed.add(a.href);
+        const l = document.createElement('link');
+        l.rel = 'prefetch';
+        l.href = a.href;
+        document.head.appendChild(l);
+      };
+      document.addEventListener('mouseover', warm, { passive: true });
+      document.addEventListener('touchstart', warm, { passive: true });
+    }
+    if (!('onpagereveal' in window)) {
+      document.addEventListener('click', (e) => {
+        const a = e.target.closest && e.target.closest('a');
+        if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || !isPage(a)) return;
+        root.classList.add('crm-leaving');
+      });
+    }
+  }
+
   // Runs before sign-in finishes so the brand header shows even if the API is down.
-  const pageSetup = () => { decorateHeroes(); fitFigures(); watchConnection(); setupGridViews(); setupNavDrawer(); setupKeyboardControls(); };
+  const pageSetup = () => { decorateHeroes(); fitFigures(); watchConnection(); setupGridViews(); setupNavDrawer(); setupKeyboardControls(); setupPageTransitions(); };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', pageSetup); else pageSetup();
+
+  const bootWith = (user) => {
+    CRM.user = user;
+    const boot = () => {
+      decorate(user);
+      if (root.classList.contains('crm-auth-pending')) { root.classList.remove('crm-auth-pending'); playEntrance(); }
+      showFlash();
+    };
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
+    return user;
+  };
+  const sameUser = (a, b) => ['id', 'name', 'initials', 'email', 'role'].every((k) => a[k] === b[k]);
 
   CRM.ready = IS_LOGIN
     ? Promise.resolve(null)
-    : request('auth/status', { raw: true }).then(
+    : cachedUser
+      ? Promise.resolve(bootWith(cachedUser)).then((u) => {
+        // Confirm in the background; a signed-out session or changed role/name reloads properly.
+        request('auth/status', { raw: true }).then((s) => {
+          if (!s.user) return toLogin(true);
+          rememberUser(s.user);
+          if (!sameUser(s.user, cachedUser)) location.reload();
+        }, () => { /* offline or server error: the page's own requests will report it */ });
+        return u;
+      })
+      : request('auth/status', { raw: true }).then(
       (s) => {
         if (!s.user) return toLogin();
-        CRM.user = s.user;
-        const boot = () => { decorate(s.user); document.documentElement.classList.remove('crm-auth-pending'); showFlash(); };
-        if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
-        return s.user;
+        rememberUser(s.user);
+        return bootWith(s.user);
       },
       (err) => {
         const show = () => fatal(err.message);

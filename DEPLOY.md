@@ -125,7 +125,7 @@ Set the environment variable `MAINTENANCE=true` and restart the app. Everyone ex
 
 ## After changing CSS or JavaScript
 
-Browsers cache `styles.css`, `assets/app.css` and `assets/app.js` for 30 days, which makes pages load faster. Every page links them as `?v=12`. When you edit one of these files, change `v=12` to `v=13` in all `*.html` files so everyone gets the new version. HTML pages are never cached.
+Browsers cache `styles.css`, `assets/app.css` and `assets/app.js` for 30 days, which makes pages load faster. Every page links them as `?v=13`. When you edit one of these files, change `v=13` to `v=14` in all `*.html` files so everyone gets the new version. HTML pages are never cached.
 
 ## Backups
 
