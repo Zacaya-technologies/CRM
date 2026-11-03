@@ -671,7 +671,7 @@
       <style>
         body{font-family:Inter,'Segoe UI',Arial,sans-serif;color:#171532;margin:48px;font-size:14px}
         .top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:40px}
-        .brand{display:flex;gap:10px;align-items:center}.mark{width:38px;height:38px;border-radius:9px;background:#0E7A5F;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700}
+        .brand{display:flex;gap:10px;align-items:center}.mark{width:40px;height:40px;flex-shrink:0}
         h1{margin:0;font-size:26px;letter-spacing:.5px}.muted{color:#6E7086}.status{display:inline-block;margin-top:6px;padding:3px 10px;border-radius:99px;background:#E3F4EC;color:#0E7A5F;font-weight:700;font-size:12px}
         .grid{display:flex;gap:60px;margin-bottom:32px}.grid b{display:block;font-size:11px;letter-spacing:.6px;color:#9C9DB3;margin-bottom:4px}
         table{width:100%;border-collapse:collapse}th{text-align:left;font-size:11px;letter-spacing:.6px;color:#9C9DB3;border-bottom:2px solid #E6E7F2;padding:10px 0}
@@ -679,7 +679,7 @@
         .note{margin-top:40px;color:#6E7086;font-size:12.5px}
         @media print{body{margin:24px}}
       </style></head><body>
-      <div class="top"><div class="brand"><div class="mark">CA</div><div><b>Creative Advs</b><div class="muted" style="font-size:12px">Ideas to Impact</div></div></div>
+      <div class="top"><div class="brand"><svg class="mark" viewBox="166 279 572 572" aria-hidden="true"><path d="M407 289H534L633 548C590 543 550 545 510 552L470 453L424 577C360 600 300 640 254 690Z" fill="#202020"/><path d="M200 839C290 650 470 560 651 593L703 729C590 680 430 700 340 835Z" fill="#29A89F"/></svg><div><b>Creative Advs</b><div class="muted" style="font-size:12px">Ideas to Impact</div></div></div>
         <div style="text-align:right"><h1>${title.toUpperCase()}</h1><div class="muted">${number}</div>${status ? `<div class="status">${status}</div>` : ''}</div></div>
       <div class="grid"><div><b>${title === 'Invoice' ? 'BILL TO' : 'PREPARED FOR'}</b>${to}</div>${meta.map(([k, v]) => `<div><b>${k}</b>${v}</div>`).join('')}</div>
       <table><thead><tr><th>DESCRIPTION</th><th class="r">AMOUNT</th></tr></thead><tbody>
